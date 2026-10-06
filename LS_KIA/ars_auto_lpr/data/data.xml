@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+        <record id="resource_categories_bay" model="resource.category">
+            <field name="name">Bay</field>
+            <field name="alpr_is_bay">1</field>
+        </record>
+
+        <record id="ir_cron_vehicle_tracking_action" model="ir.cron">
+            <field name="name">Vehicle Tracking: Vehicle Log</field>
+            <field name="model_id" ref="model_vehicle_tracking_log"/>
+            <field name="state">code</field>
+            <field name="code">model.create_vehicle_log()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="False"/>
+        </record>
+
+        <record id="ir_cron_alpr_schedule_mail_action" model="ir.cron">
+            <field name="name">Vehicle Tracking: Scheduled Mail Service</field>
+            <field name="model_id" ref="model_alpr_mail_conf"/>
+            <field name="state">code</field>
+            <field name="code">model.alpr_sheduled_mail()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+            <field name="priority">10</field>
+        </record>
+
+  </data>
+</odoo>

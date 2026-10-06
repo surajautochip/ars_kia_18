@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ac_ars_whatsapp_config,ac.ars.whatsapp.config,model_ac_ars_whatsapp_config,base.group_user,1,1,1,1
+access_ac_ars_whatsapp_log,ac.ars.whatsapp.log,model_ac_ars_whatsapp_log,base.group_user,1,1,1,1

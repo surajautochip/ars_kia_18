@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ls_status_report,status_dashboard.ls_status_report,model_ls_status_report,ac_ars_cc_camera.live_stream_group_super,1,1,1,1

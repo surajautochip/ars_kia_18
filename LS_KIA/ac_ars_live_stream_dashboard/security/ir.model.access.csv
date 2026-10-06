@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ac_ars_live_stream_dashboard_ac_ars_live_stream_dashboard,ac_ars_live_stream_dashboard.ac_ars_live_stream_dashboard,model_ac_ars_live_stream_dashboard_ac_ars_live_stream_dashboard,,1,0,0,0

@@ -1,0 +1,91 @@
+<odoo>
+  <data>
+
+        <record id="resource_category_tree" model="ir.ui.view">
+            <field name="name">resource.category</field>
+            <field name="model">resource.category</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"></field>
+                    <field name="code"></field>
+                </list>
+            </field>
+        </record>
+<!--        <record id="resource_category_form" model="ir.ui.view">-->
+<!--            <field name="name">resource.category</field>-->
+<!--            <field name="model">resource.category</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form string="Leads Form">-->
+<!--                    <button name="get_dahbord_data" string="Testing"  type="object" class="btn-primary"/>-->
+<!--                    <sheet>-->
+<!--                        <field name="name"></field>-->
+<!--                        <field name="dashbord_name"></field>-->
+<!--                        <field name="code"></field>-->
+<!--                    </sheet>-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
+        <record id="resource_category_form" model="ir.ui.view">
+            <field name="name">resource.category</field>
+            <field name="model">resource.category</field>
+            <field name="arch" type="xml">
+                <form string="Leads Form">
+                    <sheet>
+                        <button name="get_dahbord_data" string="Testing"  type="object" class="btn-primary"/>
+                        <group>
+                            <field name="name"></field>
+                            <field name="dashbord_name"></field>
+                            <field name="code"></field>
+                            <field name="is_dashbord"></field>
+                            <field name="alpr_is_bay" string="Is Location"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="resource_category_kanban">
+            <field name="name"></field>
+            <field name="model">resource.category</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile" create="0" edit="0">
+                    <field name="name"></field>
+                    <field name="code"></field>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click container" style="background-color: #7c7bad;border-radius: 20px;">
+                                <div class="row_track no-gutters">
+                                    <div class="col-2 font_track">
+                                        <field name="dashbord_name" ></field>
+                                    </div>
+                                    <div class="col-2 font_track">
+                                        <field name="count_value"></field>
+                                    </div>
+                                    <div class="col-2">
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <record id="resource_category_action" model="ir.actions.act_window">
+            <field name="name">Resource Category</field>
+            <field name="res_model">resource.category</field>
+            <!--            -->
+            <field name="view_mode">list,form,kanban</field>
+            <!--            <field name="search_view_id" ref="view_bay_vehicle_log_search"/>-->
+            <!--            <field name="view_id" ref="view_bay_vehicle_log_list"/>-->
+            <field name="help" type="html">
+                <p>
+                    You can see the bay log here.
+                </p>
+            </field>
+        </record>
+        <menuitem name="Resource Category" id="resource_category_menu" action="resource_category_action"
+                  parent="resource.menu_resource_config" sequence="120"/>
+
+
+  </data>
+</odoo>

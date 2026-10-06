@@ -1,0 +1,120 @@
+<odoo>
+  <data>
+
+        <!-- explicit list view definition -->
+        <record id="product_variant_easy_edit_view_ars_components_inherit" model="ir.ui.view">
+            <field name="name">product.product.product.view.form.easy.inherit</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_variant_easy_edit_view"/>
+            <field name="arch" type="xml">
+
+                    <xpath expr="//form/sheet" position="inside">
+                        <notebook>
+                            <page string="Components">
+                                <field name="components_ids" widget="many2many" options="{'not_delete': True}">
+                                    <kanban quick_create="false" create="true" delete="true">
+                                        <field name="id"/>
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="card">
+                                                <div class="oe_kanban_global_click" style="max-width: 200px">
+                                                    <div class="o_kanban_record_top">
+                                                        <img t-att-src="kanban_image('product.template', 'image_small', record.id.raw_value)"
+                                                             height="40" width="40" alt="Product Image"
+                                                             class="oe_avatar oe_kanban_avatar_smallbox mb0"/>
+                                                        <div class="o_kanban_record_headings ml8">
+                                                            <strong class="o_kanban_record_title">
+                                                                <field name="name"/>
+                                                            </strong>
+                                                        </div>
+                                                        <a t-if="! read_only_mode" type="delete" class="text-danger">
+                                                            <i class="fa fa-times" title="Delete"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                            <page string="Product Images">
+                                <field name="product_image_ids" widget="many2many" options="{'not_delete': True}">
+                                    <kanban quick_create="false" create="true" delete="true">
+                                        <field name="id"/>
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="card">
+                                                <div class="oe_kanban_global_click" style="max-width: 200px">
+                                                    <div class="o_kanban_record_top">
+                                                        <img t-att-src="kanban_image('vehicle.images', 'image_small', record.id.raw_value)"
+                                                             height="40" width="40" alt="Vehicle Image"
+                                                             class="oe_avatar oe_kanban_avatar_smallbox mb0"/>
+                                                        <div class="o_kanban_record_headings ml8">
+                                                            <strong class="o_kanban_record_title">
+                                                                <field name="name"/>
+                                                            </strong>
+                                                        </div>
+                                                        <a t-if="! read_only_mode" type="delete" class="text-danger">
+                                                            <i class="fa fa-times" title="Delete"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                        </notebook>
+                    </xpath>
+
+            </field>
+        </record>
+
+        <record id="product_variant_images" model="ir.ui.view">
+            <field name="name">vehicle.image</field>
+            <field name="model">vehicle.images</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="image_medium" widget="image" class="oe_avatar"
+                               options="{'preview_image': 'image_medium'}"/>
+                        <div class="oe_title">
+                            <label for="name" string="Name"/>
+                            <h1>
+                                <field name="name" readonly="0" placeholder="Name"/>
+
+                            </h1>
+                            <label for="website_published" string="Public"/>
+                            <h1>
+                                <field name="website_published"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="model_id"/>
+                                <!--                                <field name="coordinates"/>-->
+                            </group>
+                            <group>
+
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Component Mapping">
+                                <field name="component_ids">
+                                    <list editable="top">
+                                        <field name="name"/>
+                                        <field name="parts_ids" widget='many2many_tags'/>
+                                        <field name="description"/>
+                                        <field name="coordinates"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+  </data>
+</odoo>

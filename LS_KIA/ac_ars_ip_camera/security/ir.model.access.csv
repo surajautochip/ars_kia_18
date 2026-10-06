@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ac_ars_ip_camera_user,ac.ars.ip.camera,model_ac_ars_ip_camera,ac_ars_ip_camera.ip_camera_group_user,1,1,1,0
+access_ac_ars_ip_camera_manager,ac.ars.ip.camera,model_ac_ars_ip_camera,ac_ars_ip_camera.ip_camera_group_manager,1,1,1,1
+access_ac_ars_ip_camera_admin,ac.ars.ip.camera,model_ac_ars_ip_camera,ac_ars_ip_camera.ip_camera_group_super_admin,1,1,1,1
+
+access_ac_ars_ip_camera_exp_user,ac.ars.ip.camera.exp,model_ac_ars_ip_camera_exp,ac_ars_ip_camera.ip_camera_group_user,1,1,1,0
+access_ac_ars_ip_camera_exp_manager,ac.ars.ip.camera.exp,model_ac_ars_ip_camera_exp,ac_ars_ip_camera.ip_camera_group_manager,1,1,1,1
+access_ac_ars_ip_camera_exp_admin,ac.ars.ip.camera.exp,model_ac_ars_ip_camera_exp,ac_ars_ip_camera.ip_camera_group_super_admin,1,1,1,1
+
+access_ac_ars_camera_config_user,ac.ars.camera.config,model_ac_ars_camera_config,ac_ars_ip_camera.ip_camera_group_user,1,0,0,0
+access_ac_ars_camera_config_manager,ac.ars.camera.config,model_ac_ars_camera_config,ac_ars_ip_camera.ip_camera_group_manager,1,1,1,1
+access_ac_ars_camera_config_admin,ac.ars.camera.config,model_ac_ars_camera_config,ac_ars_ip_camera.ip_camera_group_super_admin,1,1,1,1
+
+access_ac_ars_camera_records_user,ac.ars.camera.records,model_ac_ars_camera_records,ac_ars_ip_camera.ip_camera_group_user,1,1,1,0
+access_ac_ars_camera_records_manager,ac.ars.camera.records,model_ac_ars_camera_records,ac_ars_ip_camera.ip_camera_group_manager,1,1,1,0
+access_ac_ars_camera_records_admin,ac.ars.camera.records,model_ac_ars_camera_records,ac_ars_ip_camera.ip_camera_group_super_admin,1,1,1,1

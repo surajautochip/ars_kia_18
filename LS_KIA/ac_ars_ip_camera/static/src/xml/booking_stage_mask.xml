@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ac_ars_ip_camera.BookingStageMaskField" owl="1">
+        <div class="o_input_wrapper o_field_char">
+            <t t-if="props.readonly">
+                <span t-esc="isAdmin ? props.record.data[props.name] : '*'.repeat((props.record.data[props.name] || '').length)" />
+            </t>
+            <t t-else="">
+                <input
+                    class="o_input"
+                    t-att-type="isAdmin ? 'text' : 'password'"
+                    t-att-id="props.id"
+                    t-model="props.record.data[props.name]"
+                />
+            </t>
+        </div>
+    </t>
+</templates>

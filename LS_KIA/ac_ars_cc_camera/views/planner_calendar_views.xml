@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Planner Calendar Form View -->
+    <record id="planner_calendar_view_form" model="ir.ui.view">
+        <field name="name">planner.calender.form</field>
+        <field name="model">planner.calender</field>
+        <field name="arch" type="xml">
+            <form string="Planner Calendar Configuration">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="resource_category"/>
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="members" string="Resource (Bays)">
+                            <field name="member_ids" widget="many2many" options="{'not_delete': True, 'no_create': True}"
+                                   domain="[('company_id', '=', company_id), ('resource_category', '=', resource_category)]">
+                                <kanban quick_create="false" create="false" delete="true">
+                                    <field name="id"/>
+                                    <field name="name"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click" style="max-width: 200px">
+                                                <div class="o_kanban_record_top">
+                                                    <div class="o_kanban_record_headings ml8">
+                                                        <strong class="o_kanban_record_title">
+                                                            <field name="name"/>
+                                                        </strong>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Planner Calendar Tree View -->
+    <record id="planner_calendar_view_tree" model="ir.ui.view">
+        <field name="name">planner.calender.tree</field>
+        <field name="model">planner.calender</field>
+        <field name="arch" type="xml">
+            <list string="Planner Calendar Configurations">
+                <field name="name"/>
+                <field name="resource_category"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_planner_calendar" model="ir.actions.act_window">
+        <field name="name">Resource Calendar</field>
+        <field name="res_model">planner.calender</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Item (Will put under Live Streaming Configuration menu for now) -->
+    <menuitem id="menu_planner_calendar_config"
+              name="Resource Calendar"
+              parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+              action="action_planner_calendar"
+              sequence="5"/>
+
+</odoo>

@@ -1,0 +1,28 @@
+<odoo>
+  <data>
+
+        <record model="ir.ui.view" id="live_stream_token_form_view_inherit">
+            <field name="model">ac.ars.live.stream.token</field>
+            <field name="inherit_id" ref="ac_ars_cc_camera.ac_ars_live_stream_token_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/notebook" position="inside">
+                    <page string="DMS Update Status" groups="base.group_no_one" invisible="1">
+                        <div>
+                            <div>
+                                <label for="update_on" string="Update On"/>
+                                <field name="update_on"/>
+                                <label for="end_time" string="End Time"/>
+                                <field name="end_time"/>
+                            </div>
+                            <div>
+                                <label for="dms_response" string="DMS Response"/>
+                                <field name="dms_response"/>
+                            </div>
+                        </div>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+  </data>
+</odoo>

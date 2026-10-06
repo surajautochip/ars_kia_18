@@ -1,0 +1,14 @@
+<odoo>
+  <data>
+
+        <menuitem name="WhatsApp"
+                  id="whatsapp_api_main_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  sequence="55"/>
+        <menuitem name="WhatsApp Configuration" id="whatsapp_config_menu" parent="whatsapp_api_main_menu"
+                  action="hy_whatsapp_config_action_window"/>
+        <menuitem name="WhatsApp Log" id="whatsapp_api_log_menu" parent="whatsapp_api_main_menu"
+                  action="hy_whatsapp_log_action_window"/>
+
+  </data>
+</odoo>

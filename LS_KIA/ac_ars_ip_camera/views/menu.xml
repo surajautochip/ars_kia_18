@@ -1,0 +1,42 @@
+<odoo>
+  <data>
+
+        <menuitem name="Camera"
+                  id="ac_ars_ip_camera_main_menu"
+                  sequence="55"
+                  groups="ac_ars_ip_camera.ip_camera_group_user"/>
+                  
+        <menuitem name="Camera"
+                  id="ac_ars_ip_camera_menu"
+                  parent="ac_ars_ip_camera.ac_ars_ip_camera_main_menu"
+                  sequence="1"
+                  groups=""/>
+                  
+        <menuitem name="Camera"
+                  id="ac_ars_ip_camera_menu1"
+                  parent="ac_ars_ip_camera.ac_ars_ip_camera_menu"
+                  sequence="1"
+                  groups=""
+                  action="ac_ars_ip_camera_action_window"/>
+
+        <menuitem name="Records"
+                  id="ac_ars_ip_camera_menu2"
+                  parent="ac_ars_ip_camera.ac_ars_ip_camera_menu"
+                  sequence="2"
+                  groups=""
+                  action="ac_ars_camera_records_action_window"/>
+
+        <menuitem name="Configuration"
+                  id="ac_ars_ip_camera_config_menu"
+                  parent="ac_ars_ip_camera.ac_ars_ip_camera_main_menu"
+                  sequence="5"/>
+
+        <menuitem name="Model &amp; URLS"
+                  id="ac_ars_ip_camera_config_menu1"
+                  parent="ac_ars_ip_camera.ac_ars_ip_camera_config_menu"
+                  sequence="1"
+                  groups=""
+                  action="ac_ars_camera_config_action_window"/>
+
+  </data>
+</odoo>

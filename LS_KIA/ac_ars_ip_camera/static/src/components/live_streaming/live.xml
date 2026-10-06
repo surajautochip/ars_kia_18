@@ -1,0 +1,107 @@
+<templates>
+    <t t-name="ac_ars_camera.camera_stream_widget">
+        <div class="matrix-dashboard bg-black text-white p-4 d-flex flex-column h-100">
+            <!-- Header -->
+            <div class="matrix-header d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom border-secondary border-opacity-25">
+                <div class="matrix-logo d-flex align-items-center">
+                    <i class="fa fa-line-chart me-2 text-info"/>
+                    <h2 class="mb-0 fw-bold tracking-tighter text-light">Live Streaming</h2>
+                </div>
+                <div class="matrix-stats d-flex gap-5">
+                    <div class="stat-item">
+                        <div class="stat-label text-secondary small">SYSTEM FPS</div>
+                        <div class="stat-value text-info fw-bold">
+                            <t t-esc="state.fps"/>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label text-secondary small">QUALITY</div>
+                        <div t-attf-class="stat-value fw-bold {{ state.abrQuality === 'high' ? 'text-success' : state.abrQuality === 'low' ? 'text-warning' : 'text-info' }}">
+                            <t t-esc="state.abrQuality.toUpperCase()"/>
+                        </div>
+                    </div>
+                    <div class="stat-item" t-if="state.abrKbps > 0">
+                        <div class="stat-label text-light small">INTERNET SPEED</div>
+                        <div class="stat-value text-light fw-bold">
+                            <t t-esc="state.abrKbps"/>
+                            kbps
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Stream Area -->
+            <div class="flex-grow-1 d-flex flex-column gap-4 min-h-0">
+                <div class="main-stream-container position-relative flex-grow-1 rounded-3 overflow-hidden border border-info border-opacity-25">
+                    <!-- Stream Content -->
+                    <t t-if="state.error">
+                        <div class="h-100 d-flex flex-column justify-content-center align-items-center bg-dark text-danger">
+                            <i class="fa fa-4x fa-exclamation-triangle mb-3"/>
+                            <p class="h4">COMMUNICATION_ERROR</p>
+                            <p class="small text-secondary"><t t-esc="state.errorMsg"/> </p>
+                        </div>
+                    </t>
+                    <t t-elif="state.streamUrl">
+                        <!-- Tech Grid Overlay -->
+                        <div class="tech-grid position-absolute w-100 h-100 pointer-events-none"/>
+
+                        <!-- Video Feed (Main) -->
+                        <t t-set="active" t-value="state.activeView"/>
+
+                        <!-- Main View SVG Wrapper -->
+                        <div class="main-stream-wrapper d-flex justify-content-center align-items-center position-relative w-100 h-100 overflow-hidden ">
+                            <!-- Scanning Line -->
+                            <div class="scanning-line"></div>
+
+                            <svg t-if="state.streamUrl"
+                                 t-attf-viewBox="{{ active === 'master' ? '0 0 1280 720' : active.x + ' ' + active.y + ' ' + active.w + ' ' + active.h }}"
+                                 class="h-100 transition-all duration-300"
+                                 style="z-index: 1;"
+                                 preserveAspectRatio="xMidYMid slice">
+                                <image t-att-href="state.streamUrl" x="0" y="0" width="1280" height="720"/>
+                            </svg>
+                        </div>
+
+                        <!-- HUD Overlays -->
+                        <div class="hud-overlay position-absolute top-0 start-0 w-100 p-3 d-flex gap-2"
+                             style="z-index: 10;">
+                            <span class="live-indicator">
+                                <span class="blink-dot"></span>
+                                LIVE
+                            </span>
+                        </div>
+
+
+                    </t>
+                    <t t-else="">
+                        <div class="h-100 d-flex flex-column justify-content-center align-items-center bg-dark">
+                            <div class="spinner-border text-info mb-3" role="status"/>
+                            <p class="text-secondary tracking-widest">ESTABLISHING_LINK...</p>
+                        </div>
+                    </t>
+                </div>
+
+                <t t-if="state.streamUrl">
+                    <!-- Bays List (Thumbnails) -->
+                    <!-- Bays List (Thumbnails) removed for LS_KIA since ac.camera.bay is not used here -->
+                </t>
+
+            </div>
+
+        </div>
+        <div class="matrix-footer position-sticky bottom-0 d-flex justify-content-end">
+            <t t-if="state.error || state.streamUrl ">
+                <button class="btn btn-outline-danger btn-sm px-4" t-on-click="stopAndClose">
+                <t t-if="state.error">
+                     <t t-if="state.error">Close</t>
+                </t>
+                <t t-else="">
+                    <i class="fa fa-power-off me-2"/>
+                    <span>Stop Streaming</span>
+                </t>
+            </button>
+            </t>
+
+        </div>
+    </t>
+</templates>

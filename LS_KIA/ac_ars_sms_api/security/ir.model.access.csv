@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ac_ars_sms_api_ac_ars_sms_api,ac_ars_sms_api.ac_ars_sms_api,model_ac_ars_sms_record,base.group_user,1,1,1,1
+access_ac_ars_sms_api_ac_ars_sms_api1,ac_ars_sms_api.ac_ars_sms_api1,model_ac_ars_sms_configure,base.group_user,1,1,1,1
+

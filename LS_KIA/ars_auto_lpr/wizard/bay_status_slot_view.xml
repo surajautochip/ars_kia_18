@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+    <record id="view_bay_count_wizard_form" model="ir.ui.view">
+        <field name="name">bay.count.wizard.form</field>
+        <field name="model">bay.count.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Bay Count Slot Wise Report">
+                <group>
+                    <group>
+                        <p>Bay Status Report (*GroupBy Bay in Timeslot)</p>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate Report"
+                            class="btn-primary"
+                            name="get_bay_count_data"
+                            type="object"/>
+                    <button string="Cancel"
+                            class="btn-default"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bay_count_wizard" model="ir.actions.act_window">
+        <field name="name">Bay Status Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">bay.count.wizard</field>
+        
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bay_count_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+  </data>
+</odoo>

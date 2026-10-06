@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+        <record model="ir.module.category" id="ac_ars_live_streaming_access_right">
+            <field name="name">Live Streaming Access</field>
+            <field name="sequence">201</field>
+            <field name="description">User access level for this module</field>
+            <!--            <field name="visible" eval="0"/>-->
+        </record>
+
+    <!--
+        <record model="ir.module.category" id="ac_ars_live_streaming_bay_planner_access_right">
+            <field name="name">Bay Planner Access</field>
+            <field name="sequence">210</field>
+            <field name="description">Live streaming bay planner access</field>
+        </record>
+
+        <record id="live_stream_show_bay_planner_user" model="res.groups">
+            <field name="name">Show bay planner</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="users" eval="[(4, ref('base.group_user'))]"/>
+            <field name="category_id" ref="ac_ars_live_streaming_bay_planner_access_right"/>
+        </record>
+    -->
+
+        <record id="live_stream_group_user" model="res.groups">
+            <field name="name">User</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="users" eval="[(4, ref('base.group_user'))]"/>
+            <field name="category_id" ref="ac_ars_live_streaming_access_right"/>
+        </record>
+
+        <record id="live_stream_group_manager" model="res.groups">
+            <field name="name">Manager</field>
+            <field name="implied_ids" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+            <field name="category_id" ref="ac_ars_live_streaming_access_right"/>
+        </record>
+
+        <record id="live_stream_group_super" model="res.groups">
+            <field name="name">Super User</field>
+            <field name="implied_ids" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_manager'))]"/>
+            <field name="category_id" ref="ac_ars_live_streaming_access_right"/>
+        </record>
+
+        <record id="live_stream_group_user_rule" model="ir.rule">
+            <field name="name">live stream group user</field>
+            <field name="model_id" ref="model_ac_ars_live_streaming"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('live_stream_group_user'))]"/>
+        </record>
+
+        <record id="live_stream_resource_group_user_rule" model="ir.rule">
+            <field name="name">live stream resource group user</field>
+            <field name="model_id" ref="model_resource_resource"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+<!--
+        <record id="live_stream_resource_calendar_group_user_rule" model="ir.rule">
+            <field name="name">live stream resource calender group user</field>
+            <field name="model_id" ref="ac_rms.model_planner_calender"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+-->
+
+        <record id="ac_ars_live_stream_token_group_user_rule" model="ir.rule">
+            <field name="name">live stream token group user</field>
+            <field name="model_id" ref="ac_ars_cc_camera.model_ac_ars_live_stream_token"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+        <record id="live_stream_ac_ars_ip_camera_user_rule" model="ir.rule">
+            <field name="name">live Camera config group user</field>
+            <field name="model_id" ref="ac_ars_ip_camera.model_ac_ars_ip_camera"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+        <record id="live_stream_ac_ars_allocation_data_task_user_rule" model="ir.rule">
+            <field name="name">live stream task filter group user</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="domain_force">[('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+        <record id="live_stream_ac_ars_allocation_data_user_rule" model="ir.rule">
+            <field name="name">live stream allocation data filter group user</field>
+            <field name="model_id" ref="ac_ars_cc_camera.model_ac_ars_allocation_data"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+        <record id="live_stream_resource_user_rule" model="ir.rule">
+            <field name="name">live stream resource data filter group user</field>
+            <field name="model_id" ref="resource.model_resource_resource"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+        <record id="live_stream_server_settings_user_rule" model="ir.rule">
+            <field name="name">live stream server filter group user</field>
+            <field name="model_id" ref="ac_ars_cc_camera.model_ac_ars_live_streaming_settings"/>
+            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]
+            </field>
+            <field name="groups" eval="[(4, ref('ac_ars_cc_camera.live_stream_group_user'))]"/>
+        </record>
+
+<!--        <record id="live_stream_server_vehicle_user_rule" model="ir.rule">-->
+<!--            <field name="name">live stream server filter group user</field>-->
+<!--            <field name="model_id" ref="ac_ars_cc_camera.model_ac_ars_live_streaming_settings"/>-->
+<!--            <field name="domain_force">['|',('company_id','=',False),('company_id','in',company_ids)]-->
+<!--            </field>-->
+<!--            <field name="groups" eval="[(4, ref('fleet.live_stream_group_user'))]"/>-->
+<!--        </record>-->
+
+
+  </data>
+</odoo>

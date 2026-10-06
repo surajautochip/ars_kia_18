@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+<!--
+<template id="assets_backend" name="alpr assets" inherit_id="web.assets_backend" priority="27">
+	    	<xpath expr="." position="inside">
+	            <link href="/ars_auto_lpr/static/src/less/alpr.less" rel="stylesheet" type="text/less"/>
+	            <link href="/ars_auto_lpr/static/src/lib/selectareas/jquery.selectareas.css" rel="stylesheet" type="text/css"/>
+	            
+	            <script src="/ars_auto_lpr/static/src/lib/selectareas/jquery.selectareas.min.js" type="text/javascript"></script>
+	            <script src="/ars_auto_lpr/static/src/js/alpr.js" type="text/javascript"></script>
+	        </xpath>
+	    </template>
+-->
+
+  </data>
+</odoo>

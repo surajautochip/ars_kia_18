@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+
+<!--
+<template id="assets_backend_dashboard" name="POS Dashboard assets inherit" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/ac_ars_cc_camera/static/src/js/AC_BayPlanner.js"/>
+            </xpath>
+        </template>
+-->
+
+  </data>
+</odoo>

@@ -1,0 +1,51 @@
+<?xml version="1.0" ?>
+<odoo>
+  <data>
+
+        <record id="server_status_automate_email" model="mail.template">
+            <field name="name">Live Streaming Server Status: Send by email</field>
+            <field name="model_id" ref="ac_ars_cc_camera.model_ac_ars_live_stream_server_status"/>
+            <!--            <field name="email_from">info@autochip.in</field>-->
+            <field name="email_to">${object.live_server_id.email}</field>
+            <field name="subject">${object.live_server_id.company_id.name} Server Status</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        % if object.live_server_id.cust_name:
+                        Dear Mr.${object.live_server_id.cust_name}
+                        % else:
+                        Dear Sir
+                        % endif
+                        <br/>
+                        Your dealership
+                        <strong>
+                            ${object.live_server_id.company_id.name} ${object.live_server_id.company_id.dealer_code}
+                        </strong>
+                        live streaming server has down for
+                        <strong>
+                            ${object.day_diff} days,since ${object.offline_datetime}
+                        </strong>
+                        <br/>
+                        This may be due to your live streaming server machine is shut down or may be other technical
+                        issues.
+                        <br/>
+                        We request you to inform your IT department and resolve this problem.
+                        We are please to support you in case any Technical or other guidance required to resolve the
+                        issue at your end.
+                        <br/>
+                        Please contact Autochip India Technical Supporting Team
+                        <br/>
+                        Amal Mohan
+                        <br/>
+                        amal.mohan@autochip.in
+                        <br/>
+                        +919495047983
+                        <br/>
+                        +918075745093
+                    </p>
+                </div>
+            </field>
+        </record>
+
+  </data>
+</odoo>

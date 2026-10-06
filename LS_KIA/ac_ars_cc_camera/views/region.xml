@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+    <record model="ir.ui.view" id="region_settings_list">
+        <field name="name">Region</field>
+        <field name="model">ac.ars.region.region</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="re_code"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="region_settings_form">
+        <field name="name">Region</field>
+        <field name="model">ac.ars.region.region</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="send_server_status_email" string="Send Offline Status" type="object"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="re_code" string="Region Code"/>
+                        <field name="manager"/>
+                        <field name="email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="territory_settings_list">
+        <field name="name">TPSM</field>
+        <field name="model">ac.ars.territory.territory</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="re_code" string="Code"/>
+                <field name="manager"/>
+            </list>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="territory_settings_form">
+        <field name="name">TPSM</field>
+        <field name="model">ac.ars.territory.territory</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="re_code" string="Territory Code"/>
+                        <field name="manager"/>
+                        <field name="email"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="menu_country_state_region_window">
+        <field name="name">TPSM</field>
+        <field name="res_model">ac.ars.territory.territory</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+       <record model="ir.actions.act_window" id="menu_territory_window">
+        <field name="name">Region</field>
+        <field name="res_model">ac.ars.region.region</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_country_state_region"
+              action="menu_country_state_region_window"
+              parent="contacts.menu_localisation"
+              sequence="6"/>
+
+    <menuitem id="menu_territory_menu"
+              action="menu_territory_window"
+              parent="contacts.menu_localisation"
+              sequence="7"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="ac_ars_hy_whatsapp_api_log_list">
+            <field name="name">WhatsApp Log List</field>
+            <field name="model">ac.ars.whatsapp.log</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="send_date"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="company_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ac_ars_hy_whatsapp_api_log_form">
+            <field name="name">WhatsApp Log Form</field>
+            <field name="model">ac.ars.whatsapp.log</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" clickable="False"/>
+                    </header>
+                    <sheet>
+<!--                        <h2>-->
+<!--                            <label for="name" string="Name"/>-->
+<!--                            <field name="name"/>-->
+<!--                        </h2>-->
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="partner_id"/>
+                            </group>
+                            <group>
+                                <field name="company_id"/>
+                                <field name="send_date"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Advanced" name="extra_details">
+<!--                                <field name=""/>-->
+                            </page>
+                            <page string="Failure Reason" name="exception" invisible="state == 'valid'">
+                                <label for="exception" string="Exception"/>
+                                <field name="exception"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="hy_whatsapp_log_action_window">
+            <field name="name">WhatsApp Log Window</field>
+            <field name="res_model">ac.ars.whatsapp.log</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+
+        <!-- Top menu item -->
+        <!--
+        <menuitem name="ac_ars_hy_whatsapp_api" id="ac_ars_hy_whatsapp_api.menu_root"/>
+        -->
+        <!-- menu categories -->
+        <!--
+        <menuitem name="Menu 1" id="ac_ars_hy_whatsapp_api.menu_1" parent="ac_ars_hy_whatsapp_api.menu_root"/>
+        <menuitem name="Menu 2" id="ac_ars_hy_whatsapp_api.menu_2" parent="ac_ars_hy_whatsapp_api.menu_root"/>
+        -->
+        <!-- actions -->
+        <!--
+        <menuitem name="List" id="ac_ars_hy_whatsapp_api.menu_1_list" parent="ac_ars_hy_whatsapp_api.menu_1"
+                  action="ac_ars_hy_whatsapp_api.action_window"/>
+        <menuitem name="Server to list" id="ac_ars_hy_whatsapp_api" parent="ac_ars_hy_whatsapp_api.menu_2"
+                  action="ac_ars_hy_whatsapp_api.action_server"/>
+        -->
+
+  </data>
+</odoo>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<odoo>
+  <data>
+
+        <!-- Scheduler for Event Alarm-->
+        <record forcecreate="True" id="ir_cron_auto_live_token_expire" model="ir.cron">
+            <field name="name">Live Stream: Automatic Token Expire</field>
+            <field name="model_id" ref="model_ac_ars_live_stream_token"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_finish_live_stream()</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.group_user"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+        </record>
+
+  </data>
+</odoo>

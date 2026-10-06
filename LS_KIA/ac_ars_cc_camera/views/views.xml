@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+
+
+
+        <!-- Camera Menu -->
+
+        <!--        <record model="ir.ui.view" id="cam_config_list">-->
+        <!--            <field name="name">Camera Configuration</field>-->
+        <!--            <field name="model">cc.camera</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <list>-->
+        <!--                    <field name="name"/>-->
+        <!--                    <field name="camera_name"/>-->
+        <!--                </list>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <!--        <record model="ir.ui.view" id="cam_config_form">-->
+        <!--            <field name="name">Camera Configuration</field>-->
+        <!--            <field name="model">cc.camera</field>-->
+        <!--            <field name="arch" type="xml">-->
+        <!--                <form>-->
+        <!--                    <sheet>-->
+        <!--                        <group>-->
+        <!--                            <field name="name"/>-->
+        <!--                            <field name="camera_name"/>-->
+        <!--                            <field name="port_num"/>-->
+        <!--                            <field name="username"/>-->
+        <!--                            <field name="password"/>-->
+        <!--                            <field name="active_id"/>-->
+        <!--                        </group>-->
+        <!--                    </sheet>-->
+        <!--                </form>-->
+        <!--            </field>-->
+        <!--        </record>-->
+
+        <!--        <record model="ir.actions.act_window" id="camera_configuration_action_window">-->
+        <!--            <field name="name">Camera Configuration</field>-->
+        <!--            <field name="res_model">cc.camera</field>-->
+        <!--            <field name="view_mode">tree,form</field>-->
+        <!--        </record>-->
+
+        <!--        <menuitem name="Camera Configuration"-->
+        <!--                  id="camera_configuration"-->
+        <!--                  parent="base.menu_custom"-->
+        <!--                  sequence="50"-->
+        <!--                  action="camera_configuration_action_window"/>-->
+
+        <!-- explicit list view definition -->
+
+        <record id="ars_resource_resource_form_inherit" model="ir.ui.view">
+            <field name="name">resource.resource.form.inherit</field>
+            <field name="model">resource.resource</field>
+            <field name="inherit_id" ref="resource.resource_resource_form"/>
+            <field name="arch" type="xml">
+                <field name="resource_type" position="after">
+                    <field name="resource_category"/>
+                    <field name="ip_address" widget="many2many_tags" domain="[('company_id', '=',company_id)]" invisible="resource_type == 'user'"/>
+                </field>
+            </field>
+        </record>
+
+        <!--<Adding a new field IP Address in a Company>-->
+
+        <record id="view_company_form_with_ipaddress" model="ir.ui.view">
+            <field name="name">res.company.form</field>
+            <field name="model">res.company</field>
+            <field name="inherit_id" ref="base.view_company_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='zip']" position="after">
+                    <field name="area_id" placeholder="Area" class="o_address_city"/>
+                    <field name="zone_id" placeholder="Zone" class="o_address_city"/>
+                    <field name="region_id" placeholder="Region" class="o_address_city"/>
+                    <field name="tpsm_id" placeholder="TPSM" class="o_address_city"/>
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="after">
+                    <field name="dealer_code" placeholder="Dealer Code" required="1"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="im_livechat_channel_form_view_with_company" model="ir.ui.view">
+            <field name="name">im_livechat.channel.form.inherit.website_livechat</field>
+            <field name="model">im_livechat.channel</field>
+            <field name="inherit_id" ref="im_livechat.im_livechat_channel_view_form"/>
+            <field name="arch" type="xml">
+                <field name="default_message" position="after">
+                    <field name="company_id"/>
+                </field>
+            </field>
+        </record>
+
+        <!--Schedule Mail Settings Configuration-->
+        <record model="ir.ui.view" id="scheduled_mail_settings_tree">
+            <field name="name">ac.ars.schedule.mail.settings</field>
+            <field name="model">ac.ars.schedule.mail.settings</field>
+            <field name="arch" type="xml">
+                <list string="Scheduled Mail Configuration">
+                    <field name="user_id"/>
+                    <field name="date_time"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="scheduled_mail_settings_form">
+            <field name="name">ac.ars.schedule.mail.settings</field>
+            <field name="model">ac.ars.schedule.mail.settings</field>
+            <field name="arch" type="xml">
+                <form string="Scheduled Mail Configuration">
+                    <header>
+                        <button name="sheduler_send_mail" type="object" class="btn-primary" string="Send Mail"/>
+                    </header>
+                    <sheet>
+                        <h3>
+                            <field name="user_id" placeholder="User Name"/>
+                        </h3>
+                        <group>
+                            <field name="email" placeholder="Receiver Email ID" required="True"/>
+                            <group>
+                                <field name="region_wise_report"/>
+                                <field name="region_id" widget="many2many_tags" invisible="region_wise_report == False" required="region_wise_report == True"/>
+                                <field name="dealer_wise_report"/>
+                                <field name="date_time" readonly="1 "/>
+                            </group>
+                            <group>
+                                <field name="dealer_detail_wise_report"/>
+                                <field name="analysis_wise_report"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="Msg Body" string="Message Body">
+                                <field name="email_body"/>
+                            </page>
+                            <page name="Msg Subject" string="Message Subject">
+                                <field name="subject"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="scheduled_mail_settings_window">
+            <field name="name">Schedule Mail Configuration</field>
+            <field name="res_model">ac.ars.schedule.mail.settings</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+  </data>
+</odoo>

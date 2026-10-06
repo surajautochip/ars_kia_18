@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+	<t t-name="AlprBayDashboard">
+		<div class="container-fluid o_alpr_bay_dashboard">
+			<div class="row o_alpr_bay_image_editor" />
+		</div>
+	</t>
+
+	<t t-name="AlprBayImageEditor">
+		<form>
+		<div class="row o_alpr_bay_image_editor">
+			<t t-set="cameras" t-value="widget.data.cameras" />
+			<t t-set="btn_class" t-value="'hide'" />
+			<div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 o_alpr_image_canvas">
+				<div class="o_alpr_image_decorator">
+					<img id="alpr-image" src="/auto_lpr/static/src/lib/selectareas/no-camera.png" alt="Image" />
+
+					<div class="o_alpr_image_footer clearfix">
+						<div class="pull-left">
+							<button type="button" t-attf-class="btn btn-default alpr-btn-reload {{btn_class}}">Reload</button>
+						</div>
+						<div class="pull-right">
+							<button type="button" t-attf-class="btn btn-default alpr-btn-clear {{btn_class}}">Clear</button>
+							<button type="button" t-attf-class="btn btn-primary alpr-btn-save {{btn_class}}" style="margin-left:5px;">Save</button>
+						</div>
+					</div>						
+				</div>
+			</div>
+			<div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 o_alpr_image_toolbox">
+				<div class="form-group">
+					<label for="camera_id">Select Camera</label>
+					<select class="custom-select" name="camera_id">
+						<option value=""></option>
+						<t t-foreach="cameras" t-as="camera_id">
+							<option t-attf-value="{{camera_id}}"><t t-esc="cameras[camera_id]['name']" /></option>
+						</t>
+					</select>
+				</div>
+				<div class="o_alpr_bay_box hide">
+					<span class="heading">BAYS</span>
+					<span class="no-content hide">Oops! no bay selection.</span>
+					<div class="o_alpr_bay_list"></div>
+				</div>
+			</div>
+		</div>
+		</form>
+	</t>
+</templates>

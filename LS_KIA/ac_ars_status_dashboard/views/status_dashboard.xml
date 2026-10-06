@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <record id="ac_ars_status_dashboard_client_action" model="ir.actions.client">
+            <field name="name">Status Dashboard</field>
+            <field name="tag">ac_ars_status_dashboard_client_action</field>
+        </record>
+
+        <menuitem
+                id="status_dashboard_menu"
+                name="Status Report"
+                parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                action="ac_ars_status_dashboard_client_action"
+                sequence="0"/>
+    </data>
+</odoo>

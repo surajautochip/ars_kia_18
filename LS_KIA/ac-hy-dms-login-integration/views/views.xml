@@ -1,0 +1,52 @@
+<odoo>
+  <data>
+
+
+        <menuitem name="Website"
+                  id="website.menu_website_configuration"
+                  sequence="9"
+                  groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"
+                  web_icon="website,static/description/icon.png"/>
+
+        <menuitem
+                id="calendar.mail_menu_calendar"
+                name="Calendar"
+                sequence="2"
+                action="calendar.action_calendar_event"
+                web_icon="calendar,static/description/icon.png"
+                groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"/>
+
+        <menuitem name="Contacts"
+                  id="contacts.menu_contacts"
+                  sequence="4"
+                  web_icon="contacts,static/description/icon.png"
+                  groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"/>
+
+        <menuitem
+                id="hr.menu_open_view_employee_list_my"
+                action="hr.open_view_employee_list_my"
+                parent="hr.menu_hr_root"
+                groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"
+                sequence="3"/>
+
+        <menuitem name="Surveys"
+                  id="survey.menu_survey_form"
+                  action="survey.action_survey_form"
+                  groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"
+                  parent="survey.menu_surveys" sequence="1"/>
+
+        <menuitem name="Answers" id="survey.menu_survey_type_form1"
+                  action="survey.action_survey_user_input"
+                  groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"
+                  parent="survey.menu_surveys" sequence="1"/>
+
+        <menuitem id="contacts.res_partner_menu_contacts"
+                  name="Contacts"
+                  action="contacts.action_contacts"
+                  parent="contacts.menu_contacts"
+                  groups="ac-hy-dms-login-integration.hy_ls_base_menu_hide"
+                  sequence="2"/>
+
+
+  </data>
+</odoo>

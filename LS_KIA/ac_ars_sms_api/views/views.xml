@@ -1,0 +1,178 @@
+<odoo>
+  <data>
+
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="sms_configuration_list">
+            <field name="name">SMS Configuration Settings</field>
+            <field name="model">ac.ars.sms.configure</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="company_id"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sms_configuration_form">
+            <field name="name">SMS Configuration Settings</field>
+            <field name="model">ac.ars.sms.configure</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <header>
+                            <button icon="fa-cogs" string="Test Connection" name="test_sms_connection" type="object"
+                                    class="oe_highlight"/>
+                            <button icon="fa-cogs" string="Email Attach" name="get_mail_status" type="object"
+                                    class="oe_highlight"/>
+                        </header>
+                        <h3>SMS Configuration Settings</h3>
+                        <div>
+                            <field name="sms_global"/>
+                            <label for="sms_global" string="Public Template"
+                                   invisible="not sms_global"/>
+                            <label for="sms_global" string="Private Template"
+                                   invisible="sms_global"/>
+                            <field name="active"/>
+                            <label for="active" string="Active"/>
+                            <field name="rest_api"/>
+                            <label for="rest_api" string="Rest API"/>
+                        </div>
+                        <div>
+                            <h4>
+                                <label for="message" string="Message"/>
+                            </h4>
+                            <field name="message" style="font-family: monospace;"/>
+                            <h4>
+                                <label for="ac_ars_sms_api" string="SMS API"/>
+                            </h4>
+                            <field name="ac_ars_sms_api" style="font-family: monospace;"/>
+                        </div>
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field name="active"/>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <field name="rest_api"/>-->
+<!--                            </group>-->
+<!--                        </group>-->
+                        <notebook>
+                            <page string="Aditional Details">
+                                <group>
+                                    <group>
+                                        <field name="company_id" required="1"/>
+                                    </group>
+                                    <group></group>
+                                </group>
+
+                            </page>
+                            <page string="Parameters" groups="base.group_no_one">
+                                <field name="val_ids" widget="one2many_list">
+                                    <list editable="bottom" string="Views">
+                                        <field name="name"/>
+                                        <field name="value"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Testing Menu" groups="base.group_no_one">
+                                <group>
+                                    <group>
+                                        <field name="name"/>
+                                        <field name="phone"/>
+                                    </group>
+                                    <group>
+                                    </group>
+                                </group>
+                            </page>
+
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="sms_record_list">
+            <field name="name">sms record list</field>
+            <field name="model">ac.ars.sms.record</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="phone"/>
+
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="sms_record_form">
+            <field name="name">sms record form</field>
+            <field name="model">ac.ars.sms.record</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="stage" widget="statusbar"/>
+                        <button icon="fa-cogs" string="Send SMS" name="sent_an_sms" type="object"
+                                class="oe_highlight"/>
+                    </header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <label for="phone"/>
+                                <div>
+                                    <field name="phone"/>
+                                    <br></br>
+                                    <field name="failed_reason" style="color: red;"
+                                           invisible="stage != 'exception'"/>
+                                </div>
+                            </group>
+                            <group>
+                                <field name="regno"/>
+                                <field name="date"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Body">
+                                <field name="body"/>
+                            </page>
+                            <page string="URL">
+                                <field name="url"/>
+                            </page>
+                            <page string="Response">
+                                <field name="response"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="ac_ars_sms_api_action_window">
+            <field name="name">SMS configure window</field>
+            <field name="res_model">ac.ars.sms.configure</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sms_record_action_window">
+            <field name="name">SMS Record Window</field>
+            <field name="res_model">ac.ars.sms.record</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!--      Menu For SMS Configuration->&ndash;&gt;-->
+
+        <menuitem name="SMS"
+                  id="ac_ars_sms_api_main_menu"
+                  parent="base.menu_custom"
+                  sequence="55"/>
+
+        <menuitem name="SMS Configuration" id="ac_ars_sms_api.menu_1_list" parent="ac_ars_sms_api_main_menu"
+                  action="ac_ars_sms_api_action_window"/>
+
+        <menuitem name="SMS Records" id="ac_ars_sms_api.menu_record_list" parent="ac_ars_sms_api_main_menu"
+                  action="sms_record_action_window"/>
+
+  </data>
+</odoo>

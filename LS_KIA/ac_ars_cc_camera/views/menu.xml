@@ -1,0 +1,144 @@
+<odoo>
+  <data>
+
+
+        <menuitem name="Live Streaming"
+                  id="ac_ars_live_streaming_records"
+                  sequence="55"/>
+
+        <menuitem name="Records"
+                  id="ac_ars_live_streaming_main_records1"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_records"
+                  sequence="3"/>
+
+        <menuitem name="Current LS Data"
+                  id="ac_ars_live_stream_token_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_main_records1"
+                  sequence="1"
+                  action="ac_ars_live_stream_token_action_window"/>
+
+        <menuitem name="Bay Planner"
+                  id="menu_resource_live_stream_rms_resource_calendar"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_records"
+                  action="action_live_stream_bay_planner"
+                  sequence="5"/>
+
+        <menuitem name="Total Data"
+                  id="ac_ars_live_streaming_main_records2"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_main_records1"
+                  sequence="3"
+                  action="ac_ars_live_streaming_action_window"/>
+
+        <menuitem name="Allocation Data"
+                  id="ac_ars_live_streaming_ac_ars_allocation_data"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_main_records1"
+                  sequence="4"
+                  groups="base.group_no_one"
+                  action="ls_ac_ars_allocation_data_window"/>
+
+        <!-- Menu 'Live Streaming Task' removed as requested -->
+
+        <menuitem name="Configuration"
+                  id="ac_ars_live_streaming_configuration"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_records"
+                  sequence="15"
+                  groups="live_stream_group_user"/>
+
+<!--        <menuitem name="Camera"-->
+<!--                  id="menu_camera_configuration"-->
+<!--                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"-->
+<!--                  groups="live_stream_group_user"-->
+<!--                  sequence="1"/>-->
+
+        <menuitem name="Camera Configuration"
+                  id="menu_camera_configuration_streaming"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  sequence="1"
+                  groups="live_stream_group_user"
+                  action="ac_ars_ip_camera.ac_ars_ip_camera_action_window"/>
+
+        <menuitem name="Camera Record"
+                  id="menu_camera_list_streaming"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  sequence="2"
+                  groups="live_stream_group_user"
+                  action="ac_ars_ip_camera.ac_ars_camera_records_action_window"/>
+
+        <menuitem name="Region"
+                  id="live_stream_menu_country_state_region"
+                  action="ac_ars_cc_camera.menu_country_state_region_window"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  sequence="3"
+                  groups="ac_ars_cc_camera.live_stream_group_manager"/>
+
+        <menuitem id="menu_resource_resource_live_stream"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  action="action_resource_resource_live_stream_tree"
+                  sequence="4"
+                  groups="ac_ars_cc_camera.live_stream_group_manager"/>
+
+<!--        <menuitem name="Resource Calendar"-->
+<!--                  id="menu_live_stream_rms_resource_calender"-->
+<!--                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"-->
+<!--                  action="action_live_stream_rms_resource_calender"-->
+<!--                  sequence="5"-->
+<!--                  groups="ac_ars_cc_camera.live_stream_group_super"/>-->
+
+        <menuitem name="Server Configuration"
+                  id="ac_ars_live_streaming_settings"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  sequence="6"
+                  groups="base.group_no_one"
+                  action="ac_ars_live_streaming_settings_window"/>
+
+        <menuitem name="Mail Configuration"
+                  id="scheduled_mail_configuration"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_configuration"
+                  sequence="10"
+                  groups="ac_ars_cc_camera.live_stream_group_super"
+                  action="scheduled_mail_settings_window"/>
+
+        <menuitem name="Reports"
+                  id="ac_ars_live_streaming_reports_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_records"
+                  sequence="20"/>
+
+        <menuitem name="Server Status Report"
+                  id="ac_ars_live_streaming_settings"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                  sequence="1"
+                  groups="ac_ars_cc_camera.live_stream_group_super"
+                  action="ac_ars_live_streaming_settings_window"/>
+
+        <menuitem id="live_stream_report"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                  sequence="3"
+                  action="ac_ars_cc_camera.live_stream_report_window"
+                  groups="ac_ars_cc_camera.live_stream_group_super"/>
+
+        <menuitem id="region_streaming_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                  sequence="5"
+                  action="ac_ars_cc_camera.action_region_streaming_report"
+                  groups="ac_ars_cc_camera.live_stream_group_super"/>
+
+        <menuitem id="dealer_streaming_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                  sequence="7"
+                  action="ac_ars_cc_camera.action_dealer_streaming_report"
+                  groups="ac_ars_cc_camera.live_stream_group_user"/>
+
+        <menuitem id="dealer_streaming_details_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                  sequence="9"
+                  action="ac_ars_cc_camera.action_dealer_streaming_detail_report"
+                  groups="ac_ars_cc_camera.live_stream_group_user"/>
+
+        <menuitem id="analysis_streaming_menu"
+                  parent="ac_ars_cc_camera.ac_ars_live_streaming_reports_menu"
+                  sequence="5"
+                  action="ac_ars_cc_camera.action_analysis_streaming_report"
+                  groups="ac_ars_cc_camera.live_stream_group_super"/>
+
+  </data>
+</odoo>
