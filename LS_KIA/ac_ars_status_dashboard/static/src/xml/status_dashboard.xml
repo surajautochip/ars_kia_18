@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="ac_ars_status_dashboard.StatusDashboard" owl="1">
+        <div class="o_action_manager">
+            <div class="container-fluid py-4">
+                <h3 class="mb-4">Status Report</h3>
+                
+                <div class="row">
+                    <!-- ALL INDIA -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">All India</div>
+                            <div class="card-body overflow-auto" style="max-height: 400px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Dealership</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.company_count" t-as="company" t-key="company.id">
+                                            <td t-esc="company.name"/>
+                                            <td><a href="#" t-on-click="() => this.clickCompany(company.id)" class="text-decoration-underline text-primary"><t t-esc="company.count"/></a></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">All India Archievement</div>
+                            <div class="card-body">
+                                <div id="company-wise-archievement"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ZONE -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">Zone Wise Archievement</div>
+                            <div class="card-body overflow-auto" style="max-height: 400px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Zone</th>
+                                            <th>Total Dealer</th>
+                                            <th>LS Dealer</th>
+                                            <th>Non-LS Dealer</th>
+                                            <th>Archievement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.zone_count" t-as="zone" t-key="zone.zone_id">
+                                            <td t-esc="zone.zone_name"/>
+                                            <td><a href="#" t-on-click="() => this.clickZoneTotal(zone.zone_id)" class="text-decoration-underline text-primary"><t t-esc="zone.total_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickZoneStreaming(zone.zone_id, 3)" class="text-decoration-underline text-primary"><t t-esc="zone.ls_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickZoneStreaming(zone.zone_id, 4)" class="text-decoration-underline text-primary"><t t-esc="zone.nls_dealer"/></a></td>
+                                            <td><t t-esc="zone.success"/>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">Zone Wise Archievement</div>
+                            <div class="card-body">
+                                <div id="zone-wise-archievement"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AREA -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">Area Wise Archievement</div>
+                            <div class="card-body overflow-auto" style="max-height: 400px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Area</th>
+                                            <th>Total Dealer</th>
+                                            <th>LS Dealer</th>
+                                            <th>Non-LS Dealer</th>
+                                            <th>Archievement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.area_count" t-as="area" t-key="area.area_id">
+                                            <td t-esc="area.area_name"/>
+                                            <td><a href="#" t-on-click="() => this.clickAreaTotal(area.area_id)" class="text-decoration-underline text-primary"><t t-esc="area.total_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickAreaStreaming(area.area_id, 3)" class="text-decoration-underline text-primary"><t t-esc="area.ls_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickAreaStreaming(area.area_id, 4)" class="text-decoration-underline text-primary"><t t-esc="area.nls_dealer"/></a></td>
+                                            <td><t t-esc="area.success"/>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">Area Wise Archievement</div>
+                            <div class="card-body">
+                                <div id="area-wise-archievement"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STATE -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">State Wise Archievement</div>
+                            <div class="card-body overflow-auto" style="max-height: 400px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>State</th>
+                                            <th>Total Dealer</th>
+                                            <th>LS Dealer</th>
+                                            <th>Non-LS Dealer</th>
+                                            <th>Archievement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.state_count" t-as="st" t-key="st.state_id">
+                                            <td t-esc="st.state_name"/>
+                                            <td><a href="#" t-on-click="() => this.clickStateTotal(st.state_id)" class="text-decoration-underline text-primary"><t t-esc="st.total_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickStateStreaming(st.state_id, 3)" class="text-decoration-underline text-primary"><t t-esc="st.ls_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickStateStreaming(st.state_id, 4)" class="text-decoration-underline text-primary"><t t-esc="st.nls_dealer"/></a></td>
+                                            <td><t t-esc="st.success"/>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">State Wise Archievement</div>
+                            <div class="card-body">
+                                <div id="state-wise-archievement"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MANAGER -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">Manager Wise Archievement</div>
+                            <div class="card-body overflow-auto" style="max-height: 400px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Manager</th>
+                                            <th>Total Dealer</th>
+                                            <th>LS Dealer</th>
+                                            <th>Non-LS Dealer</th>
+                                            <th>Archievement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.manager_count" t-as="man" t-key="man.manager_id">
+                                            <td t-esc="man.manager_name"/>
+                                            <td><a href="#" t-on-click="() => this.clickManagerTotal(man.manager_id)" class="text-decoration-underline text-primary"><t t-esc="man.total_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickManagerStreaming(man.manager_id, 3)" class="text-decoration-underline text-primary"><t t-esc="man.ls_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickManagerStreaming(man.manager_id, 4)" class="text-decoration-underline text-primary"><t t-esc="man.nls_dealer"/></a></td>
+                                            <td><t t-esc="man.success"/>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">Manager Wise Archievement</div>
+                            <div class="card-body">
+                                <div id="manager-wise-archievement"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TPSM -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">TPSM Wise Archievement</div>
+                            <div class="card-body overflow-auto" style="max-height: 400px;">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>TPSM</th>
+                                            <th>Total Dealer</th>
+                                            <th>LS Dealer</th>
+                                            <th>Non-LS Dealer</th>
+                                            <th>Archievement</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr t-foreach="state.tpsm_count" t-as="tpsm" t-key="tpsm.tpsm_id">
+                                            <td t-esc="tpsm.tpsm_name"/>
+                                            <td><a href="#" t-on-click="() => this.clickTpsmTotal(tpsm.tpsm_id)" class="text-decoration-underline text-primary"><t t-esc="tpsm.total_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickTpsmStreaming(tpsm.tpsm_id, 3)" class="text-decoration-underline text-primary"><t t-esc="tpsm.ls_dealer"/></a></td>
+                                            <td><a href="#" t-on-click="() => this.clickTpsmStreaming(tpsm.tpsm_id, 4)" class="text-decoration-underline text-primary"><t t-esc="tpsm.nls_dealer"/></a></td>
+                                            <td><t t-esc="tpsm.success"/>%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-header bg-primary text-white">TPSM Wise Archievement</div>
+                            <div class="card-body">
+                                <div id="tpsm-wise-archievement"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

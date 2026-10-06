@@ -1,0 +1,37 @@
+<odoo>
+    <data>
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="ls_status_report_list">
+            <field name="name">LS Status Report</field>
+            <field name="model">ls.status.report</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="dealer_code"/>
+                    <field name="dealer_name"/>
+                    <field name="partner_id"/>
+                    <field name="ls_status"/>
+                    <field name="region_id"/>
+                    <field name="zone_id"/>
+                    <field name="area_id"/>
+                    <field name="state_id"/>
+                    <field name="area_manager_id"/>
+                    <field name="tpsm_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ls_status_report_action">
+            <field name="name">Live Stream Status Window</field>
+            <field name="res_model">ls.status.report</field>
+            <field name="view_mode">tree</field>
+        </record>
+
+        <menuitem id="ls_status_report_menu"
+                  parent="ars_cc_camera.live_streaming_main_records1"
+                  action="ls_status_report_action"
+                  groups="base.group_no_one"
+                  sequence="2"/>
+
+
+    </data>
+</odoo>

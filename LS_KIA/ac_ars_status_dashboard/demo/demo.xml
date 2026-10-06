@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record forcecreate="True" id="ir_cron_daily_live_stream_report_create" model="ir.cron">
+            <field name="name">Live Stream: Creating live streaming automated daily reports</field>
+            <field name="model_id" ref="model_live_stream_token"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_live_streaming_status_report()</field>
+            <field name="active" eval="True"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field eval="False" name="doall"/>
+        </record>
+    </data>
+</odoo>

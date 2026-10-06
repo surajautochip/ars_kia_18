@@ -1,0 +1,19 @@
+<odoo>
+  <data>
+        <record id="dms_landing_page" model="landing.url">
+            <field name="name">LS Dashboard</field>
+            <field name="url">web#action=live_stream_dashboard.action_live_stream_dashboard</field>
+        </record>
+
+        <!--        <record id="dms_user_token" model="ir.config_parameter">-->
+        <!--            <field name="key">dms.user.token</field>-->
+        <!--            <field name="value"></field>-->
+        <!--        </record>-->
+
+        <record id="dms_url" model="ir.config_parameter">
+            <field name="key">dms.url</field>
+            <field name="value">https://kialinkd-qa.kiaindia.net</field>
+        </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,29 @@
+<odoo>
+  <data>
+
+        <!--
+<template id="assets_backend" name="hy live-chat assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/ac-hy-dms-login-integration/static/src/less/live_chat_header.less" type="text/less"/>
+            </xpath>
+        </template>
+-->
+
+        <!--
+        <template id="assets_frontend" inherit_id="web.assets_frontend" name="hy live-chat assets frond end">
+            <xpath expr="." position="inside">
+                <link rel='stylesheet' href='/ac-hy-dms-login-integration/static/src/less/live_chat_header.less' type="text/less"/>
+            </xpath>
+        </template>
+
+        <template id="external_lib_inherit" inherit_id="im_livechat.external_lib"
+                  name="Livechat : Inherited External Librairies of the Livechat, required to make it work">
+            <xpath expr="." position="inside">
+                <link rel='stylesheet' href='/ac-hy-dms-login-integration/static/src/less/live_chat_header.less' type="text/less"/>
+            </xpath>
+        </template>
+        -->
+
+
+  </data>
+</odoo>

@@ -1,0 +1,754 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="ac_ars_live_stream_dashboard.LiveStreamDashboard" owl="1">
+        <style>
+            /* ─────────────────────────────────────────────
+               Fix Odoo action container so the dashboard
+               can scroll properly
+            ───────────────────────────────────────────── */
+            .o_action_manager,
+            .o_action,
+            .o_home_menu,
+            .o_view_controller {
+                overflow: auto !important;
+            }
+
+            /* ─────────────────────────────────────────────
+               Live Stream Dashboard — Odoo 18
+               Design matches the Hyundai LS screenshot
+            ───────────────────────────────────────────── */
+            .ls-db {
+                font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                background: #f0f4f8;
+                padding: 20px 24px 40px;
+                color: #0f172a;
+                overflow-y: auto;
+                position: relative;
+            }
+
+            /* ── Header ── */
+            .ls-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                flex-wrap: wrap;
+                gap: 12px;
+                background: #ffffff;
+                border-radius: 14px;
+                padding: 16px 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 1px 4px rgba(15,23,42,0.08);
+                animation: lsFadeIn 0.4s ease;
+            }
+            .ls-header-left { display: flex; align-items: center; gap: 14px; }
+            .ls-brand-block {
+                width: 46px; height: 46px; border-radius: 12px;
+                background: linear-gradient(135deg, #002c5f 0%, #00aad2 100%);
+                display: flex; align-items: center; justify-content: center;
+                color: #fff; font-weight: 900; font-size: 20px;
+                box-shadow: 0 4px 10px rgba(0,44,95,0.3);
+                flex-shrink: 0;
+            }
+            .ls-title {
+                font-size: 1.25rem; font-weight: 800;
+                letter-spacing: -0.4px; color: #0f172a; margin: 0;
+            }
+            .ls-dealer-badge {
+                display: inline-block; background: #eff6ff;
+                border: 1px solid #bfdbfe; color: #1d4ed8;
+                border-radius: 6px; font-size: 0.68rem; font-weight: 700;
+                padding: 2px 8px; margin-left: 8px; vertical-align: middle;
+            }
+            .ls-subtitle {
+                font-size: 0.75rem; color: #64748b; margin: 2px 0 0;
+                display: flex; align-items: center; gap: 6px;
+            }
+            .ls-dot-live {
+                width: 8px; height: 8px; border-radius: 50%;
+                background: #06b6d4; display: inline-block;
+                animation: lsPulse 1.5s infinite;
+            }
+            .ls-header-right { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+            .ls-btn {
+                display: flex; align-items: center; gap: 6px;
+                padding: 8px 16px; border-radius: 10px;
+                font-size: 0.75rem; font-weight: 700; border: 1px solid;
+                cursor: pointer; transition: all 0.15s;
+            }
+            .ls-btn-outline {
+                background: #fff; color: #475569;
+                border-color: #cbd5e1;
+            }
+            .ls-btn-outline:hover { background: #f8fafc; color: #0284c7; border-color: #93c5fd; }
+            .ls-btn-green {
+                background: #f0fdf4; color: #15803d;
+                border-color: #bbf7d0;
+            }
+            .ls-spin { animation: lsSpin 1s linear infinite; }
+
+            /* ── KPI Grid ── */
+            .ls-kpi-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+                margin-bottom: 20px;
+            }
+            @media (max-width: 1100px) { .ls-kpi-grid { grid-template-columns: repeat(2,1fr); } }
+            @media (max-width: 600px)  { .ls-kpi-grid { grid-template-columns: 1fr; } }
+
+            .ls-kpi-card {
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 12px;
+                padding: 12px 14px;
+                box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+                transition: transform 0.18s, box-shadow 0.18s;
+                cursor: default;
+                animation: lsFadeInUp 0.45s ease;
+            }
+            .ls-kpi-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(15,23,42,0.10);
+            }
+            .ls-kpi-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px; }
+            .ls-kpi-label {
+                font-size: 0.65rem; font-weight: 700;
+                text-transform: uppercase; letter-spacing: 0.07em;
+                color: #94a3b8; margin-bottom: 4px;
+            }
+            .ls-kpi-value {
+                font-size: 2.6rem; font-weight: 900;
+                letter-spacing: -1.5px; color: #0f172a; line-height: 1.1;
+                cursor: pointer; display: inline-block;
+                transition: color 0.15s;
+            }
+            .ls-kpi-value:hover { color: #0284c7; }
+            .ls-kpi-icon {
+                width: 38px; height: 38px; border-radius: 10px;
+                display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            }
+            .ls-icon-blue   { background: #eff6ff; color: #2563eb; }
+            .ls-icon-cyan   { background: #ecfeff; color: #0891b2; }
+            .ls-icon-amber  { background: #fffbeb; color: #d97706; }
+            .ls-icon-green  { background: #f0fdf4; color: #16a34a; }
+
+            .ls-kpi-divider { border: none; border-top: 1px solid #f1f5f9; margin: 8px 0; }
+
+            .ls-kpi-row {
+                display: flex; justify-content: space-between;
+                align-items: center; margin-bottom: 3px;
+                font-size: 0.70rem; font-weight: 600;
+            }
+            .ls-kpi-row-lbl { color: #64748b; }
+            .ls-kpi-row-val { color: #0f172a; font-weight: 700; }
+            .ls-chip {
+                font-size: 0.65rem; font-weight: 700;
+                padding: 2px 6px; border-radius: 5px;
+            }
+            .ls-chip-pos  { background: #f0fdf4; color: #16a34a; }
+            .ls-chip-neg  { background: #fff1f2; color: #e11d48; }
+            .ls-chip-neu  { background: #f8fafc; color: #64748b; }
+
+            /* KPI Sub-components for new layout */
+            .ls-kpi-sub-hdr { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px; }
+            .ls-kpi-sub-val { font-size: 0.85rem; font-weight: 800; color: #0f172a; }
+            .ls-kpi-prog-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; font-size: 0.65rem; font-weight: 700; color: #94a3b8; }
+            .ls-kpi-prog-lbl { color: #94a3b8; }
+            .ls-kpi-prog-val { color: #0f172a; font-weight: 800; }
+            .ls-kpi-prog-track { background: #e2e8f0; height: 6px; border-radius: 3px; margin-bottom: 8px; overflow: hidden; position: relative; }
+            .ls-kpi-prog-bar { height: 100%; border-radius: 3px; transition: width 0.5s ease-in-out; }
+            .ls-bg-teal { background: #0284c7; }
+            .ls-bg-teal-light { background: #14b8a6; }
+            .ls-bg-gray { background: #cbd5e1; }
+            .ls-bg-orange { background: #f97316; }
+            .ls-bg-green { background: #10b981; }
+            .ls-kpi-trend { height: 16px; width: 100%; margin-top: 4px; overflow: visible; opacity: 0.8; }
+
+            /* ── Two-column row ── */
+            .ls-row2 {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+                margin-bottom: 20px;
+            }
+            @media (max-width: 860px) { .ls-row2 { grid-template-columns: 1fr; } }
+
+            /* ── Section Card ── */
+            .ls-section {
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 14px;
+                padding: 20px 18px;
+                box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+                display: flex;
+                flex-direction: column;
+                gap: 14px;
+                animation: lsFadeInUp 0.5s ease;
+            }
+            .ls-section-hdr {
+                display: flex; justify-content: space-between;
+                align-items: flex-start; flex-wrap: wrap; gap: 8px;
+            }
+            .ls-section-title {
+                font-size: 0.98rem; font-weight: 800; color: #0f172a; margin: 0;
+            }
+            .ls-section-sub {
+                font-size: 0.70rem; color: #64748b; margin: 2px 0 0;
+            }
+            .ls-badge {
+                font-size: 0.65rem; font-weight: 700;
+                padding: 4px 12px; border-radius: 20px; border: 1px solid;
+                display: inline-flex; align-items: center; gap: 5px;
+            }
+            .ls-badge-cyan  { background: #ecfeff; color: #0891b2; border-color: #a5f3fc; }
+            .ls-badge-blue  { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
+
+            /* ── Camera stat row ── */
+            .ls-cam-stat-row {
+                display: grid; grid-template-columns: repeat(3,1fr);
+                text-align: center; background: #f8fafc;
+                border: 1px solid #e2e8f0; border-radius: 10px;
+                overflow: hidden;
+            }
+            .ls-cam-stat-cell { padding: 10px 6px; }
+            .ls-cam-stat-cell + .ls-cam-stat-cell { border-left: 1px solid #e2e8f0; }
+            .ls-cam-stat-lbl { font-size: 0.65rem; font-weight: 600; color: #94a3b8; margin-bottom: 3px; }
+            .ls-cam-stat-val { font-size: 1.4rem; font-weight: 900; color: #0f172a; }
+            .ls-cam-stat-online  { color: #16a34a; }
+            .ls-cam-stat-offline { color: #e11d48; }
+
+            /* ── Camera list ── */
+            .ls-cam-list { display: flex; flex-direction: column; gap: 8px; }
+            .ls-cam-item {
+                background: #fff; border: 1px solid #e2e8f0;
+                border-radius: 10px; padding: 10px 12px;
+                display: flex; justify-content: space-between; align-items: center;
+                transition: border-color 0.15s, box-shadow 0.15s;
+            }
+            .ls-cam-item:hover { border-color: #06b6d4; box-shadow: 0 2px 8px rgba(6,182,212,0.10); }
+            .ls-cam-item-lft { display: flex; align-items: center; gap: 10px; }
+            .ls-cam-dot {
+                width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+            }
+            .ls-cam-dot-on  { background: #22c55e; box-shadow: 0 0 0 3px #dcfce7; }
+            .ls-cam-dot-off { background: #f43f5e; box-shadow: 0 0 0 3px #ffe4e6; animation: lsPulse 1.5s infinite; }
+            .ls-cam-name { font-size: 0.80rem; font-weight: 700; color: #0f172a; }
+            .ls-cam-sub  { font-size: 0.65rem; color: #94a3b8; margin-top: 1px; }
+            .ls-pill {
+                font-size: 0.65rem; font-weight: 700;
+                padding: 3px 10px; border-radius: 20px; border: 1px solid;
+            }
+            .ls-pill-on  { background: #f0fdf4; color: #16a34a; border-color: #bbf7d0; }
+            .ls-pill-off { background: #fff1f2; color: #e11d48; border-color: #fecdd3; }
+
+            /* ── Utilization ── */
+            .ls-util-top {
+                display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            }
+            .ls-util-box {
+                background: #f8fafc; border: 1px solid #e2e8f0;
+                border-radius: 10px; padding: 12px 14px;
+            }
+            .ls-util-lbl { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; margin-bottom: 4px; }
+            .ls-util-val { font-size: 1.6rem; font-weight: 900; color: #0f172a; letter-spacing: -1px; }
+            .ls-util-unit { font-size: 0.78rem; font-weight: 700; color: #0284c7; margin-left: 2px; }
+            .ls-util-green { color: #16a34a; }
+
+            .ls-bay-section { display: flex; flex-direction: column; gap: 10px; }
+            .ls-bay-lbl-row {
+                font-size: 0.65rem; font-weight: 700;
+                text-transform: uppercase; letter-spacing: 0.06em; color: #475569;
+            }
+            .ls-bay-item { display: flex; flex-direction: column; gap: 4px; }
+            .ls-bay-hdr {
+                display: flex; justify-content: space-between;
+                font-size: 0.72rem; font-weight: 600;
+            }
+            .ls-bay-name { color: #0f172a; }
+            .ls-bay-pct  { color: #0284c7; font-weight: 700; }
+            .ls-progress {
+                width: 100%; background: #e2e8f0; border-radius: 6px;
+                height: 8px; overflow: hidden;
+            }
+            .ls-progress-bar {
+                height: 100%; border-radius: 6px;
+                background: linear-gradient(90deg, #002c5f 0%, #00aad2 100%);
+                transition: width 0.8s ease;
+            }
+
+            /* ── Analytics full-width ── */
+            .ls-analytics {
+                background: #fff;
+                border: 1px solid #e2e8f0;
+                border-radius: 14px;
+                padding: 20px 18px;
+                box-shadow: 0 1px 4px rgba(15,23,42,0.06);
+                margin-bottom: 20px;
+                animation: lsFadeInUp 0.55s ease;
+            }
+            .ls-analytics-hdr {
+                display: flex; justify-content: space-between;
+                align-items: flex-start; flex-wrap: wrap; gap: 8px;
+                margin-bottom: 16px;
+            }
+
+            /* ── Bar Chart ── */
+            .ls-chart-wrap {
+                background: #f8fafc; border: 1px solid #e2e8f0;
+                border-radius: 12px; padding: 24px 16px 12px;
+            }
+            .ls-chart {
+                display: flex; align-items: flex-end;
+                justify-content: space-around; height: 160px; gap: 10px;
+            }
+            .ls-bar-col {
+                display: flex; flex-direction: column;
+                align-items: center; justify-content: flex-end;
+                flex: 1; height: 100%; gap: 0;
+            }
+            .ls-bar-wrap {
+                width: 100%; max-width: 52px; display: flex;
+                flex-direction: column; align-items: center;
+                justify-content: flex-end; height: 100%; position: relative;
+            }
+            .ls-bar {
+                width: 100%; border-radius: 8px 8px 0 0;
+                background: #d1d5db; min-height: 6px;
+                transition: background 0.25s;
+                position: relative;
+            }
+            .ls-bar-col:hover .ls-bar { background: linear-gradient(180deg, #00aad2 0%, #002c5f 100%); }
+            .ls-bar-active .ls-bar { background: linear-gradient(180deg, #00aad2 0%, #002c5f 100%); }
+            .ls-bar-count-tip {
+                position: absolute; top: -22px; left: 50%;
+                transform: translateX(-50%);
+                background: #0f172a; color: #fff;
+                font-size: 0.60rem; font-weight: 700;
+                padding: 2px 6px; border-radius: 5px; white-space: nowrap;
+                opacity: 0; transition: opacity 0.15s; pointer-events: none;
+            }
+            .ls-bar-col:hover .ls-bar-count-tip { opacity: 1; }
+            .ls-bar-lbl {
+                font-size: 0.72rem; font-weight: 700;
+                color: #64748b; margin-top: 8px; text-align: center;
+            }
+            .ls-bar-active .ls-bar-lbl { color: #0f172a; font-weight: 900; }
+
+            /* ── Note ── */
+            .ls-note {
+                font-size: 0.65rem; color: #94a3b8; margin-top: 4px;
+                padding-top: 10px; border-top: 1px solid #f1f5f9;
+            }
+
+            /* ── Loading ── */
+            .ls-loading {
+                display: flex; align-items: center; justify-content: center;
+                height: 60vh; flex-direction: column; gap: 14px;
+            }
+            .ls-spinner {
+                width: 36px; height: 36px;
+                border: 4px solid #e2e8f0;
+                border-top-color: #0284c7;
+                border-radius: 50%;
+                animation: lsSpin 0.8s linear infinite;
+            }
+
+            /* ── Animations ── */
+            @keyframes lsFadeIn {
+                from { opacity: 0; transform: translateY(-10px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes lsFadeInUp {
+                from { opacity: 0; transform: translateY(14px); }
+                to   { opacity: 1; transform: translateY(0); }
+            }
+            @keyframes lsPulse {
+                0%, 100% { opacity: 1; } 50% { opacity: 0.35; }
+            }
+            @keyframes lsSpin {
+                to { transform: rotate(360deg); }
+            }
+        </style>
+
+        <!-- LOADING -->
+        <div t-if="state.loading" class="ls-db ls-loading">
+            <div class="ls-spinner"/>
+            <span style="font-size:0.82rem;color:#64748b;font-weight:600;">Loading dashboard data…</span>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div t-else="" class="ls-db">
+
+            <!-- ══════════ HEADER ══════════ -->
+            <div class="ls-header">
+                <div class="ls-header-left">
+                    <div class="ls-brand-block">H</div>
+                    <div>
+                        <h1 class="ls-title">
+                            <t t-esc="state.company"/>
+                            <t t-if="state.dealer_code">
+                                <span class="ls-dealer-badge"><t t-esc="state.dealer_code"/></span>
+                            </t>
+                        </h1>
+                        <p class="ls-subtitle">
+                            <span class="ls-dot-live"/>
+                            Live Streaming Dashboard • MTD vs LMTD Analytics
+                        </p>
+                    </div>
+                </div>
+                <div class="ls-header-right">
+                    <button class="ls-btn ls-btn-outline" t-on-click="fetchDashboardData">
+                        <svg t-attf-class="{{ state.syncing ? 'ls-spin' : '' }}" width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-top:-1px;">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        Sync Live Data
+                    </button>
+                    <span class="ls-btn ls-btn-green">
+                        <span class="ls-dot-live" style="background:#22c55e;"/>
+                        Dealer Dashboard active
+                    </span>
+                </div>
+            </div>
+
+            <!-- ══════════ KPI CARDS ══════════ -->
+            <div class="ls-kpi-grid">
+
+                <!-- Total Links Sent -->
+                <div class="ls-kpi-card" style="display:flex; flex-direction:column;">
+                    <div class="ls-kpi-top">
+                        <div>
+                            <p class="ls-kpi-label">Total Links Sent</p>
+                            <span class="ls-kpi-value" t-on-click="actionTotalLinkSent">
+                                <t t-esc="state.mtd.total"/>
+                            </span>
+                        </div>
+                        <span class="ls-kpi-icon ls-icon-blue">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <hr class="ls-kpi-divider"/>
+                    
+                    <div class="ls-kpi-sub-hdr">
+                        <span class="ls-kpi-row-lbl" style="font-size:0.75rem;">MTD (<t t-esc="state.month.substring(0,3)"/>): <span class="ls-kpi-sub-val"><t t-esc="state.mtd.total"/></span></span>
+                        <span t-attf-class="ls-chip {{ state.change.total.startsWith('+') ? 'ls-chip-pos' : state.change.total === '0%' ? 'ls-chip-neu' : 'ls-chip-neg' }}">
+                            <t t-esc="state.change.total"/> vs LMTD
+                        </span>
+                    </div>
+                    
+                    <t t-set="t1_max" t-value="(state.mtd.total > state.lmtd.total ? state.mtd.total : state.lmtd.total) || 1" />
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">MTD Current</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.mtd.total / t1_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-teal" t-attf-style="width:{{ Math.round((state.mtd.total / t1_max) * 100) }}%"/>
+                    </div>
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">LMTD (Prev month same period)</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.lmtd.total / t1_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-gray" t-attf-style="width:{{ Math.round((state.lmtd.total / t1_max) * 100) }}%"/>
+                    </div>
+                    
+                    <svg class="ls-kpi-trend" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0,8 L50,4 L100,0" fill="none" stroke="#0284c7" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.4"/>
+                        <path d="M0,9 L50,5 L100,1" fill="none" stroke="#0284c7" stroke-width="1.5"/>
+                    </svg>
+                </div>
+
+                <!-- Customer Viewed -->
+                <div class="ls-kpi-card" style="display:flex; flex-direction:column;">
+                    <div class="ls-kpi-top">
+                        <div>
+                            <p class="ls-kpi-label">Customer Viewed</p>
+                            <span class="ls-kpi-value" t-on-click="actionCustomerViewed">
+                                <t t-esc="state.mtd.viewed"/>
+                            </span>
+                        </div>
+                        <span class="ls-kpi-icon ls-icon-cyan">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <hr class="ls-kpi-divider"/>
+                    
+                    <div class="ls-kpi-sub-hdr">
+                        <span class="ls-kpi-row-lbl" style="font-size:0.75rem;">MTD (<t t-esc="state.month.substring(0,3)"/>): <span class="ls-kpi-sub-val"><t t-esc="state.mtd.viewed"/></span></span>
+                        <span t-attf-class="ls-chip {{ state.change.viewed.startsWith('+') ? 'ls-chip-pos' : state.change.viewed === '0%' ? 'ls-chip-neu' : 'ls-chip-neg' }}">
+                            <t t-esc="state.change.viewed"/> vs LMTD
+                        </span>
+                    </div>
+                    
+                    <t t-set="t2_max" t-value="(state.mtd.viewed > state.lmtd.viewed ? state.mtd.viewed : state.lmtd.viewed) || 1" />
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">MTD Current</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.mtd.viewed / t2_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-teal-light" t-attf-style="width:{{ Math.round((state.mtd.viewed / t2_max) * 100) }}%"/>
+                    </div>
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">LMTD (Prev month same period)</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.lmtd.viewed / t2_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-gray" t-attf-style="width:{{ Math.round((state.lmtd.viewed / t2_max) * 100) }}%"/>
+                    </div>
+                    
+                    <svg class="ls-kpi-trend" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0,8 L50,4 L100,0" fill="none" stroke="#14b8a6" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.4"/>
+                        <path d="M0,9 L50,5 L100,1" fill="none" stroke="#14b8a6" stroke-width="1.5"/>
+                    </svg>
+                </div>
+
+                <!-- Not Viewed -->
+                <div class="ls-kpi-card" style="display:flex; flex-direction:column;">
+                    <div class="ls-kpi-top">
+                        <div>
+                            <p class="ls-kpi-label">Not Viewed</p>
+                            <span class="ls-kpi-value" t-on-click="actionCustomerNotViewed">
+                                <t t-esc="state.mtd.not_viewed"/>
+                            </span>
+                        </div>
+                        <span class="ls-kpi-icon ls-icon-amber">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <hr class="ls-kpi-divider"/>
+                    
+                    <div class="ls-kpi-sub-hdr">
+                        <span class="ls-kpi-row-lbl" style="font-size:0.75rem;">MTD (<t t-esc="state.month.substring(0,3)"/>): <span class="ls-kpi-sub-val"><t t-esc="state.mtd.not_viewed"/></span></span>
+                        <span t-attf-class="ls-chip {{ state.change.not_viewed.startsWith('+') ? 'ls-chip-neg' : state.change.not_viewed === '0%' ? 'ls-chip-neu' : 'ls-chip-pos' }}">
+                            <t t-esc="state.change.not_viewed"/> vs LMTD
+                        </span>
+                    </div>
+                    
+                    <t t-set="t3_max" t-value="(state.mtd.not_viewed > state.lmtd.not_viewed ? state.mtd.not_viewed : state.lmtd.not_viewed) || 1" />
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">MTD Current</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.mtd.not_viewed / t3_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-orange" t-attf-style="width:{{ Math.round((state.mtd.not_viewed / t3_max) * 100) }}%"/>
+                    </div>
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">LMTD (Prev month same period)</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.lmtd.not_viewed / t3_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-gray" t-attf-style="width:{{ Math.round((state.lmtd.not_viewed / t3_max) * 100) }}%"/>
+                    </div>
+                    
+                    <svg class="ls-kpi-trend" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0,0 L50,4 L100,8" fill="none" stroke="#f97316" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.4"/>
+                        <path d="M0,1 L50,5 L100,9" fill="none" stroke="#f97316" stroke-width="1.5"/>
+                    </svg>
+                </div>
+
+                <!-- Response Rate -->
+                <div class="ls-kpi-card" style="display:flex; flex-direction:column;">
+                    <div class="ls-kpi-top">
+                        <div>
+                            <p class="ls-kpi-label">Response Rate</p>
+                            <span class="ls-kpi-value"><t t-esc="state.mtd.rate"/>%</span>
+                        </div>
+                        <span class="ls-kpi-icon ls-icon-green">
+                            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                        </span>
+                    </div>
+                    <hr class="ls-kpi-divider"/>
+                    
+                    <div class="ls-kpi-sub-hdr">
+                        <span class="ls-kpi-row-lbl" style="font-size:0.75rem;">MTD (<t t-esc="state.month.substring(0,3)"/>): <span class="ls-kpi-sub-val"><t t-esc="state.mtd.rate"/>%</span></span>
+                        <span t-attf-class="ls-chip {{ state.change.rate.startsWith('+') ? 'ls-chip-pos' : state.change.rate === '0%' ? 'ls-chip-neu' : 'ls-chip-neg' }}">
+                            <t t-esc="state.change.rate"/> vs LMTD
+                        </span>
+                    </div>
+                    
+                    <t t-set="t4_max" t-value="(state.mtd.rate > state.lmtd.rate ? state.mtd.rate : state.lmtd.rate) || 1" />
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">MTD Current</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.mtd.rate / t4_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-green" t-attf-style="width:{{ Math.round((state.mtd.rate / t4_max) * 100) }}%"/>
+                    </div>
+                    
+                    <div class="ls-kpi-prog-row">
+                        <span class="ls-kpi-prog-lbl">LMTD (Prev month same period)</span>
+                        <span class="ls-kpi-prog-val"><t t-esc="Math.round((state.lmtd.rate / t4_max) * 100)"/>%</span>
+                    </div>
+                    <div class="ls-kpi-prog-track">
+                        <div class="ls-kpi-prog-bar ls-bg-gray" t-attf-style="width:{{ Math.round((state.lmtd.rate / t4_max) * 100) }}%"/>
+                    </div>
+                    
+                    <svg class="ls-kpi-trend" viewBox="0 0 100 10" preserveAspectRatio="none">
+                        <path d="M0,8 L50,4 L100,0" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="2 2" opacity="0.4"/>
+                        <path d="M0,9 L50,5 L100,1" fill="none" stroke="#10b981" stroke-width="1.5"/>
+                    </svg>
+                </div>
+
+            </div><!-- /kpi-grid -->
+
+            <!-- ══════════ TWO-COLUMN: Camera Status + Utilization Analysis ══════════ -->
+            <div class="ls-row2">
+
+                <!-- LEFT: Camera Status -->
+                <div class="ls-section">
+                    <div class="ls-section-hdr">
+                        <div>
+                            <h2 class="ls-section-title">Camera Status</h2>
+                            <p class="ls-section-sub">Real-time bay monitoring feed (Click to stream)</p>
+                        </div>
+                        <span class="ls-badge ls-badge-cyan">
+                            <span class="ls-dot-live"/>
+                            Live Monitoring
+                        </span>
+                    </div>
+
+                    <!-- Stats row -->
+                    <div class="ls-cam-stat-row">
+                        <div class="ls-cam-stat-cell">
+                            <div class="ls-cam-stat-lbl">Total Cameras</div>
+                            <div class="ls-cam-stat-val"><t t-esc="state.cameras.total"/></div>
+                        </div>
+                        <div class="ls-cam-stat-cell">
+                            <div class="ls-cam-stat-lbl">Online</div>
+                            <div class="ls-cam-stat-val ls-cam-stat-online"><t t-esc="state.cameras.online"/></div>
+                        </div>
+                        <div class="ls-cam-stat-cell">
+                            <div class="ls-cam-stat-lbl">Offline</div>
+                            <div class="ls-cam-stat-val ls-cam-stat-offline"><t t-esc="state.cameras.offline"/></div>
+                        </div>
+                    </div>
+
+                    <!-- Camera list -->
+                    <div class="ls-cam-list">
+                        <t t-if="state.cameras.list.length === 0">
+                            <div style="text-align:center;padding:16px;color:#94a3b8;font-size:0.78rem;">
+                                No cameras configured for this company.
+                            </div>
+                        </t>
+                        <t t-foreach="state.cameras.list" t-as="cam" t-key="cam.name">
+                            <div class="ls-cam-item">
+                                <div class="ls-cam-item-lft">
+                                    <span t-attf-class="ls-cam-dot {{ cam.status === 'online' ? 'ls-cam-dot-on' : 'ls-cam-dot-off' }}"/>
+                                    <div>
+                                        <div class="ls-cam-name"><t t-esc="cam.name"/></div>
+                                        <div class="ls-cam-sub">
+                                            Click to view stream
+                                        </div>
+                                    </div>
+                                </div>
+                                <span t-attf-class="ls-pill {{ cam.status === 'online' ? 'ls-pill-on' : 'ls-pill-off' }}">
+                                    <i class="fa fa-refresh" style="margin-right:4px; cursor:pointer;" t-on-click="() => this.refreshCamera(cam.id)"></i>
+                                    <t t-esc="cam.status === 'online' ? 'Online' : 'Offline'"/>
+                                </span>
+                            </div>
+                        </t>
+                    </div>
+
+                    <p class="ls-note">Illustrative camera records. Actual status comes from the camera/API integration.</p>
+                </div>
+
+                <!-- RIGHT: Utilization Analysis -->
+                <div class="ls-section">
+                    <div class="ls-section-hdr">
+                        <div>
+                            <h2 class="ls-section-title">Utilization Analysis</h2>
+                            <p class="ls-section-sub">Efficiency &amp; Stream hours</p>
+                        </div>
+                        <span class="ls-badge ls-badge-blue">Analytics Active</span>
+                    </div>
+
+                    <!-- Stream hours + utilization % -->
+                    <div class="ls-util-top">
+                        <div class="ls-util-box">
+                            <div class="ls-util-lbl">Total Stream Hours</div>
+                            <div class="ls-util-val"><t t-esc="state.utilization.stream_hours"/><span class="ls-util-unit">hrs</span></div>
+                        </div>
+                        <div class="ls-util-box">
+                            <div class="ls-util-lbl">Camera Utilization</div>
+                            <div class="ls-util-val ls-util-green"><t t-esc="state.utilization.cam_utilization_pct"/>%</div>
+                        </div>
+                    </div>
+
+                    <!-- Bay usage -->
+                    <div class="ls-bay-section">
+                        <p class="ls-bay-lbl-row">Camera Usage by Bay</p>
+
+                        <t t-if="state.utilization.bay_list.length === 0">
+                            <div style="text-align:center;padding:16px;color:#94a3b8;font-size:0.78rem;">
+                                No bay usage data available for this month.
+                            </div>
+                        </t>
+                        <t t-foreach="state.utilization.bay_list" t-as="bay" t-key="bay.name">
+                            <div class="ls-cam-item" style="flex-direction:column;align-items:stretch;gap:6px;">
+                                <div class="ls-bay-hdr">
+                                    <span class="ls-bay-name"><t t-esc="bay.name"/></span>
+                                    <span class="ls-bay-pct"><t t-esc="bay.pct"/>%</span>
+                                </div>
+                                <div class="ls-progress">
+                                    <div class="ls-progress-bar" t-attf-style="width:{{ bay.pct }}%"/>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <p class="ls-note">Illustrative values for layout demonstration.</p>
+                </div>
+
+            </div><!-- /ls-row2 -->
+
+            <!-- ══════════ ANALYTICS — FULL WIDTH BAR CHART ══════════ -->
+            <div class="ls-analytics">
+                <div class="ls-analytics-hdr">
+                    <div>
+                        <h2 class="ls-section-title">Analytics — Last 6 Months</h2>
+                        <p class="ls-section-sub">Total Link Generated Performance &amp; Customer Response Trend</p>
+                    </div>
+                    <span class="ls-badge ls-badge-cyan">Monthly Trend</span>
+                </div>
+
+                <div class="ls-chart-wrap">
+                    <div class="ls-chart">
+                        <t t-foreach="state.bar_months" t-as="bm" t-key="bm.label">
+                            <div t-attf-class="ls-bar-col {{ bm_index === state.bar_months.length - 1 ? 'ls-bar-active' : '' }}">
+                                <div class="ls-bar-wrap">
+                                    <div class="ls-bar" t-att-style="getBarHeightStyle(bm.count)">
+                                        <span class="ls-bar-count-tip"><t t-esc="bm.count"/></span>
+                                    </div>
+                                </div>
+                                <span class="ls-bar-lbl"><t t-esc="bm.label"/></span>
+                            </div>
+                        </t>
+                        <t t-if="state.bar_months.length === 0">
+                            <div style="flex:1;display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:0.78rem;">
+                                No data available
+                            </div>
+                        </t>
+                    </div>
+                </div>
+
+                <p class="ls-note">Link generation and customer response trends retained from the existing dashboard.</p>
+            </div>
+
+        </div><!-- /ls-db -->
+    </t>
+</templates>

@@ -1,0 +1,601 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="ac_ars_cc_camera.BayPlanner">
+        <style>
+            @keyframes fade-in-up {
+                0% { opacity: 0; transform: translateY(10px); }
+                100% { opacity: 1; transform: translateY(0); }
+            }
+            
+            /* Custom Scrollbar Styling */
+            .bay-planner-container ::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+            .bay-planner-container ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            .bay-planner-container ::-webkit-scrollbar-thumb {
+                background: #cbd5e1; /* slate-300 */
+                border-radius: 9999px;
+            }
+            .bay-planner-container ::-webkit-scrollbar-thumb:hover,
+            .bay-planner-container ::-webkit-scrollbar-thumb:active {
+                background: #EA0029; /* kia-red */
+            }
+        </style>
+        <div class="o_bay_planner bay-planner-container flex flex-col bg-slate-50 h-full w-full overflow-hidden text-slate-900 font-sans">
+
+            <!-- Planner Subheader Controls -->
+            <section
+                    class="bg-white border-b border-slate-200 px-6 py-2 flex flex-wrap items-center justify-between gap-4 shrink-0 shadow-sm relative z-20">
+                <div class="flex items-center gap-4">
+                    <!-- Bay Filter Dropdown: appearance-none inline to prevent double arrow -->
+                    <div class="relative" style="display: inline-block;">
+                        <select id="planner-filter" t-on-change="(ev) => this.applyPlannerFilter(ev.target.value)"
+                                style="-webkit-appearance: none; -moz-appearance: none; appearance: none; min-width: 220px; font-size: 11px; background: #f8fafc; border: 1px solid #e2e8f0; color: #334155; font-weight: 600; border-radius: 8px; padding: 6px 28px 6px 12px; cursor: pointer; outline: none;">
+                            <t t-if="state.planners.length === 0">
+                                <option value="">No Planner Found</option>
+                            </t>
+                            <t t-foreach="state.planners" t-as="planner" t-key="planner.id">
+                                <option t-att-value="planner.id"
+                                        t-att-selected="state.activePlannerId === planner.id ? 'selected' : null">
+                                    ⚡ <t t-esc="planner.name"/>
+                                </option>
+                            </t>
+                        </select>
+                        <!-- Single custom chevron -->
+                        <div style="pointer-events: none; position: absolute; top: 50%; right: 8px; transform: translateY(-50%); color: #94a3b8;">
+                            <i class="fa fa-chevron-down" style="font-size: 9px;"></i>
+                        </div>
+                    </div>
+
+                    <!-- Date Navigation: plain icon buttons like reference (no box border) -->
+                    <div class="flex items-center" style="gap: 2px;">
+                        <button style="background: none; border: none; padding: 4px 6px; cursor: pointer; color: #94a3b8; font-size: 11px; line-height: 1; border-radius: 4px;"
+                                onmouseover="this.style.color='#334155'" onmouseout="this.style.color='#94a3b8'"
+                                t-on-click="() => this.shiftDate(-1)">
+                            <i class="fa fa-chevron-left" style="font-size: 10px;"></i>
+                        </button>
+                        <button style="background: white; border: 1px solid #e2e8f0; padding: 4px 12px; cursor: pointer; color: #334155; font-size: 11px; font-weight: 700; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                                t-on-click="resetToday">Today</button>
+                        <button style="background: none; border: none; padding: 4px 6px; cursor: pointer; color: #94a3b8; font-size: 11px; line-height: 1; border-radius: 4px;"
+                                onmouseover="this.style.color='#334155'" onmouseout="this.style.color='#94a3b8'"
+                                t-on-click="() => this.shiftDate(1)">
+                            <i class="fa fa-chevron-right" style="font-size: 10px;"></i>
+                        </button>
+                    </div>
+
+                    <!-- Current Date Display -->
+                    <div class="flex items-center gap-2" style="font-size: 13px; font-weight: 800; color: #1e293b;">
+                        <i class="fa fa-calendar" style="color: #EA0029; font-size: 14px;"></i>
+                        <span id="date-header-text"><t t-esc="this.formattedDate" /></span>
+                    </div>
+
+                    <!-- Global Live Counter (Moved from Header) -->
+                    <div class="flex items-center gap-2 border border-red-200 px-4 py-1.5 rounded-full text-red-600 font-bold bg-red-50 text-xs shadow-sm ml-45 cursor-pointer hover:bg-red-100 transition-colors"
+                         t-on-click="openLiveStreamsList">
+                        <span class="rounded-full bg-red-500 pulse-live w-2.5 h-2.5"></span>
+                        <span class="tracking-wide"><t t-esc="this.liveStreamsCount" />
+                            STREAM<t t-if="this.liveStreamsCount !== 1">S</t> BROADCASTING</span>
+                    </div>
+                </div>
+
+                <!-- View Segment Controls: modern pill shape like reference screenshot 2 -->
+                <div class="flex items-center" style="gap: 0;">
+    <div style="display: flex; align-items: center; background-color: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; padding: 4px; gap: 4px;">
+        <button class="border-0 shadow-none m-0"
+                t-att-style="state.viewMode === 'day' ? 'background-color: #ffffff !important; color: #0f172a !important; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;border-radius: 5px;' : 'background-color: transparent !important; color: #64748b !important; font-weight: 600; box-shadow: none !important;'"
+                style="font-size: 11px; padding: 5px 14px; border: 0px solid transparent !important; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; outline: none !important; -webkit-appearance: none;"
+                onmouseover="if(this.style.backgroundColor === 'transparent') this.style.color='#0f172a'"
+                onmouseout="if(this.style.backgroundColor === 'transparent') this.style.color='#64748b'"
+                t-on-click="() => this.setViewMode('day')">Day</button>
+
+        <button class="border-0 shadow-none m-0"
+                t-att-style="state.viewMode === '3days' ? 'background-color: #ffffff !important; color: #0f172a !important; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;border-radius: 5px;' : 'background-color: transparent !important; color: #64748b !important; font-weight: 600; box-shadow: none !important;'"
+                style="font-size: 11px; padding: 5px 14px; border: 0px solid transparent !important; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; outline: none !important; -webkit-appearance: none;"
+                onmouseover="if(this.style.backgroundColor === 'transparent') this.style.color='#0f172a'"
+                onmouseout="if(this.style.backgroundColor === 'transparent') this.style.color='#64748b'"
+                t-on-click="() => this.setViewMode('3days')">3 Days</button>
+
+        <button class="border-0 shadow-none m-0"
+                t-att-style="state.viewMode === 'week' ? 'background-color: #ffffff !important; color: #0f172a !important; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;border-radius: 5px;' : 'background-color: transparent !important; color: #64748b !important; font-weight: 600; box-shadow: none !important;'"
+                style="font-size: 11px; padding: 5px 14px; border: 0px solid transparent !important; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; outline: none !important; -webkit-appearance: none;"
+                onmouseover="if(this.style.backgroundColor === 'transparent') this.style.color='#0f172a'"
+                onmouseout="if(this.style.backgroundColor === 'transparent') this.style.color='#64748b'"
+                t-on-click="() => this.setViewMode('week')">Week</button>
+
+        <button class="border-0 shadow-none m-0"
+                t-att-style="state.viewMode === 'month' ? 'background-color: #ffffff !important; color: #0f172a !important; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;border-radius: 5px;' : 'background-color: transparent !important; color: #64748b !important; font-weight: 600; box-shadow: none !important;'"
+                style="font-size: 11px; padding: 5px 14px; border: 0px solid transparent !important; border-radius: 6px; cursor: pointer; transition: all 0.2s ease; outline: none !important; -webkit-appearance: none;"
+                onmouseover="if(this.style.backgroundColor === 'transparent') this.style.color='#0f172a'"
+                onmouseout="if(this.style.backgroundColor === 'transparent') this.style.color='#64748b'"
+                t-on-click="() => this.setViewMode('month')">Month</button>
+    </div>
+</div>
+            </section>
+
+            <!-- Main Planner Content -->
+            <div class="flex flex-1 overflow-hidden bg-slate-50 relative">
+
+                <!-- Sidebar: Upcoming / Backlog Queue -->
+                <!-- Left Sidebar: Unassigned Vehicle Queue -->
+                <aside class="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0 z-10 shadow-sm">
+                    <div class="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-wider">Unassigned Queue</h3>
+                            <span class="bg-kia-red text-white font-extrabold text-[11px] px-2 py-0.5 rounded-full shadow-xs"
+                                  id="unassigned-badge"><t t-esc="state.queueList.length" /></span>
+                        </div>
+                        <span class="text-[10px] font-semibold text-slate-500 bg-slate-200/60 px-2 py-0.5 rounded flex items-center gap-1">
+                            <i class="fa fa-hand-pointer"></i>
+                            Drag to Bay
+                            <i class="fa fa-arrow-right" style="font-size: 8px;"></i>
+                        </span>
+                    </div>
+
+                    <!-- Queue Search -->
+                    <div class="p-3 border-b border-slate-200 bg-white">
+                        <div class="relative">
+                            <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="vehicle-search" placeholder="Search REG, EV, model or service..."
+                                   class="w-full bg-slate-50 border border-slate-300 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-kia-red focus:bg-white transition-all"/>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Vehicle List -->
+                    <div class="p-3 overflow-y-auto flex-grow space-y-3 bg-slate-50/50" id="vehicle-queue-list">
+                        <t t-if="state.queueList.length === 0">
+                            <div class="text-center text-slate-400 py-8 px-4 border border-dashed border-slate-300 rounded-xl bg-white">
+                                <i class="fa fa-check-circle text-2xl mb-2 text-emerald-500"></i>
+                                <p class="text-xs font-bold text-slate-700">Queue Clear</p>
+                                <p class="text-[10px]">All incoming vehicles allocated</p>
+                            </div>
+                        </t>
+                        <t t-foreach="state.queueList" t-as="item" t-key="item.id">
+                            <div class="light-card rounded-xl p-3 vehicle-card cursor-grab active:cursor-grabbing border border-slate-200 relative overflow-hidden group bg-white"
+                                 draggable="true"
+                                 t-on-dragstart="(ev) => this.onDragStartQueue(ev, item)">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="font-extrabold text-xs text-slate-900 tracking-wider flex items-center gap-1.5">
+                                        <t t-if="item.isEV"><i class="fa fa-bolt text-sky-600 text-[10px]" title="EV Vehicle"></i></t>
+                                        <t t-esc="item.reg"/>
+                                    </span>
+                                    <span t-att-class="'text-[9px] font-bold px-2 py-0.5 rounded border ' + (item.priority === 'URGENT' ? 'bg-rose-50 text-rose-700 border-rose-200' : (item.priority === 'HIGH' ? 'bg-amber-50 text-amber-700 border-amber-200' : 'bg-slate-100 text-slate-600 border-slate-200'))">
+                                        <t t-esc="item.priority"/>
+                                    </span>
+                                </div>
+                                <div class="text-xs font-semibold text-slate-700 mb-2"><t t-esc="item.model" /></div>
+                                <div class="flex items-center justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-100">
+                                    <span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold"><t t-esc="item.service || 'Standard Service'" /></span>
+                                    <button class="text-kia-red hover:text-kia-redHover font-bold transition-colors"
+                                            style="background:none; border:none; cursor:pointer; font-size:10px; display:flex; align-items:center; gap:3px;"
+                                            t-on-click="() => this.openAssignModal(item)">
+                                        Assign <i class="fa fa-arrow-right" style="font-size:9px;"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- Queue Footer Info -->
+                    <div class="p-3 border-t border-slate-200 bg-white text-[11px] text-slate-500 flex items-center justify-between font-medium">
+                        <span><i class="fa fa-info-circle text-sky-600" style="margin-right:3px;"></i>
+                            Auto-Sync: Active</span>
+                        <span class="font-mono text-emerald-600 font-bold">DMS ONLINE</span>
+                    </div>
+                </aside>
+
+                <!-- Timeline / Month Area -->
+                <main class="flex-1 flex flex-col overflow-hidden bg-white">
+                    <t t-if="state.viewMode === 'day' or state.viewMode === '3days'">
+                        <!-- Timeline Header (Dynamic Columns) -->
+                        <div class="flex border-b border-slate-200 bg-slate-50 sticky top-0 z-10 shrink-0 shadow-sm">
+                            <!-- Bay Info Header -->
+                            <div class="border-r border-slate-200 flex items-center justify-between px-3 font-extrabold text-slate-700 text-[10px] tracking-widest uppercase relative z-20"
+                                 style="width: 220px; min-width: 220px; background: #f8fafc;">
+                                <div class="flex items-center gap-2">
+                                    <i class="fa fa-warehouse text-indigo-400 text-sm"></i>
+                                    BAY / FACILITY
+                                </div>
+                                <i class="fa fa-camera text-slate-400" style="font-size: 11px;"></i>
+                            </div>
+
+                            <!-- Time Columns Header -->
+                            <div class="flex overflow-hidden flex-1 relative" t-ref="headerScroll">
+                                <!-- Current Time Indicator Line (Header part) -->
+                                <div class="absolute top-0 bottom-0 pointer-events-none z-30" t-attf-style="width: 2px; background-color: #ef4444; {{ this.nowIndicatorStyle }}">
+                                    <div class="absolute -top-1.5 left-1/2 -translate-x-1/2 text-white text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap z-50 shadow-[0_2px_4px_rgba(0,0,0,0.1)]" style="background-color: #ef4444;">
+                                        <t t-esc="this.currentTimeStr"/>
+                                        <div class="absolute -bottom-[4px] left-1/2 -translate-x-1/2 border-l-[4px] border-l-transparent border-r-[4px] border-r-transparent border-t-[4px]" style="border-top-color: #ef4444;"></div>
+                                    </div>
+                                    <div class="absolute inset-y-0 inset-x-0 shadow-[0_0_10px_rgba(239,68,68,0.3)]" style="background-color: #ef4444;"></div>
+                                </div>
+
+                                <t t-foreach="this.timeColumns" t-as="col" t-key="col_index">
+                                    <div class="border-r border-slate-200 flex flex-col items-center justify-center bg-white relative"
+                                         style="width: 120px; min-width: 120px; height: 36px;">
+                                        <span class="text-xs font-bold text-slate-600"><t t-esc="col.label" /></span>
+                                        <span class="text-[9px] text-slate-400" t-if="col.subLabel"><t t-esc="col.subLabel" /></span>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                        <div class="flex-1 overflow-auto" t-ref="gridScroll" t-on-scroll="syncScroll">
+                            <div class="flex flex-col min-w-max pb-16">
+                                <div class="relative flex flex-col">
+                                    <!-- Global Grid Time Indicator -->
+                                    <div class="absolute top-0 bottom-0 pointer-events-none z-50 shadow-[0_0_10px_rgba(239,68,68,0.3)]"
+                                         t-attf-style="width: 2px; background-color: #ef4444; margin-left: 220px; {{ this.nowIndicatorStyle }}"></div>
+
+                                    <t t-foreach="filteredBays" t-as="bay" t-key="bay.id">
+                                        <div class="flex border-b border-slate-100 hover:bg-slate-50/50 transition-colors group relative"
+                                             style="height: 120px;">
+                                    <!-- Bay Label Sticky Sidebar -->
+                                        <div class="border-r border-slate-200 flex flex-col justify-center gap-3 sticky left-0 shadow-md z-40"
+                                             style="width: 220px; min-width: 220px; padding: 12px 16px; background: #f8fafc; position: sticky; left: 0; z-index: 40;">
+                                            <div>
+                                                <div class="flex items-center justify-between mb-0.5">
+                                                    <h6 class="font-extrabold text-slate-900 m-0 text-[11px] tracking-wide"><t t-esc="bay.name" /></h6>
+                                                    <t t-if="isBayLive(bay.id)">
+                                                        <span class="relative flex w-2 h-2">
+                                                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-kia-red opacity-75"></span>
+                                                            <span class="relative inline-flex rounded-full w-2 h-2 bg-kia-red"></span>
+                                                        </span>
+                                                    </t>
+                                                </div>
+                                                <div class="text-slate-500 font-semibold text-[9px] uppercase tracking-wider truncate"><t t-esc="bay.spec" /></div>
+                                            </div>
+                                            <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+                                                <span style="color:#475569; font-weight:600; font-size:10px; display:flex; align-items:center; gap:5px;">
+                                                    <i class="fa fa-user" style="color:#94a3b8; font-size:9px;"></i>
+                                                    <t t-esc="bay.tech"/>
+                                                </span>
+                                                <span class="bay-status-badge"
+                                                      t-att-style="'font-size:8px !important; font-weight:900; letter-spacing:0.1em; padding:1px 5px; border-radius:3px; text-transform:uppercase; display:inline-block; line-height:1.2; ' + (isBayLive(bay.id) ? 'background:#fef2f2; color:#EA0029; border:1px solid #fecaca;' : 'background:#f1f5f9; color:#94a3b8; border:1px solid #e2e8f0;')">
+                                                    <t t-esc="isBayLive(bay.id) ? 'LIVE' : 'IDLE'"/>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Grid Slots (Drop Targets) -->
+                                        <div class="flex relative flex-1"
+                                             style="height: 100%; overflow: hidden; background: rgba(248,250,252,0.3);">
+
+                                            <t t-foreach="this.timeColumns" t-as="col" t-key="col_index">
+                                                <!-- The slot itself handles drop events -->
+                                                <div class="border-r border-slate-200 h-full transition-colors hover:bg-kia-red/5 relative group/slot"
+                                                     style="width: 120px; min-width: 120px;"
+                                                     t-on-dragover.prevent=""
+                                                     t-on-drop="(ev) => this.onDropGrid(ev, bay.id, col_index)">
+                                                    <div class="absolute inset-0 border-2 border-transparent group-hover/slot:border-kia-red/30 border-dashed m-1 rounded pointer-events-none transition-all"></div>
+                                                </div>
+                                            </t>
+
+                                            <!-- Render Allocated Booking Cards -->
+                                            <t t-foreach="getAllocatedSlotsForBay(bay.id)" t-as="slot" t-key="slot.id">
+                                                <div t-att-class="'absolute rounded-xl flex flex-col justify-between z-10 transition-all cursor-grab active:cursor-grabbing hover:z-30 overflow-hidden ' + (slot.status === 'live' || slot.status === 'hold' ? 'bg-red-50 border-2 border-kia-red shadow-lg backdrop-blur-sm' : (slot.status === 'done' ? 'bg-emerald-50 border-2 border-emerald-500 shadow-sm' : 'bg-white border border-slate-200 shadow hover:shadow-lg hover:border-slate-300'))"
+                                                     t-att-style="'top: 12px; bottom: 12px; left: ' + (slot.startColumnIndex * 120 + 4) + 'px; width: ' + (slot.durationColumns * 120 - 8) + 'px; padding: 8px 10px;'"
+                                                     draggable="true"
+                                                     t-on-dragstart="(ev) => this.onDragStartGrid(ev, slot.id, bay.id)"
+                                                     t-on-click.stop="() => slot.status !== 'live' and this.openAllocationModal(bay.id, slot.startColumnIndex, slot)">
+                                                    
+                                                    <t t-if="slot.status === 'live'">
+                                                        <div class="scanline-effect absolute inset-0 pointer-events-none opacity-20"></div>
+                                                    </t>
+
+                                                    <div class="border-b border-slate-100 pb-1.5 mb-1.5 relative z-10 w-full overflow-hidden">
+                                                        <div class="flex items-center justify-between mb-0.5">
+                                                            <span t-att-class="'font-extrabold flex items-center gap-1.5 truncate text-[12px] tracking-wide ' + (slot.status === 'live' ? 'text-kia-black' : 'text-slate-800')">
+                                                                <t t-if="slot.isEV"><i class="fa fa-bolt text-sky-500 text-[11px] shrink-0"></i></t>
+                                                                <span class="truncate"><t t-esc="slot.reg" /></span>
+                                                            </span>
+                                                            <div class="flex items-center gap-1 shrink-0 pl-1">
+                                                                <t t-if="slot.status === 'live'">
+                                                                    <span class="bg-kia-red text-white rounded px-1 py-0.5 font-black tracking-widest uppercase pulse-live shadow-sm"
+                                                                          style="font-size: 7px;">LIVE</span>
+                                                                </t>
+                                                                <button class="text-slate-400 hover:text-kia-red bg-transparent border-0 p-0 ml-1 cursor-pointer transition-colors shrink-0"
+                                                                        t-on-click.stop="() => this.removeAllocation(slot.id)">
+                                                                    <i class="fa fa-times text-[12px]"></i>
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                        <div t-att-class="'truncate ' + (slot.status === 'live' ? 'text-slate-700' : 'text-slate-500')"
+                                                             style="font-size:10px; font-weight:600;"><t t-esc="slot.model" /></div>
+                                                    </div>
+
+                                                    <div t-att-class="'flex items-center mt-auto relative z-10 w-full overflow-hidden ' + (!slot.durationHours or slot.durationHours &gt; 0.5 ? 'justify-between' : 'justify-start gap-1.5')">
+                                                        <t t-if="slot.status === 'live' or slot.status === 'hold'">
+                                                            <div class="flex items-center gap-1.5">
+                                                                <t t-if="slot.status === 'live'">
+                                                                    <button class="bg-kia-red hover:bg-red-800 text-white rounded px-2.5 py-1 font-bold border border-transparent cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
+                                                                            t-on-click.stop="() => this.toggleStreamStatus(slot.id, 'hold')">
+                                                                        <i class="fa fa-pause text-[8px] shrink-0"></i>
+                                                                        <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Pause</span></t>
+                                                                    </button>
+                                                                </t>
+                                                                <t t-if="slot.status === 'hold'">
+                                                                    <button class="bg-emerald-600 hover:bg-emerald-700 text-white rounded px-2.5 py-1 font-bold border border-transparent cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
+                                                                            t-on-click.stop="() => this.toggleStreamStatus(slot.id, 'resume')">
+                                                                        <i class="fa fa-play text-[8px] shrink-0"></i>
+                                                                        <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Resume</span></t>
+                                                                    </button>
+                                                                </t>
+                                                                <button class="bg-kia-black hover:bg-slate-800 text-white rounded px-2.5 py-1 font-bold border border-transparent cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
+                                                                        t-on-click.stop="() => this.toggleStreamStatus(slot.id, 'done')">
+                                                                    <i class="fa fa-stop text-[8px] text-kia-red shrink-0"></i>
+                                                                    <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Stop</span></t>
+                                                                </button>
+                                                            </div>
+                                                            <button class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded px-2.5 py-1 font-bold cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
+                                                                    t-on-click.stop="() => this.openFeed(slot.bayId)">
+                                                                <i class="fa fa-video-camera text-kia-red shrink-0"></i>
+                                                                <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Feed</span></t>
+                                                            </button>
+                                                        </t>
+                                                        <t t-elif="slot.status === 'done'">
+                                                            <div class="text-emerald-700 font-bold text-[9px] flex items-center gap-1 justify-center w-full bg-emerald-100/50 rounded py-1">
+                                                                <i class="fa fa-check-circle"></i>
+                                                                <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Completed</span></t>
+                                                            </div>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <button class="bg-emerald-600 hover:bg-emerald-700 text-white rounded px-2.5 py-1 font-bold border-0 cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
+                                                                    t-on-click.stop="() => this.toggleStreamStatus(slot.id, 'live')">
+                                                                <i class="fa fa-play text-[8px] shrink-0"></i>
+                                                                <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Broadcast</span></t>
+                                                            </button>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-elif="state.viewMode === 'week'">
+                        <!-- Week Time-Grid View -->
+                        <div class="flex-1 flex flex-col overflow-hidden bg-slate-100">
+                            <!-- Week Range Header -->
+                            <div class="bg-white py-3 text-center text-lg font-extrabold text-slate-800 border-b border-slate-200 shadow-sm shrink-0 flex items-center justify-center gap-2">
+                                <t t-esc="currentWeekRange"/>
+                            </div>
+
+                            <!-- Scrollable Area for both Header and Body -->
+                            <div class="flex-1 overflow-y-auto bg-white relative">
+                                <div style="display: grid; grid-template-columns: 60px repeat(7, minmax(0, 1fr));">
+                                    
+                                    <!-- Sticky Header Row -->
+                                    <div class="border-r border-b border-slate-300 bg-[#f8fafc] sticky top-0 z-20 shadow-sm"></div>
+                                    <t t-foreach="weekDays" t-as="wday" t-key="wday_index">
+                                        <div t-att-class="'text-center py-2 border-r border-b border-slate-300 sticky top-0 z-20 shadow-sm ' + (wday.isToday ? 'bg-red-50' : 'bg-white')">
+                                            <div t-att-class="'text-[10px] font-extrabold uppercase tracking-wider ' + (wday.isToday ? 'text-kia-red' : 'text-slate-500')"><t t-esc="wday.label"/></div>
+                                            <div t-att-class="'text-[13px] font-black ' + (wday.isToday ? 'text-kia-red' : 'text-slate-800')"><t t-esc="wday.dateLabel"/></div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Body Rows -->
+                                    <t t-foreach="weekTimeSlots" t-as="ts" t-key="ts.hour">
+                                        <!-- Time Label -->
+                                        <div class="border-r border-b border-slate-100 bg-slate-50 text-right pr-2 text-[10px] text-slate-400 font-medium sticky left-0 z-10"
+                                             style="height:48px; line-height:48px;">
+                                            <t t-esc="ts.label"/>
+                                        </div>
+
+                                        <!-- 7 Day Cells for this hour -->
+                                        <t t-foreach="weekDays" t-as="wday" t-key="wday_index">
+                                            <div t-att-class="'border-r border-b border-slate-100 relative hover:bg-blue-50/30 transition-colors ' + (wday.isToday ? 'bg-kia-red/5' : '')"
+                                                 style="height:48px;"
+                                                 t-on-dragover.prevent=""
+                                                 t-on-drop="(ev) => this.onDropGrid(ev, this.state.bays[0] ? this.state.bays[0].id : 0, wday_index * 11 + (ts.hour - 8))">
+                                                
+                                                <!-- Render slots that start in this hour -->
+                                                <t t-foreach="getWeekSlotsForDayAndHour(wday_index, ts.hour)"
+                                                   t-as="slot" t-key="slot.id">
+                                                    <div t-att-class="'absolute left-0.5 right-0.5 rounded px-1.5 py-1 z-30 border text-[10px] cursor-pointer overflow-hidden shadow-sm ' + (slot.status === 'live' ? 'bg-red-50 border-kia-red text-red-900' : (slot.status === 'done' ? 'bg-emerald-50 border-emerald-500 text-emerald-900' : 'bg-indigo-50 border-indigo-200 text-indigo-900'))"
+                                                         t-attf-style="top: {{slot.styleTop}}; height: {{slot.styleHeight}};"
+                                                         t-on-click.stop="() => slot.status !== 'live' and this.openAllocationModal(this.state.bays[0] ? this.state.bays[0].id : 0, wday_index * 11 + (ts.hour - 8), slot)">
+                                                        <div class="font-extrabold truncate flex items-center gap-1">
+                                                            <t t-if="slot.status === 'live'"><span class="w-1.5 h-1.5 bg-kia-red rounded-full inline-block animate-pulse shrink-0"></span></t>
+                                                            <t t-esc="slot.reg"/>
+                                                        </div>
+                                                        <div class="truncate text-[9px] opacity-70"><t t-esc="slot.model"/></div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </t>
+                                    </t>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <!-- New Classic Month View Area -->
+                        <div class="flex-1 flex flex-col overflow-hidden bg-slate-100">
+                            <!-- Month/Year Header -->
+                            <div class="bg-white py-3 text-center text-lg font-extrabold text-slate-800 border-b border-slate-200 shadow-sm shrink-0 flex items-center justify-center gap-2">
+                                <i class="fa fa-calendar-alt text-kia-red"></i>
+                                <t t-esc="currentMonthYear"/>
+                            </div>
+                            <!-- Days of Week Header -->
+                            <div class="border-b border-slate-300 bg-white shadow-sm shrink-0"
+                                 style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr));">
+                                <t t-foreach="['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']" t-as="day" t-key="day">
+                                    <div class="py-2.5 text-center text-[11px] font-extrabold text-slate-600 uppercase tracking-wider"><t t-esc="day"/></div>
+                                </t>
+                            </div>
+                            <!-- Calendar Grid -->
+                            <div class="flex-1 overflow-y-auto border-t border-slate-200"
+                                 style="display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); grid-template-rows: repeat(6, minmax(140px, max-content)); gap: 1px; background-color: #cbd5e1;">
+                                <t t-foreach="monthGrid" t-as="cell" t-key="cell.dateObj.getTime()">
+                                    <div t-att-class="'flex flex-col overflow-hidden p-1.5 transition-colors ' + (!cell.isCurrentMonth ? 'bg-slate-50' : 'bg-white hover:bg-slate-50/50') + (cell.isToday ? ' relative ring-2 ring-inset ring-kia-red z-10' : '')">
+                                        <div class="flex items-center justify-between mb-1.5 px-1">
+                                            <span t-att-class="'text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full ' + (cell.isToday ? 'bg-kia-red text-white' : (!cell.isCurrentMonth ? 'text-slate-400' : 'text-slate-700'))">
+                                                <t t-esc="cell.dayNum"/>
+                                            </span>
+                                            <span class="text-[9px] text-slate-400 font-semibold uppercase tracking-wider bg-slate-100 px-1.5 py-0.5 rounded"
+                                                  t-if="cell.allocations.length > 0">
+                                                <t t-esc="cell.allocations.length"/>
+                                                Appts
+                                            </span>
+                                        </div>
+                                        <div class="flex-1 overflow-y-auto space-y-1.5 pr-0.5 custom-scrollbar">
+                                            <t t-foreach="cell.allocations" t-as="slot" t-key="slot.id">
+                                                <div t-att-class="'px-2 py-1.5 rounded-lg border shadow-sm cursor-pointer hover:shadow transition-all ' + (slot.status === 'live' ? 'bg-red-50 border-red-200 text-red-900' : (slot.status === 'done' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-white border-slate-200 text-slate-800'))"
+                                                     t-on-click.stop="() => slot.status !== 'live' and this.openAllocationModal(slot.bayId, slot.startColumnIndex, slot)">
+                                                    <div class="font-extrabold text-[10px] flex items-center justify-between mb-0.5">
+                                                        <span class="flex items-center gap-1 tracking-wide">
+                                                            <t t-if="slot.isEV"><i class="fa fa-bolt text-sky-500"></i></t>
+                                                            <t t-esc="slot.reg"/>
+                                                        </span>
+                                                        <span t-if="slot.status === 'live'"
+                                                              class="w-1.5 h-1.5 bg-kia-red rounded-full animate-pulse shadow-sm shadow-red-200"></span>
+                                                    </div>
+                                                    <div class="truncate text-[9px] text-slate-500 font-medium"><t t-esc="slot.model"/></div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </t>
+                </main>
+            </div>
+
+            <!-- Quick Allocation Modal -->
+            <div t-if="state.isModalOpen" class="fixed inset-0 flex items-center justify-center z-50"
+                 style="background: rgba(0,0,0,0.3);">
+                <div class="bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col" style="width: 500px;">
+                    
+                    <!-- Modal Header -->
+                    <div class="px-5 py-4 flex items-center justify-between" style="background: #1e293b;">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-kia-red"></span>
+                            <h5 class="font-bold text-white m-0 text-sm">Allocate Vehicle to Service Bay</h5>
+                        </div>
+                        <button class="text-slate-400 hover:text-white bg-transparent border-0 p-1 cursor-pointer transition-colors"
+                                t-on-click="closeAllocationModal">
+                            <i class="fa fa-times text-xs"></i>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="p-5 flex flex-col gap-4">
+                        
+                        <!-- Target Service Bay -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-700">Target Service Bay</label>
+                            <div class="relative">
+                                <select class="w-full border border-slate-300 rounded py-2 px-3 text-sm text-slate-800 focus:outline-none focus:border-kia-red appearance-none bg-white cursor-pointer"
+                                        t-model="state.modalData.bayId">
+                                    <t t-foreach="state.bays" t-as="bay" t-key="bay.id">
+                                        <option t-att-value="bay.id"><t t-esc="bay.name" />
+                                            -
+                                            <t t-esc="bay.spec"/></option>
+                                    </t>
+                                </select>
+                                <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- Select Pending Vehicle -->
+                        <div class="flex flex-col gap-1.5">
+                            <label class="text-xs font-bold text-slate-700">Select Pending Vehicle</label>
+                            <div class="relative">
+                                <select class="w-full border border-slate-300 rounded py-2 px-3 text-sm text-slate-800 focus:outline-none focus:border-kia-red appearance-none bg-white cursor-pointer"
+                                        t-model="state.modalData.queueItemId">
+                                    <option value="">-- Manual Entry / Override --</option>
+                                    <t t-foreach="state.queueList" t-as="q" t-key="q.id">
+                                        <option t-att-value="q.id"><t t-esc="q.reg" />
+                                            -
+                                            <t t-esc="q.model"/>
+                                            (<t t-esc="q.service || 'Standard Service'"/>)</option>
+                                    </t>
+                                </select>
+                                <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                            </div>
+                        </div>
+
+                        <!-- Time & Duration Row -->
+                        <div class="flex gap-4">
+                            <div class="flex-1 flex flex-col gap-1.5">
+                                <label class="text-xs font-bold text-slate-700">Start Time</label>
+                                <div class="relative">
+                                    <select class="w-full border border-slate-300 rounded py-2 px-3 text-sm text-slate-800 focus:outline-none focus:border-kia-red appearance-none bg-white cursor-pointer"
+                                            t-model="state.modalData.startColumnIndex">
+                                        <t t-foreach="timeColumns" t-as="tc" t-key="tc_index">
+                                            <option t-att-value="tc_index"><t t-esc="tc.label" /></option>
+                                        </t>
+                                    </select>
+                                    <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-col gap-1.5">
+                                <label class="text-xs font-bold text-slate-700">Estimated Duration</label>
+                                <div class="relative">
+                                    <select class="w-full border border-slate-300 rounded py-2 px-3 text-sm text-slate-800 focus:outline-none focus:border-kia-red appearance-none bg-white cursor-pointer"
+                                            t-model="state.modalData.durationHours">
+                                        <option value="0.5">30 Minutes</option>
+                                        <option value="1">1 Hour</option>
+                                        <option value="1.5">1 Hour 30 Minutes</option>
+                                        <option value="2">2 Hours</option>
+                                        <option value="2.5">2 Hours 30 Minutes</option>
+                                        <option value="3">3 Hours</option>
+                                        <option value="3.5">3 Hours 30 Minutes</option>
+                                        <option value="4">4 Hours</option>
+                                        <option value="4.5">4 Hours 30 Minutes</option>
+                                        <option value="5">5 Hours</option>
+                                        <option value="5.5">5 Hours 30 Minutes</option>
+                                        <option value="6">6 Hours</option>
+                                        <option value="6.5">6 Hours 30 Minutes</option>
+                                        <option value="7">7 Hours</option>
+                                        <option value="7.5">7 Hours 30 Minutes</option>
+                                        <option value="8">8 Hours</option>
+                                    </select>
+                                    <i class="fa fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-[10px] pointer-events-none"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Assigned Certified Specialist -->
+                        <div class="flex flex-col gap-1.5 mb-1">
+                            <label class="text-xs font-bold text-slate-700">Assigned Certified Specialist</label>
+                            <input type="text"
+                                   class="w-full border border-slate-300 rounded px-3 py-2 text-sm text-slate-800 focus:outline-none focus:border-kia-red bg-white"
+                                   t-model="state.modalData.specialist"
+                                   placeholder="e.g. Rajesh Kumar (EV Master Tech)"/>
+                        </div>
+                        
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="px-5 py-4 flex justify-center gap-3"
+                         style="box-shadow: 0 -1px 3px rgba(0,0,0,0.05); z-index: 10;">
+                        <button class="px-6 py-2 text-xs font-bold text-slate-700 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 cursor-pointer shadow-sm"
+                                t-on-click="closeAllocationModal">Cancel</button>
+                        <button class="px-6 py-2 text-xs font-bold text-white bg-kia-red hover:bg-kia-redHover rounded-lg border-0 cursor-pointer shadow-sm flex items-center justify-center gap-2 transition-colors"
+                                t-on-click="confirmAllocation">
+                            Confirm Schedule
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Notifications Container -->
+            <div style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; pointer-events: none;">
+                <t t-foreach="state.notifications" t-as="notif" t-key="notif.id">
+                    <div style="background-color: #1e293b; color: white; font-size: 12px; font-weight: bold; padding: 10px 16px; border-radius: 9999px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); display: flex; align-items: center; gap: 8px; pointer-events: auto; animation: fade-in-up 0.3s ease-out forwards;">
+                        <span style="width: 6px; height: 6px; border-radius: 50%; background-color: #34d399;"></span>
+                        <t t-esc="notif.message"/>
+                    </div>
+                </t>
+            </div>
+            
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+        <record id="live_stream_wizard_form" model="ir.ui.view">
+            <field name="name">live.stream.wizard</field>
+            <field name="model">live.stream.wizard</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="Live Stream">
+                    <separator string=""/>
+                    <group string="Live Streaming Report">
+                        <group col="2">
+                            <field name="name" string="Remark" required="1"/>
+                            <field name="start_date" string="Start Date" required="1"/>
+                            <field name="end_date" string="End Date" required="1"/>
+                            <field name="company_id" required="1"/>
+                            <field name="report_type" string="Report Type" required="1"/>
+                        </group>
+                        <group col="2">
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="print_report" icon="fa-check-square-o" string="Print Report" type="object"/>
+                        <!--                        <button name="print_multi_report" icon="fa-check-square-o" string="Print Others Report" type="object"/>-->
+                        <button string="Cancel" class="oe_highlight" special="cancel" icon="fa-ban"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="live_stream_wizard_action" model="ir.actions.act_window">
+            <field name="name">Live Streaming Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">live.stream.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="live_stream_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+
+  </data>
+</odoo>

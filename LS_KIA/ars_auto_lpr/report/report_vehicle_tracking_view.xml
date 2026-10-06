@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+	<template id="report_vehicle_tracking">
+		<t t-call="web.html_container">
+			<t t-call="web.external_layout">
+				<div class="page">
+					<div class="oe_structure"/>
+					<div class="row">
+						<div class="col-xs-12 text-center">
+							<t t-set="latest_datas" t-value="data"/>
+							<h3><strong>Vehicle Location Tracking Report</strong></h3>
+							<h4><strong>Vehicle Reg #: <span t-esc="data.get('reg_no')"/></strong></h4>
+						</div>
+					</div>
+					<div class="row">
+						<t t-set="tot_bay" t-value="len(data.get('latest_datas'))-1"/>
+						<t t-set="i" t-value="0"/>
+						<t t-set="s_time" t-value="'00:00:00'"/>
+						<t t-foreach="data.get('latest_datas')" t-as="d">
+							<t t-if="d.get('entry_type') == 'in'">
+								<div class="row" style="padding-left:100px;">
+									<span>
+										<img src="/ars_auto_lpr/static/src/img/car.jpeg" style="height:80px;width:120px;"/>
+									</span>
+									<span class="oe_inline">
+										<span t-esc="d.get('location')"/>
+										<span t-esc="d.get('date')[11:16]"/>
+									</span>
+								</div>
+								<t t-set="s_time" t-value="d.get('date')[11:19]"/>
+							</t>
+							<t t-if="i != tot_bay">
+								<t t-if="d.get('entry_type') == 'out'">
+									<div class="row" style="padding-left:180px;">
+										<t t-set="diff_time" t-value="datetime.datetime.strptime(d.get('date')[11:19],'%H:%M:%S') - datetime.datetime.strptime(s_time, '%H:%M:%S')"/>
+										<img src="/ars_auto_lpr/static/src/img/arrow_sign.png" style="height:130px;width:50px;"/>
+										<span t-esc="str(diff_time)"/>
+									</div>
+								</t>
+							</t>
+							<t t-set="i" t-value="i+1"/>
+						</t>
+					</div>
+				</div>
+			</t>
+		</t>
+	</template>
+
+	<report
+		id="action_report_tracking"
+		string="Vehicle Tracking Report"
+		model="alpr.bay.vehicle.log"
+		report_type="qweb-pdf"
+		name="ars_auto_lpr.report_vehicle_tracking"
+		file="ars_auto_lpr.report_vehicle_tracking"
+		menu="False"/>
+
+  </data>
+</odoo>

@@ -1,0 +1,424 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+
+        <record model="ir.ui.view" id="ac_ars_live_streaming_form_view">
+            <field name="name">Live Streaming</field>
+            <field name="model">ac.ars.live.streaming</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <button name="%(ac_ars_cc_camera.live_stream_wizard_action)d" type="action" string="Report"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                        </div>
+                        <div class="oe_title">
+                            <label for="name" string="RO Number" class="oe_edit_only"/>
+                            <h1>
+                                <field name="dms_ro_number" options="{'no_quick_create':True, 'no_create_edit':True, 'no_create': True, 'create_edit': False}" readonly="state == 'finished'"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="name" readonly="state == 'finished'"/>
+                                <field name="cust_name" readonly="state == 'finished'"/>
+                                <field name="vehicle_no" readonly="state == 'finished'"/>
+                                <field name="date" readonly="state == 'finished'"/>
+                                <field name="is_viewing" invisible="1"/>
+                                <!--                                <field name="click_count"/>-->
+                            </group>
+                            <group>
+                                <field name="stream_start_time" readonly="state == 'finished'"/>
+                                <field name="stream_end_time" readonly="state == 'finished'"/>
+                                <field name="streaming_duration" readonly="state == 'finished'"/>
+                                <field name="company_id" readonly="state == 'finished'"/>
+                                <!--                                <field name="views_duration"/>-->
+                            </group>
+                        </group>
+                        <group>
+                            <field name="review" widget="priority"/>
+                            <field name="feedback"/>
+                        </group>
+                        <notebook>
+                            <page string="Viewing Record">
+                                <field name="live_stream_ids" widget="one2many_list" readonly="state == 'finished'">
+                                    <list editable="bottom" string="Views">
+                                        <field name="session"/>
+                                        <field name="start_time"/>
+                                        <field name="end_time"/>
+                                        <field name="duration_formatted"/>
+                                        <field name="externalid" invisible="1"/>
+                                    </list>
+                                </field>
+
+                                <group class="oe_subtotal_footer oe_right" colspan="2" name="Viewing Record">
+                                    <field name="views_duration"/>
+                                    <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                                        <label for="click_count"/>
+                                    </div>
+                                    <field name="click_count" nolabel="1" class="oe_subtotal_footer_separator"/>
+                                </group>
+                            </page>
+                            <page string="Aditional Details" groups="base.group_no_one">
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="city"/>
+                                            <field name="area"/>
+                                            <field name="region"/>
+                                            <field name="retrive"/>
+                                            <field name="send_to_server"/>
+                                        </group>
+                                        <group>
+                                            <field name="sms_status"/>
+                                            <field name="mail_status"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ac_ars_live_streaming_graph">
+            <field name="name">ac.ars.live.streaming.graph</field>
+            <field name="model">ac.ars.live.streaming</field>
+            <field name="arch" type="xml">
+                <graph type="pie">
+                    <field name="cust_name"/>
+                    <field name="company_id"/>
+                    <field name="streaming_duration"/>
+                </graph>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ac_ars_live_streaming_pivot">
+            <field name="name">ac.ars.live.streaming.pivot</field>
+            <field name="model">ac.ars.live.streaming</field>
+            <field name="arch" type="xml">
+                <pivot string="live streaming pivot view">
+                    <field name="cust_name"/>
+                    <field name="company_id" type="row"/>
+                    <field name="streaming_duration"/>
+                </pivot>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ac_ars_live_streaming_list">
+            <field name="name">Live Streaming</field>
+            <field name="model">ac.ars.live.streaming</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="date"/>
+                    <field name="dms_ro_number"/>
+                    <field name="cust_name"/>
+                    <field name="click_count"/>
+                    <field name="views_duration" sum="views_duration"/>
+                    <field name="stream_start_time"/>
+                    <field name="stream_end_time"/>
+                </list>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ac_ars_live_streaming_search">
+            <field name="name">Search view for Live streaming page</field>
+            <field name="model">ac.ars.live.streaming</field>
+            <field name="arch" type="xml">
+                <search string="Search Page">
+                    <field name="company_id" string="Company"/>
+                    <field name="state" string="Stage"/>
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_company" string="Company" domain="[]" context="{'group_by':'company_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+        <!--<<<<<<<<<<<<<<<<<<<<ac.ars.live.streaming.settings>>>>>>>>>>>>>>>>>>>>>>>>>>-->
+        <record model="ir.ui.view" id="ac_ars_live_streaming_settings_list">
+            <field name="name">ac.ars.live.streaming.settings</field>
+            <field name="model">ac.ars.live.streaming.settings</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="server_type"/>
+                    <field name="active_from"/>
+                    <field name="server_status"/>
+                    <field name="expiry_date"/>
+                    <field name="port_status"/>
+                    <field name="ls_installation_status" string="LS Installation Status"/>
+                </list>
+            </field>
+        </record>
+        <record model="ir.ui.view" id="ac_ars_live_streaming_settings_form">
+            <field name="name">ac.ars.live.streaming.settings</field>
+            <field name="model">ac.ars.live.streaming.settings</field>
+            <field name="arch" type="xml">
+                <form string="Live Streaming Settings">
+                    <header>
+                        <button name="port_check" icon="oe_highlight" string="Port Status" type="object"/>
+                        <field name="server_status" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <h3>Live Streaming Settings</h3>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button o_res_partner_tip_opp" type="action" name="%(action_live_stream_server_update)d" icon="fa fa-desktop">
+                                <field name="ls_total_count" widget="statinfo" readonly="1" string="Records"/>
+                                <span>
+                                    <field name="port_status" style="color: green;" widget="statinfo" readonly="1"/>
+                                </span>
+                            </button>
+                        </div>
+                        <h3>
+                            <separator string="Server Status Report" style="color: black;"/>
+                        </h3>
+                        <div>
+                            <h2>
+                                <span>
+                                    <field name="name" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                </span>
+                                <span style="padding-left: 2em;">
+                                    <field name="company_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                                </span>
+                                <span style="padding-left: 2em;">
+                                    <label string="Renewed for" for="interval_number"/>
+                                    <field name="interval_number" class="oe_inline" readonly="edit_renewed_data != True"/>
+                                    <field name="interval_type" class="oe_inline" readonly="edit_renewed_data != True"/>
+                                </span>
+                                <span style="padding-left: 2em;" group="base.group_no_one">
+                                    <field name="edit_renewed_data"/>
+                                    <label for="edit_renewed_data" string="Modify Renewal"/>
+                                </span>
+
+                            </h2>
+                        </div>
+                        <div class="row mt16 o_settings_container" id="ac_ars_live_streaming_updated_status">
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="is_consent_letter_received"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label string="Consent Letter Received" for="is_consent_letter_received"/>
+                                    <div class="text-muted">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="is_rollout_completed"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label string="Rollout Completed" for="is_rollout_completed"/>
+                                    <div class="text-muted">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 col-md-6 o_setting_box">
+                                <div class="o_setting_left_pane">
+                                    <field name="is_training_completed"/>
+                                </div>
+                                <div class="o_setting_right_pane">
+                                    <label string="Training Completed" for="is_training_completed"/>
+                                    <div class="text-muted">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <group col="6">
+                            <field name="active_from" readonly="active_from != False"/>
+                            <field name="renewal_date"/>
+                            <field name="expiry_date" readonly="expiry_date != False"/>
+                        </group>
+                        <div>
+                            <field name="status_message"/>
+                        </div>
+                        <div>
+                            <span>
+                                <label for="ls_installation_status" string="LS Installation Status"/>
+                            </span>
+                            <span style="float: right;margin-right: 8em;">
+                                <label for="server_status" string="Dealer Status"/>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                <field name="ls_installation_status" widget="statusbar"/>
+                            </span>
+                            <span style="float: right;">
+                                <field name="server_status" widget="statusbar"/>
+                            </span>
+                        </div>
+
+
+                        <notebook>
+                            <page string="Server Configuration">
+                                <group>
+                                    <group>
+                                        <field name="cust_name"/>
+                                        <field name="email"/>
+                                        <field name="company_id"/>
+                                        <field name="region_id" readonly="True"/>
+                                        <field name="ip_address"/>
+                                        <field name="port"/>
+                                    </group>
+                                    <group>
+                                        <field name="server_type"/>
+                                        <field name="database"/>
+                                        <field name="user"/>
+                                        <field name="password"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Last Updated Details" groups="base.group_no_one">
+                                <form>
+                                    <group>
+                                        <group colspan="1">
+                                            <div class="oe_title">
+                                                <label for="name" string="Last Updated"/>
+                                                <h5>
+                                                    <field name="last_updated"/>
+                                                </h5>
+                                            </div>
+                                        </group>
+                                        <group colspan="1">
+                                            <div class="oe_title">
+                                                <label for="name" string="Updated Status"/>
+                                                <h5>
+                                                    <field name="updated_status"/>
+                                                </h5>
+                                            </div>
+                                        </group>
+                                    </group>
+                                </form>
+                            </page>
+                            <page string="Bay &amp; Camera Details">
+                                <div>
+                                    <div colspan="4">
+                                        <label for="live_stream_ids" string=" " class="oe_edit_only"/>
+                                        <field name="live_stream_ids" widget="one2many_list">
+                                            
+                                            <list editable="bottom" string="Views">
+                                                <field name="bay"/>
+                                                <field name="no_camera"/>
+                                            </list>
+                                        </field>
+                                    </div>
+                                    <div/>
+                                </div>
+                            </page>
+                            <page string="Server Status">
+                                <field name="server_status_ids" widget="one2many_list">
+                                    <list editable="bottom" default_order="id desc">
+                                        <field name="name" string="Day"/>
+                                        <field name="offline_datetime"/>
+                                        <field name="duration"/>
+                                        <field name="last_online"/>
+                                        <field name="port_status"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Users">
+                                <field name="users" widget="many2many" options="{'not_delete': True}">
+                                    <kanban quick_create="false" create="true" delete="true">
+                                        <field name="id"/>
+                                        <field name="name"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click" style="max-width: 200px">
+                                                    <div class="o_kanban_record_top">
+                                                        <img t-att-src="kanban_image('res.users', 'image_small', record.id.raw_value)" height="40" width="40" class="oe_avatar oe_kanban_avatar_smallbox mb0"/>
+                                                        <div class="o_kanban_record_headings ml8">
+                                                            <strong class="o_kanban_record_title">
+                                                                <field name="name"/>
+                                                            </strong>
+                                                        </div>
+                                                        <a t-if="! read_only_mode" type="delete" class="text-danger">
+                                                            <i class="fa fa-times"/>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+
+                        </notebook>
+
+                        <footer>
+                        </footer>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+
+        <!--<<<<<<<<<<<<<<<live Streaming Action>>>>>>>>>>>>>>>>>>-->
+
+        <record model="ir.actions.act_window" id="ac_ars_live_streaming_action_window">
+            <field name="name">Live Streaming Record</field>
+            <field name="res_model">ac.ars.live.streaming</field>
+            <field name="view_mode">list,form,graph,pivot</field>
+            <!--            <field name="search_view_id" ref="ac_ars_live_streaming_search"/>-->
+            <field name="context">{'search_default_group_by_company': True}</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ac_ars_live_streaming_settings_window">
+            <field name="name">Live Streaming Settings</field>
+            <field name="res_model">ac.ars.live.streaming.settings</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!--        Live stream resource filter     -->
+        <record id="ls_view_resource_resource_search" model="ir.ui.view">
+            <field name="name">resource.resource.search</field>
+            <field name="model">resource.resource</field>
+            <field name="arch" type="xml">
+                <search string="LS Search Resource">
+                    <field name="name" string="Resource"/>
+                    <field name="resource_type"/>
+                    <field name="user_id"/>
+                    <field name="calendar_id"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <filter string="Inactive" name="inactive" domain="[('active','=',False)]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="User" name="group_by_user" context="{'group_by':'user_id'}"/>
+                        <filter string="Type" name="group_by_type" context="{'group_by':'resource_type'}"/>
+                        <filter string="Company" name="group_by_company" context="{'group_by':'company_id'}" groups="base.group_multi_company"/>
+                        <filter string="Working Period" name="group_by_calendar" context="{'group_by':'calendar_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_resource_resource_live_stream_tree" model="ir.actions.act_window">
+            <field name="name">Resources</field>
+            <field name="res_model">resource.resource</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_company': True}</field>
+            <field name="domain">[('resource_category.code', '=', 'BAY')]</field>
+            <field name="search_view_id" ref="ac_ars_cc_camera.ls_view_resource_resource_search"/>
+            <field name="help">Resources allow you to create and manage resources that should be involved in a specific
+                project phase. You can also set their efficiency level and workload based on their weekly working hours.
+            </field>
+        </record>
+
+        <!-- <record id="action_live_stream_rms_resource_calender" model="ir.actions.act_window">
+            <field name="name">Rms resource calender</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">planner.calender</field>
+            <field name="view_id" ref="ac_rms.rms_resource_calender_tree"/>
+            <field name="view_mode">formlist</field>
+        </record> -->
+
+        <record id="action_live_stream_bay_planner" model="ir.actions.client">
+            <field name="name">Bay Planner</field>
+            <field name="tag">ac_ls_bay_planner</field>
+        </record>
+
+
+  </data>
+</odoo>

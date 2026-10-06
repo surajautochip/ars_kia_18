@@ -1,0 +1,22 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="ac_ars_video_playback_details">
+        <field name="name">Video Playback</field>
+        <field name="model">ac.ars.video.playback</field>
+        <field name="arch" type="xml">
+            <form>
+                <field name="name"/>
+                <field name="html"/>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="video_playback_action">
+        <field name="name">Video Playback</field>
+        <field name="res_model">ac.ars.video.playback</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="ac_ars_video_playback_details"/>
+        <field name="target">new</field>
+    </record>
+  </data>
+</odoo>

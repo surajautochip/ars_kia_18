@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+        <!-- explicit list view definition -->
+        <record model="ir.ui.view" id="ac_ars_ip_camera_list">
+            <field name="name">AC ARS IP Camera List</field>
+            <field name="model">ac.ars.ip.camera</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="cam_name"/>
+                    <field name="company_id"/>
+                    <field name="name"/>
+                    <field name="status"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ac_ars_ip_camera_form">
+            <field name="name">AC ARS IP Camera Form</field>
+            <field name="model">ac.ars.ip.camera</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <widget name="web_ribbon" title="Online" bg_color="text-bg-success" invisible="rtsp_status != 'online'"/>
+                        <widget name="web_ribbon" title="Offline" bg_color="text-bg-danger" invisible="rtsp_status != 'offline'"/>
+                        <!-- In a modular ecosystem, email_template might need a different button if the model changes -->
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_camera_stream"
+                                    string="Live Stream"
+                                    type="object"
+                                    class="oe_stat_button" icon="fa-video-camera"
+                            />
+                        </div>
+                        
+                        <div class="oe_title">
+                            <label for="cam_name" string="Camera Name"/>
+                            <h1>
+                                <field name="cam_name"/>
+                            </h1>
+                        </div>
+                        <group name="camera_details">
+                            <group>
+                                <field name="user_name"/>
+                                <field name="password" password="True"/>
+                                <field name="name" string="IP Address" required="True"/>
+                                <field name="exception" string="Logs" invisible="not exception"/>
+                            </group>
+                            <group>
+                                <field name="cam_brand"
+                                       options="{'no_quick_create':True,'no_create_edit':True,'no_open': True}"/>
+                                <field name="main_stream"/>
+                                <field name="sub_stream"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Additional Details">
+                                <group>
+                                    <group>
+                                        <field name="server_id"/>
+                                        <field name="company_id"
+                                               options="{'no_quick_create':True,'no_create_edit':True,'no_open': False}"/>
+                                        <field name="local_ip"/>
+
+                                    </group>
+                                    <group>
+                                        <field name="recording" string="Start recording" invisible="recording == True"/>
+                                        <field name="recording" string="Stop Recording" invisible="recording == False"/>
+                                        <field name="reel_time" placeholder="In Seconds"/>
+                                        
+                                        <field name="dir_name"/>
+                                        <field name="record_stream_file"/>
+                                        <field name="server_location"/>
+                                    </group>
+                                </group>
+                                <group string="Ports" class="mt-0 pt-0">
+                                    <group>
+                                        <field name="http_port" required="True"/>
+                                        <field name="rstp_port"/>
+                                    </group>
+                                    <group>
+                                        <field name="ping_status" readonly="1" string="Ping Status" decoration-success="ping_status == 'online'" decoration-danger="ping_status == 'offline'" widget="badge"/>
+                                        <field name="rtsp_status" readonly="1" string="Video Status" decoration-success="rtsp_status == 'online'" decoration-danger="rtsp_status == 'offline'" widget="badge"/>
+                                        <field name="rtsp_url"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Expiry status">
+                                <field name="ip_camera_exp_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="offline_datetime"/>
+                                        <field name="duration"/>
+                                        <field name="last_online"/>
+                                        <field name="day_diff"/>
+                                        <field name="port_status"/>
+                                        <field name="email_send_date"/>
+                                        <field name="description"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ac_ars_camera_config_list">
+            <field name="name">AC ARS IP Camera Configuration</field>
+            <field name="model">ac.ars.camera.config</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ac_ars_camera_config_form">
+            <field name="name">AC ARS IP Camera Configuration</field>
+            <field name="model">ac.ars.camera.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <field name="name"/>
+                        <field name="rtsp_url"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- actions opening views on models -->
+
+        <record model="ir.actions.act_window" id="ac_ars_ip_camera_action_window">
+            <field name="name">IP Cameras</field>
+            <field name="res_model">ac.ars.ip.camera</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ac_ars_camera_config_action_window">
+            <field name="name">Camera Config</field>
+            <field name="res_model">ac.ars.camera.config</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+  </data>
+</odoo>

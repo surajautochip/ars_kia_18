@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+
+        <menuitem id="menu_vehicle_tracking_root" name="Vehicle Tracking"/>
+
+        <menuitem id="ac_ars_live_streaming_dashbord" name="Dashbord" parent="ars_auto_lpr.menu_vehicle_tracking_root"
+                  action="vehicle_track_dashbord_client_action" sequence="1"/>
+
+        <menuitem name="Bay Mapping" id="menu_auto_lpr_bay_settings" action="alpr_bay_settings_action"
+                  parent="ars_auto_lpr.menu_vehicle_tracking_root" sequence="2"
+                  groups="ars_auto_lpr.group_vehicle_tracking_manager"/>
+
+        <menuitem id="menu_action_bay_vehicle_log_form" action="action_bay_vehicle_log_form"
+                  parent="ars_auto_lpr.menu_vehicle_tracking_root" sequence="3"/>
+
+        <menuitem id="menu_vehicle_tracking_log" action="action_vehicle_tracking_log"
+                  parent="ars_auto_lpr.menu_vehicle_tracking_root" sequence="3"/>
+
+        <menuitem id="menu_configuration_root" name="Configuration" parent="ars_auto_lpr.menu_vehicle_tracking_root"
+                  sequence="5" groups="ars_auto_lpr.group_vehicle_tracking_manager"/>
+
+        <menuitem id="menu_reports_root" name="Reports" parent="ars_auto_lpr.menu_vehicle_tracking_root" sequence="6"/>
+
+        <!--Configuration Sub Menu -->
+        <menuitem name="Camera Configuration" id="menu_camera_configuration" action="ac_ars_ip_camera.ac_ars_ip_camera_action_window"
+                  parent="ars_auto_lpr.menu_configuration_root" sequence="1"/>
+
+        <menuitem name="Mail Configuration" id="menu_alpr_mail_configuration" action="alpr_mail_conf_action_window"
+                  parent="ars_auto_lpr.menu_configuration_root" sequence="2"/>
+
+        <menuitem name="Token Configuration" id="menu_token_configuration" action="action_num_plate_conf_form"
+                  parent="ars_auto_lpr.menu_configuration_root" sequence="3"/>
+
+        <!--Reports Sub Menu -->
+        <menuitem id="vehicle_tracking_report" action="ars_auto_lpr.action_vehicle_tracking_wizard"
+                  parent="ars_auto_lpr.menu_reports_root" sequence="1"/>
+
+        <menuitem id="bay_status_report" action="ars_auto_lpr.action_bay_count_wizard"
+                  parent="ars_auto_lpr.menu_reports_root" sequence="2"/>
+
+        <!-- Alpr online Server -->
+
+        <menuitem id="menu_online_alpr_log" name="Alpr Online Server Log"
+                  action="ars_auto_lpr.online_alpr_server_action"
+                  parent="ars_auto_lpr.menu_vehicle_tracking_root" sequence="4" groups="group_vehicle_tracking_server"/>
+
+
+  </data>
+</odoo>

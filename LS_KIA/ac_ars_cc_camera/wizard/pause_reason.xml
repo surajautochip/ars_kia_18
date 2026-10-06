@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+
+
+        <record id="live_stream_reason_wizard" model="ir.ui.view">
+            <field name="name">Streaming Pause</field>
+            <field name="model">streaming.pause</field>
+            <field name="arch" type="xml">
+                <form string="Hold">
+                    <sheet>
+                        <div>
+                            <field name="ac_ars_live_stream_token_id" invisible="1"/>
+                        </div>
+                        <label for="reason_selection" string="Reason"/>
+                        <field name="reason_selection"/>
+                        <div>
+                            <field name="other_reason" placeholder="Remark" invisible="reason_selection != 'other'"/>
+                        </div>
+                        <footer>
+                            <button class="oe_highlight" type="object" name="ac_ars_live_streaming_pause_wizard" string="Pause"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="live_stream_reason_wizard_action" model="ir.actions.act_window">
+            <field name="name">Streaming Pause</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">streaming.pause</field>
+            
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="live_stream_reason_wizard"/>
+            <field name="target">new</field>
+        </record>
+
+
+  </data>
+</odoo>

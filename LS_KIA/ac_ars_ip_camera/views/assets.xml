@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+<!--
+<template id="assets_backend" name="ipcam assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/ac_ars_ip_camera/static/src/js/booking_stage_mask.js"></script>
+            <link rel="stylesheet" type="text/css" href="/ac_ars_ip_camera/static/src/css/ars_password.css"/>
+        </xpath>
+    </template>
+-->
+  </data>
+</odoo>

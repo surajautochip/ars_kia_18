@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+    <record id="live_stream_server_update" model="ir.ui.view">
+        <field name="name">live.stream.server.updation</field>
+        <field name="model">live.stream.server.updation</field>
+        <field name="arch" type="xml">
+            <form string="live stream server updation" create="false">
+                <sheet>
+                    <div>
+                        <h2>
+                            <span>
+                                <field name="live_stream_sever" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                            </span>
+                            <span style="padding-left: 2em;">
+                                <field name="company_id" readonly="1" options="{'no_create': True, 'no_open': True}"/>
+                            </span>
+                            <span style="padding-left: 2em;">
+                                <label string="Renewed for" for="interval_number"/>
+                                <field name="interval_number" class="oe_inline" readonly="edit_renewed_data != True"/>
+                                <field name="interval_type" class="oe_inline" readonly="edit_renewed_data != True"/>
+                            </span>
+                            <span style="padding-left: 2em;" group="base.group_no_one">
+                                <field name="edit_renewed_data"/>
+                                <label for="edit_renewed_data" string="Modify Renewal"/>
+                            </span>
+
+                        </h2>
+                    </div>
+                    <div class="row mt16 o_settings_container" id="ac_ars_live_streaming_updated_status">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="is_cl_received"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label string="Consent Letter Received" for="is_cl_received"/>
+                                <div class="text-muted">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="is_rollout_completed"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label string="Rollout Completed" for="is_rollout_completed"/>
+                                <div class="text-muted">
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="is_training_completed"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label string="Training Completed" for="is_training_completed"/>
+                                <div class="text-muted">
+                                </div>
+                            </div>
+                        </div>
+<!--                        <div class="col-xs-12 col-md-6 o_setting_box">-->
+<!--                            <label string="Renewed for" for="interval_number"/>-->
+<!--                            <field name="interval_number" class="oe_inline"/>-->
+<!--                            <field name="interval_type" class="oe_inline"/>-->
+<!--                        </div>-->
+                    </div>
+                    <group col="6">
+                        <field name="active_from" readonly="active_from != False"/>
+                        <field name="renewal_date"/>
+                        <field name="expiry_date" readonly="expiry_date != False"/>
+                    </group>
+                    <div>
+                        <field name="status_message"/>
+                    </div>
+                    <span>
+                        <field name="ls_installation_status" widget="statusbar"/>
+                    </span>
+                    <span style="float: right;">
+                        <field name="server_status" widget="statusbar"/>
+                    </span>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_live_stream_server_update" model="ir.actions.act_window">
+        <field name="name">Live Stream Server Status</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">live.stream.server.updation</field>
+        
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="live_stream_server_update"/>
+        <field name="context">{'default_live_stream_sever': active_id}</field>
+        <field name="target">new</field>
+    </record>
+
+  </data>
+</odoo>

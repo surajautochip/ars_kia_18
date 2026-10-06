@@ -1,0 +1,28 @@
+<odoo>
+  <data>
+<!--    <data name="POS Dashboard assets inherit" inherit_id="web.assets_backend">-->
+<!--        <xpath expr="." position="inside">-->
+<!--            <link rel="stylesheet" href="/ac_ars_live_stream_dashboard/static/src/css/livestream_dashboard.css"/>-->
+<!--            <link rel="stylesheet" href="/ac_ars_live_stream_dashboard/static/src/css/ls_header_dashboard.css"/>-->
+<!--            <link rel="stylesheet" href="/ac_ars_live_stream_dashboard/static/src/css/ls_admin_dashbord.css"/>-->
+<!--            <link rel="stylesheet" href="/ac_ars_live_stream_dashboard/static/src/css/ls_mouse_hover.css"/>-->
+<!--            <link rel="stylesheet" href="/ac_ars_live_stream_dashboard/static/src/css/ls_round_circle_persentage.css"/>-->
+
+<!--            <script type="text/javascript" src="/ac_ars_live_stream_dashboard/static/src/js/dashboard_live_stream.js"/>-->
+<!--            <script type="text/javascript" src="/ac_ars_live_stream_dashboard/static/src/Chart/Chart.js"/>-->
+<!--            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"/>-->
+<!--        </xpath>-->
+<!--    </data>-->
+
+<!--    <template id="ls_show_sign_in_right" inherit_id="ac_rms.show_sign_in_right">-->
+<!--        <xpath expr="//ul[@id='top_menu']/li[2]" position="after">-->
+<!--            <li  groups="ac_ars_cc_camera.live_stream_group_user,ac_ars_cc_camera.live_stream_group_manager,ac_ars_cc_camera.live_stream_group_super">-->
+<!--                <a t-att-href="'/web#menu_id=%s&amp;action=%s' % (%(ac_ars_live_stream_dashboard.ac_ars_live_stream_dashboard)d,%(ac_ars_live_stream_dashboard.action_ac_ars_live_stream_dashboard)d)">-->
+<!--                    Live Stream-->
+<!--                </a>-->
+<!--            </li>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+  </data>
+</odoo>

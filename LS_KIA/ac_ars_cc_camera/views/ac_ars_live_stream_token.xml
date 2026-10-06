@@ -1,0 +1,130 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+
+
+        <record model="ir.ui.view" id="ac_ars_live_stream_token_tree_view">
+            <field name="name">Live Stream Token</field>
+            <field name="model">ac.ars.live.stream.token</field>
+            <field name="arch" type="xml">
+                <list create="false" edit="false" delete="false">
+                    <field name="date"/>
+                    <field name="dms_ro_number"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="ac_ars_live_stream_token_form_view">
+            <field name="name">Live Stream Token</field>
+            <field name="model">ac.ars.live.stream.token</field>
+            <field name="arch" type="xml">
+                <form create="false" edit="false">
+                    <header>
+                        <button name="finish_live_stream" string="Finish" type="object" invisible="state == 'invalid'"/>
+                        <button name="%(ac_ars_cc_camera.live_stream_reason_wizard_action)d" string="Pause" type="action" invisible="status != 'live'"/>
+                        <button name="ac_ars_live_streaming_resume" string="Resume" type="object" invisible="status != 'hold'"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="dms_ro_number" string="RO Number" class="oe_edit_only"/>
+                            <h1>
+                                <field name="dms_ro_number"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="user_id" options="{'no_quick_create':True,'no_create_edit':True,'no_open': False,}"/>
+                                <field name="company_id" options="{'no_quick_create':True,'no_create_edit':True,'no_open': False,}"/>
+                                <field name="resource" string="Resource" options="{'no_quick_create':True,'no_create_edit':True,'no_open': False,}"/>
+                            </group>
+                            <group>
+                                <field name="status"/>
+                                <field name="partner_id" options="{'no_quick_create':True,'no_create_edit':True,'no_open': False,}"/>
+                                <field name="date"/>
+                            </group>
+                        </group>
+                        <group invisible="status != 'hold'">
+                            <group>
+                                <field name="reason_selection" string="Hold Reason"/>
+                                <field name="other_reason" placeholder="Remark" invisible="reason_selection != 'other'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="url" readonly="True" widget="url"/>
+                        </group>
+                        <notebook>
+                            <page string="Messages" readonly="True">
+                                <group colspan="2" col="2">
+                                    <field name="email_state" string="Email Status"/>
+                                    <div>
+                                        <field name="email_id"/>
+                                    </div>
+                                    <field name="sms_stage" string="SMS Status"/>
+                                    <div>
+                                        <field name="sms_id"/>
+                                    </div>
+                                </group>
+                            </page>
+
+                            <page string="camera">
+                                <field name="camera_rec_ids" widget="many2many" options="{'not_delete': True}">
+                                    <kanban quick_create="false" create="false" delete="false">
+                                        <field name="company_id"/>
+                                        <field name="cam_brand"/>
+                                        <field name="camera_id"/>
+                                        <field name="status"/>
+                                        <templates>
+                                            <t t-name="kanban-box">
+                                                <div class="oe_kanban_global_click" style="max-width: 200px">
+                                                    <div class="o_kanban_record_top">
+                                                        <div class="o_kanban_record_headings ml8">
+                                                            <strong class="o_kanban_record_title">
+                                                                <div>
+                                                                    <field name="cam_brand"/>
+                                                                </div>
+                                                                <div>
+                                                                    <field name="camera_id"/>
+                                                                    <field name="cam_status"/>
+                                                                </div>
+                                                                <div>
+                                                                    <field name="status"/>
+                                                                </div>
+                                                                <field name="company_id"/>
+                                                            </strong>
+                                                        </div>
+                                                        <div class="o_kanban_record_headings ml8">
+                                                            <strong class="o_kanban_record_title">
+
+                                                            </strong>
+                                                        </div>
+                                                        <a t-if="! read_only_mode" type="delete" class="text-danger">
+                                                            <i class="fa fa-times"/>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </templates>
+                                    </kanban>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="ac_ars_live_stream_token_action_window">
+            <field name="name">Live Token Records</field>
+            <field name="res_model">ac.ars.live.stream.token</field>
+            <field name="view_mode">list,form,graph,pivot</field>
+            <!--            <field name="search_view_id" ref="ac_ars_live_stream_token_search"/>-->
+            <!--            <field name="context">{'search_default_group_by_company': True}</field>-->
+        </record>
+
+
+  </data>
+</odoo>

@@ -1,0 +1,24 @@
+<!--<odoo>
+  <data>-->
+<!--    -->
+<!--        <record id="live_streaming_form_inherit" model="ir.ui.view">-->
+<!--            <field name="name">ac.ars.live.streaming.inherit</field>-->
+<!--            <field name="model">ac.ars.live.streaming</field>-->
+<!--            <field name="inherit_id" ref="ac_ars_cc_camera.live_streaming_form"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//form/sheet/notebook" position="inside">-->
+<!--                    <page string="SMS &amp; MAIL STATUS" groups="base.group_no_one">-->
+<!--                        <group>-->
+<!--                            <group>-->
+<!--                                <field name="sms_status"/>-->
+<!--                                <field name="mail_status"/>-->
+<!--                            </group>-->
+<!--                            <group></group>-->
+<!--                        </group>-->
+<!--                    </page>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--        </record>-->
+<!--    -->
+<!--  </data>
+</odoo>-->

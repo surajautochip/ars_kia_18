@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+
+        <record id="alpr_bay_settings_action" model="ir.actions.client">
+            <field name="name">Bay Mapping</field>
+            <field name="tag">ars_auto_lpr.main</field>
+        </record>
+
+        <!-- CC Camera -->
+        <record id="view_cam_config_form_inherit" model="ir.ui.view">
+            <field name="name">alpr.cc.camera.form</field>
+            <field name="model">ac.ars.ip.camera</field>
+            <field name="inherit_id" ref="ac_ars_ip_camera.ac_ars_ip_camera_form"/>
+            <field name="arch" type="xml">
+                <!--                <xpath expr="/form/sheet/group//field[@name='password']" position="after">-->
+                <!--                    <field name="alpr_update_interval" widget="float_time" style="width:10%%"/>-->
+                <!--                    <field name="alpr_camera_url"/>-->
+                <!--                    <field name="hik_vision"/>-->
+                <!--                </xpath>-->
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page string="Bay Mapping">
+                        <field name="alpr_bay_ids">
+                            <list string="Bays" create="0" edit="0">
+                                <field name="bay_id"/>
+                                <field name="disp_area_string"/>
+                                <field name="count_log"/>
+                                <field name="is_bay_occupy"/>
+                            </list>
+                            <form string="Bay" create="0" edit="0">
+                                <sheet>
+                                    <group>
+                                        <field name="bay_id"/>
+                                        <field name="disp_area_string"/>
+                                        <field name="is_bay_occupy"/>
+                                    </group>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </xpath>
+                <xpath expr="/form/sheet/notebook/page[2]/group" position="inside">
+                    <group>
+                        <field name="alpr_update_interval" widget="float_time" style="width:40%%"/>
+                        <field name="alpr_camera_url"/>
+                        <field name="hik_vision"/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Bay Vehicle Log -->
+        <record id="view_bay_vehicle_log_list" model="ir.ui.view">
+            <field name="name">alpr.bay.vehicle.log.list</field>
+            <field name="model">alpr.bay.vehicle.log</field>
+            <field name="arch" type="xml">
+                <list string="Bay Log" create="0" edit="0">
+                    <field name="vehicle_number"/>
+                    <field name="camera_id"/>
+                    <field name="bay_id"/>
+                    <field name="entry_type"/>
+                    <field name="create_date" string="Log Time"/>
+<!--                     <field name="out_datetime"/>-->
+                    <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_bay_vehicle_log_form" model="ir.ui.view">
+            <field name="name">alpr.bay.vehicle.log.form</field>
+            <field name="model">alpr.bay.vehicle.log</field>
+            <field name="arch" type="xml">
+                <form string="Bay Log">
+                    <sheet>
+                        <button name="change_date" string="Update Date" type="object"/>
+                        <group>
+                            <group>
+                                <field name="vehicle_number"/>
+                                <field name="camera_id"/>
+                                <field name="bay_id"/>
+                                <field name="company_id" options="{'no_create': True}"
+                                       groups="base.group_multi_company"/>
+                                <field name="log_date"/>
+                                <field name="date_update"/>
+                                <field name="is_created_log"/>
+                                <field name="out_datetime"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="bay_vehicle_view_pivot" model="ir.ui.view">
+            <field name="name">alpr.bay.vehicle.log.pivot</field>
+            <field name="model">alpr.bay.vehicle.log</field>
+            <field name="arch" type="xml">
+                <pivot string="Bay Log Analysis">
+                    <field name="bay_id" type="row"/>
+                    <field name="create_date" interval="month" type="col"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record id="bay_vehicle_view_graph" model="ir.ui.view">
+            <field name="name">alpr.bay.vehicle.log.graph</field>
+            <field name="model">alpr.bay.vehicle.log</field>
+            <field name="arch" type="xml">
+                <graph string="Bay Log Analysis">
+                    <field name="bay_id"/>
+                    <field name="create_date"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="view_bay_vehicle_log_search" model="ir.ui.view">
+            <field name="name">alpr.bay.vehicle.log.search</field>
+            <field name="model">alpr.bay.vehicle.log</field>
+            <field name="arch" type="xml">
+                <search string="Search Bay Log">
+                    <field name="vehicle_number" filter_domain="['|', ('name','ilike',self)]" string="Vehicle Number"/>
+                    
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_month" string="Month" domain="[]" context="{'group_by':'create_date:month'}" help="Bay Log by Month"/>
+                        <filter name="group_by_week" string="Week" domain="[]" context="{'group_by':'create_date:week'}" help="Bay Log by Week"/>
+                        <filter name="group_by_day" string="Day" domain="[]" context="{'group_by': 'create_date:day'}" help="Bay Log by Month"/>
+                        <filter name="group_by_year" string="Year" domain="[]" context="{'group_by':'create_date:year'}" help="Bay Log by Year"/>
+                        
+                        <filter name="group_by_camera_id" string="Camera" context="{'group_by':'camera_id'}"/>
+                        <filter name="group_by_bay_id" string="Bay" context="{'group_by':'bay_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_bay_vehicle_log_form" model="ir.actions.act_window">
+            <field name="name">Bay Log</field>
+            <field name="res_model">alpr.bay.vehicle.log</field>
+            
+            <field name="view_mode">list,form,pivot,graph</field>
+            <field name="context">{'search_default_group_by_month':1, 'search_default_group_by_day':1}</field>
+            <field name="search_view_id" ref="view_bay_vehicle_log_search"/>
+            <field name="help" type="html">
+                <p>
+                    You can see the bay log here.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vehicle Tracking Log List View -->
+        <record id="view_vehicle_tracking_log_list" model="ir.ui.view">
+            <field name="name">vehicle.tracking.log.list</field>
+            <field name="model">vehicle.tracking.log</field>
+            <field name="arch" type="xml">
+                <list string="Vehicle Log" create="0" edit="0">
+                    <field name="vehicle_number"/>
+                    <field name="start_time"/>
+                    <field name="end_time"/>
+                    <field name="bay_id"/>
+                    <field name="bay_type"/>
+                    <field name="company_id" invisible="1"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vehicle Tracking Log Form View -->
+        <record id="view_vehicle_tracking_log_form" model="ir.ui.view">
+            <field name="name">vehicle.tracking.log.form</field>
+            <field name="model">vehicle.tracking.log</field>
+            <field name="arch" type="xml">
+                <form string="Vehicle Log" create="0" edit="0">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="vehicle_number"/>
+                                <field name="bay_id"/>
+                                <field name="bay_type"/>
+                            </group>
+                            <group>
+                                <field name="start_time"/>
+                                <field name="end_time"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vehicle Tracking Log Action View -->
+        <record id="action_vehicle_tracking_log" model="ir.actions.act_window">
+            <field name="name">Vehicle Tracking Log</field>
+            <field name="res_model">vehicle.tracking.log</field>
+            
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+        </record>
+
+
+  </data>
+</odoo>

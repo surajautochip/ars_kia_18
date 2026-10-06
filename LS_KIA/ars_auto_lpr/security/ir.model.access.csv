@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_alpr_camera_bay_user,alpr.camera.bay.user,model_alpr_camera_bay,base.group_user,1,1,1,1
+access_alpr_bay_vehicle_log_user,alpr.bay.vehicle.log.user,model_alpr_bay_vehicle_log,base.group_user,1,1,1,1
+access_alpr_server_online,alpr.server.online.server,model_alpr_server_online,ars_auto_lpr.group_vehicle_tracking_server,1,1,1,1

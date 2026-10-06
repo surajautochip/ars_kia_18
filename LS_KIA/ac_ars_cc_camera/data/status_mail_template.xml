@@ -1,0 +1,88 @@
+<?xml version="1.0" ?>
+<odoo>
+  <data>
+
+        <record id="server_status_list_email" model="mail.template">
+            <field name="name">Server Status</field>
+            <field name="model_id" ref="ac_ars_cc_camera.model_ac_ars_region_region"/>
+            <field name="email_from">info@autochip.in</field>
+            <field name="email_to">${object.email}</field>
+            <field name="subject">${object.name}Region Live Stream Server Status</field>
+            <field name="body_html" type="html">
+                <style>
+                    table {
+                    font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                    }
+
+                    td, th {
+                    border: 1px solid #dddddd;
+                    text-align: left;
+                    padding: 8px;
+                    }
+
+                    tr:nth-child(even) {
+                    background-color: #dddddd;
+                    }
+                </style>
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        % if object.manager.name:
+                        Dear Mr.${object.manager.name}
+                        % else:
+                        Dear Sir
+                        % endif
+                        <br/>
+                        Following Dealership are offline
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th style="width: 85px">Dealer Code</th>
+                                    <th style="width: 215px;">Dealer Name</th>
+                                    <th style="width: 125px;">Server Down From</th>
+                                    <th style="width: 125px;">Server Down Far</th>
+                                </tr>
+                                % if object.get_dealership_detail():
+                                % for data in object.get_dealership_detail():
+                                <tr>
+                                    <td>
+                                        % if data[0]:
+                                        ${data[0]}
+                                        % else:
+                                        <tb/>
+                                        % endif
+                                    </td>
+                                    <td>
+                                        % if data[1]:
+                                        ${data[1]}
+                                        % else:
+                                        <tb/>
+                                        % endif
+                                    </td>
+                                    <td>
+                                        % if data[2]:
+                                        ${data[2]}
+                                        % else:
+                                        <tb/>
+                                        % endif
+                                    </td>
+                                    <td>
+                                        % if data[3]:
+                                        ${data[3]}
+                                        % else:
+                                        <tb/>
+                                        % endif
+                                    </td>
+                                </tr>
+                                %endfor
+                                %endif
+                            </tbody>
+                        </table>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+  </data>
+</odoo>

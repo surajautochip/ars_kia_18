@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <data>
+
+        <record id="online_alpr_server_tree" model="ir.ui.view">
+            <field name="name">alpr server online</field>
+            <field name="model">alpr.server.online</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="plate"/>
+                    <field name="bay_name"></field>
+                    <field name="entry_type"></field>
+                    <field name="date_time"/>
+                </list>
+            </field>
+        </record>
+        <record id="online_alpr_server_form" model="ir.ui.view">
+            <field name="name">alpr online server</field>
+            <field name="model">alpr.server.online</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <field name="image" widget="image" class="oe_avatar"/>
+                        <!--                        <div class="oe_button_box" name="button_box">-->
+                        <!--                        </div>-->
+                        <div class="oe_title">
+                            <label for="plate"/>
+                            <h1>
+                                <field name="plate"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="bay_name"/>
+                                <field name="company_id"/>
+                                <field name="disp_area_string"/>
+                                <field name="date_time"/>
+                                <field name="is_retrived" groups="base.group_no_one"/>
+                            </group>
+                            <group>
+                                <field name="disp_area_x1"/>
+                                <field name="disp_area_y1"/>
+                                <field name="disp_area_x2"/>
+                                <field name="disp_area_y2"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page name="Other Information" string="Other Information" groups="base.group_no_one">
+                                <group>
+                                    <field name="camera_id"/>
+                                    <field name="bay_id"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="online_alpr_server_search" model="ir.ui.view">
+            <field name="name">Alpr Online Search</field>
+            <field name="model">alpr.server.online</field>
+            <field name="arch" type="xml">
+                <search string="Search Bay Log">
+<!--                    <field name="vehicle_number" filter_domain="['|', ('name','ilike',self)]" string="Vehicle Number"/>-->
+                    
+                    <group expand="0" string="Group By">
+                        <filter name="group_by_month" string="Month" domain="[]"
+                                context="{'group_by':'create_date:month'}" help="Bay Log by Month"/>
+                        <filter name="group_by_week" string="Week" domain="[]" context="{'group_by':'create_date:week'}"
+                                help="Bay Log by Week"/>
+                        <filter name="group_by_day" string="Day" domain="[]" context="{'group_by': 'create_date:day'}"
+                                help="Bay Log by Month"/>
+                        <filter name="group_by_year" string="Year" domain="[]" context="{'group_by':'create_date:year'}"
+                                help="Bay Log by Year"/>
+                        
+                        <filter name="group_by_company" string="Company" context="{'group_by':'company_id'}"/>
+                        <filter name="group_by_bay_name" string="Bay" context="{'group_by':'bay_name'}"/>
+                        <filter name="group_by_plate" string="Number Plate" context="{'group_by':'plate'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+
+        <record id="online_alpr_server_action" model="ir.actions.act_window">
+            <field name="name">Alpr Online Server</field>
+            <field name="res_model">alpr.server.online</field>
+            
+            <field name="view_mode">list,form</field>
+            <field name="context">{'search_default_group_by_company':1,'search_default_group_by_month':1, 'search_default_group_by_day':1}</field>
+            <field name="search_view_id" ref="online_alpr_server_search"/>
+            <field name="help" type="html">
+                <p>
+                    ALPR Online Server
+                </p>
+            </field>
+        </record>
+
+
+  </data>
+</odoo>

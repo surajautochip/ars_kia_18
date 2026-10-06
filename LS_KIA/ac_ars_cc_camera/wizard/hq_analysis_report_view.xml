@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<odoo>
+  <data>
+        <record id="view_analysis_streaming_report" model="ir.ui.view">
+            <field name="name">analysis.streaming.report.from</field>
+            <field name="model">analysis.streaming.report</field>
+            <field name="arch" type="xml">
+                <form string="Analysis Streaming Excel Report">
+                    <div>
+                        <group col="2">
+                            <field name="is_region"/>
+                            <field name="region_id" invisible="is_region == False" required="is_region != False"/>
+                        </group>
+                    </div>
+                    <footer>
+                        <button string="Generate Report" class="btn-primary" name="analysis_streaming_print_report" type="object"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_analysis_streaming_report" model="ir.actions.act_window">
+            <field name="name">Analysis Streaming Report</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">analysis.streaming.report</field>
+            
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_analysis_streaming_report"/>
+            <field name="target">new</field>
+        </record>
+  </data>
+</odoo>

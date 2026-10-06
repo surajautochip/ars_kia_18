@@ -1,0 +1,119 @@
+.ac-inverted-1 {
+  background:
+    linear-gradient(black 50%, #fff 0) 0 var(--_d, 0) /100% 200% no-repeat,
+    linear-gradient(#0000 50%, #000 0) 0 var(--_d, 0) /100% 200% no-repeat;
+  -webkit-background-clip: text,padding-box;
+          background-clip: text,padding-box;
+  transition: 0.8s
+}
+.ac-inverted-1:hover {
+  --_d: 50%;
+}
+
+.ac-inverted-2 {
+  background:
+    linear-gradient( 90deg, #000  50%, #fff 0),
+    linear-gradient(-90deg, #000  50%, #fff 0),
+    linear-gradient( 90deg, #0000 50%, #000 0),
+    linear-gradient(-90deg, #0000 50%, #000 0);
+  background-repeat: no-repeat;
+  background-size: 200% 51%;
+  background-position: top left, bottom right;
+  -webkit-background-clip: text, text, padding-box, padding-box;
+          background-clip: text, text, padding-box, padding-box;
+  transition: 0.8s
+}
+
+.ac-inverted-2:hover {
+  background-position: top right, bottom left;
+}
+.ac-inverted-3 {
+  background:
+    linear-gradient(-135deg, #000  50%, #fff 0) var(--_d, 100%)/250% no-repeat,
+    linear-gradient(-135deg, #0000 50%, #000 0) var(--_d, 100%)/250% no-repeat;
+  -webkit-background-clip: text, padding-box;
+          background-clip: text, padding-box;
+  transition: 0.8s
+}
+
+.ac-inverted-3:hover {
+  --_d: 50%;
+}
+
+.ac-inverted-4 {
+  background:
+    linear-gradient(to bottom right, #000  50%, #fff 50.1%) left/300% 300% no-repeat,
+    linear-gradient(to bottom right, #0000 50%, #000 50.1%) left/300% 300% no-repeat;
+  -webkit-background-clip: text, padding-box;
+          background-clip: text, padding-box;
+  transition: 0.8s
+}
+.ac-inverted-4:hover {
+  background-position: center;
+}
+
+.ac-inverted-5 {
+  background:
+    linear-gradient(#000, 40%, #fff 0 60%, #000  0) left/var(--_p,0%) no-repeat,
+    linear-gradient(#0000 40%, #000 0 60%, #0000 0) left/var(--_p,0%) no-repeat,
+    #000;
+  -webkit-background-clip: text, padding-box, text;
+          background-clip: text, padding-box, text;
+  transition: 0.8s
+}
+.ac-inverted-5:hover {
+  --_p: 100%;
+}
+
+.ac-inverted-6 {
+  --_g1: conic-gradient(from 90deg at 50% 75%,#000  90deg,#fff 0) no-repeat;
+  --_g2: conic-gradient(from 90deg at 50% 75%,#0000 90deg,#000 0) no-repeat;
+  background: 
+    var(--_g1) 0    calc(134% - var(--_p,0%)),
+    var(--_g2) 0    calc(134% - var(--_p,0%)),
+    var(--_g1) 100% calc(200% - var(--_p,0%)),
+    var(--_g2) 100% calc(200% - var(--_p,0%)),
+    #000;
+  background-size: 50.2% 400%;
+  -webkit-background-clip: text, padding-box;
+          background-clip: text, padding-box;
+  transition: 0.8s
+}
+.ac-inverted-6:hover {
+  --_p: 134%;
+}
+
+.ac-inverted-7 {
+  background:
+    linear-gradient(-45deg, #000  40%, #fff 0 60%, #000  0) right/300% 100% no-repeat,
+    linear-gradient(-45deg, #0000 40%, #000 0 60%, #0000 0) right/300% 100% no-repeat;
+  -webkit-background-clip: text, padding-box;
+  background-clip: text, padding-box;
+  transition: 0.8s
+}
+.ac-inverted-7:hover {
+  background-position: left;
+}
+
+.ac-inverted-8 {
+  background:
+    linear-gradient(-45deg, #000  40%, #fff 0 60%, #000  0) right/300% 100% no-repeat,
+    linear-gradient(-45deg, #0000 40%, #000 0 60%, #0000 0) right/300% 100% no-repeat;
+  -webkit-background-clip: text, padding-box;
+  background-clip: text, padding-box;
+}
+.ac-inverted-8:hover {
+  background-position: left;
+  transition: 0.8s
+}
+
+.ac-hide {
+  display: none;
+}
+.ac-goto-button{
+
+}
+.ac-goto-button:hover + .ac-hide {
+  display: block;
+  color: red;
+}

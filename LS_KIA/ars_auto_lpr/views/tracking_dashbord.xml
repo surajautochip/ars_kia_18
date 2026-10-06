@@ -1,0 +1,9 @@
+<odoo>
+  <data>
+
+        <record model="ir.actions.client" id="vehicle_track_dashbord_client_action">
+            <field name="name">Vehicle Tracking Dashboard</field>
+            <field name="tag">ars_auto_lpr.tracking_dashboard_main</field>
+        </record>
+  </data>
+</odoo>
