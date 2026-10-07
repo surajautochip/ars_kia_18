@@ -1,0 +1,25 @@
+cd # Odoo 18 - Live Streaming Custom Module Dependencies
+# ----------------------------------------------------
+# This file should be added to your Docker environment
+# so that the server team can bake these dependencies 
+# into the Odoo Docker image before starting the server.
+
+# Camera & Live Streaming APIs
+hikvisionapi
+requests
+
+# Cryptography (for tokens/AES)
+pycryptodome
+
+# REST API & Parsing
+pypeg2
+httplib2
+
+# Excel Reporting
+xlsxwriter
+
+# ----------------------------------------------------
+# ALPR / LPR Project Dependencies (If ALPR is active)
+# ----------------------------------------------------
+opencv-python
+beanstalkc3
