@@ -299,6 +299,7 @@ class dms_login_integration(http.Controller):
     def dms_live_stream_stop(self, **post):
         _logger.info("Executing dms_live_stream_stop...")
         vals = post or {}
+        _logger.info("dms_live_stream_stop payload: %s", vals)
         result = {}
         try:
             if 'user_id' in vals and vals.get('user_id'):
@@ -316,8 +317,10 @@ class dms_login_integration(http.Controller):
                         result.update({'status': 404, "result": False, "message": 'No valid live streaming Found'})
                     return result
             elif 'token' in vals and vals.get('token'):
+                _logger.info("Searching for token: %s", vals.get('token'))
                 live_id = request.env['ac.ars.live.stream.token'].sudo().search([('token', '=', vals.get('token'))],
                                                                          limit=1, order='id desc')
+                _logger.info("Found live_id: %s, state: %s", live_id, live_id.state if live_id else 'None')
                 if live_id and live_id.state == 'valid':
                     live_id.finish_live_stream()
                     result.update({'status': 200, "result": True, "message": 'Live stream stopped'})

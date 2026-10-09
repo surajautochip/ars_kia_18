@@ -41,7 +41,7 @@ class live_stream_token(models.Model):
         payload = {}
         try:
             user = self.user_id
-            now = fields.Datetime.from_string(fields.Datetime.now())
+            now = fields.Datetime.now()
             now = (now.replace(tzinfo=pytz.utc).astimezone(user_tz)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             dms_res = ''
             self.update_on = now
@@ -87,6 +87,6 @@ class live_stream_token(models.Model):
         _logger.info("Executing finish_live_stream...")
         res = super(live_stream_token, self).finish_live_stream()
         # now = fields.Datetime.from_string(fields.Datetime.now())
-        self.end_time = fields.Datetime.from_string(fields.Datetime.now())
+        self.end_time = fields.Datetime.now()
         self.send_live_stream_link()
         return res

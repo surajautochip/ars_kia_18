@@ -44,7 +44,7 @@ class AlprBaySettingsDashboard(http.Controller):
             _t_cc_name = "(%s)" % (camera.cam_name) if camera.cam_name else ''
             cameras[camera.id] = {
                 'name': "%s %s" % (camera.name, _t_cc_name),
-                'camera_url': 'http://localhost:8069/ars_auto_lpr/static/src/bay_images/' + str(
+                'camera_url': request.httprequest.host_url + 'ars_auto_lpr/static/src/bay_images/' + str(
                     camera.id) + '.jpg?rand=' + str(random.randint(0, 1000)),
                 'bays': {},
             }
@@ -84,7 +84,7 @@ class AlprBaySettingsDashboard(http.Controller):
             camera = {
                 'id': camera_rec.id,
                 'name': "%s %s" % (camera_rec.name, _t_cc_name),
-                'camera_url': 'http://localhost:8069/ars_auto_lpr/static/src/bay_images/' + camera_id + '.jpg',
+                'camera_url': request.httprequest.host_url + 'ars_auto_lpr/static/src/bay_images/' + camera_id + '.jpg',
                             # '?rand=' + str(random.randint(0, 1000)),
                 'bays': {},
             }

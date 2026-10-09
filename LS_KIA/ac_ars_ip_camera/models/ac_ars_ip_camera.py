@@ -14,8 +14,8 @@ _logger = logging.getLogger(__name__)
 SECRET_KEY = (config.get('secret_key') or 'default_secret_key_32_bytes_long!').encode() if isinstance(config.get('secret_key') or 'default_secret_key_32_bytes_long!', str) else (config.get('secret_key') or b'default_secret_key_32_bytes_long!')
 
 # Timeouts (seconds)
-PORT_SCAN_TIMEOUT = 2.0
-RTSP_PROBE_TIMEOUT = 4.0
+PORT_SCAN_TIMEOUT = 5.0
+RTSP_PROBE_TIMEOUT = 5.0
 
 
 def pscan(target, port, timeout=PORT_SCAN_TIMEOUT):
