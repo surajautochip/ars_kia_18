@@ -83,12 +83,13 @@ class AcArsLiveStreamDashboard(models.Model):
         today_end = today + timedelta(days=1)
         cr.execute("""
             SELECT
-                COUNT(*) AS total,
-                SUM(CASE WHEN is_viewing = TRUE THEN 1 ELSE 0 END) AS viewed,
-                SUM(CASE WHEN is_viewing = FALSE OR is_viewing IS NULL THEN 1 ELSE 0 END) AS not_viewed
-            FROM ac_ars_live_streaming
-            WHERE company_id IN %s
-              AND date >= %s AND date < %s
+                COUNT(t.id) AS total,
+                SUM(CASE WHEN ls.is_viewing = TRUE THEN 1 ELSE 0 END) AS viewed,
+                SUM(CASE WHEN ls.is_viewing = TRUE THEN 0 ELSE 1 END) AS not_viewed
+            FROM ac_ars_live_stream_token t
+            LEFT JOIN ac_ars_live_streaming ls ON t.token = ls.name
+            WHERE t.company_id IN %s
+              AND t.date >= %s AND t.date < %s
         """, (company_ids_tuple, mtd_start, today_end))
         mtd_row = cr.fetchone() or (0, 0, 0)
         mtd_total = mtd_row[0] or 0
@@ -102,12 +103,13 @@ class AcArsLiveStreamDashboard(models.Model):
         lmtd_end_plus_one = lmtd_end + timedelta(days=1)
         cr.execute("""
             SELECT
-                COUNT(*) AS total,
-                SUM(CASE WHEN is_viewing = TRUE THEN 1 ELSE 0 END) AS viewed,
-                SUM(CASE WHEN is_viewing = FALSE OR is_viewing IS NULL THEN 1 ELSE 0 END) AS not_viewed
-            FROM ac_ars_live_streaming
-            WHERE company_id IN %s
-              AND date >= %s AND date < %s
+                COUNT(t.id) AS total,
+                SUM(CASE WHEN ls.is_viewing = TRUE THEN 1 ELSE 0 END) AS viewed,
+                SUM(CASE WHEN ls.is_viewing = TRUE THEN 0 ELSE 1 END) AS not_viewed
+            FROM ac_ars_live_stream_token t
+            LEFT JOIN ac_ars_live_streaming ls ON t.token = ls.name
+            WHERE t.company_id IN %s
+              AND t.date >= %s AND t.date < %s
         """, (company_ids_tuple, lmtd_start, lmtd_end_plus_one))
         lmtd_row = cr.fetchone() or (0, 0, 0)
         lmtd_total = lmtd_row[0] or 0
@@ -132,8 +134,8 @@ class AcArsLiveStreamDashboard(models.Model):
             m_end = (m_start + relativedelta(months=1)) - timedelta(days=1)
             m_end_plus_one = m_end + timedelta(days=1)
             cr.execute("""
-                SELECT COUNT(*) FROM ac_ars_live_streaming
-                WHERE company_id IN %s AND date >= %s AND date < %s
+                SELECT COUNT(t.id) FROM ac_ars_live_stream_token t
+                WHERE t.company_id IN %s AND t.date >= %s AND t.date < %s
             """, (company_ids_tuple, m_start, m_end_plus_one))
             count = (cr.fetchone() or (0,))[0] or 0
             bar_months.append({

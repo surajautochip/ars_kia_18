@@ -16,13 +16,13 @@ access_right_sms_api_user2,sms.record,ac_ars_sms_api.model_ac_ars_sms_record,ac_
 ,,,,,,,
 access_right_sms_configure_line_user1,sms.configure,ac_ars_sms_api.model_ac_ars_sms_configure,ac_ars_cc_camera.live_stream_group_user,1,1,1,0
 access_right_sms_configure_line_user2,sms.configure,ac_ars_sms_api.model_ac_ars_sms_configure,ac_ars_cc_camera.live_stream_group_manager,1,1,1,1
-,,,,,,,
-access_right_sms_configure_user1,sms.configure.line,ac_ars_sms_api.model_ac_ars_sms_configure_line,ac_ars_cc_camera.live_stream_group_user,1,1,1,0
-access_right_sms_configure_user2,sms.configure.line,ac_ars_sms_api.model_ac_ars_sms_configure_line,ac_ars_cc_camera.live_stream_group_manager,1,1,1,1
+
 ,,,,,,,
 access_right_camera_record_user1,camera.records,ac_ars_ip_camera.model_ac_ars_camera_records,ac_ars_cc_camera.live_stream_group_user,1,1,1,0
 access_right_camera_record_user2,camera.records,ac_ars_ip_camera.model_ac_ars_camera_records,ac_ars_cc_camera.live_stream_group_manager,1,1,1,1
 ,,,,,,,
+access_right_resource_resource_user,resource.resource.ls.user,resource.model_resource_resource,ac_ars_cc_camera.live_stream_group_user,1,0,0,0
+access_right_resource_resource_manager,resource.resource.ls.manager,resource.model_resource_resource,ac_ars_cc_camera.live_stream_group_manager,1,1,1,1
 access_right_ac_ars_live_stream_token_user1,ac.ars.live.stream.token,ac_ars_cc_camera.model_ac_ars_live_stream_token,ac_ars_cc_camera.live_stream_group_user,1,1,1,0
 access_right_ac_ars_live_stream_token_user1,ac.ars.live.stream.token,ac_ars_cc_camera.model_ac_ars_live_stream_token,ac_ars_cc_camera.live_stream_group_manager,1,1,1,1
 ,,,,,,,

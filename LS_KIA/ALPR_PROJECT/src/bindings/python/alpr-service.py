@@ -12,6 +12,8 @@ from openalpr import Alpr
 from argparse import ArgumentParser
 import httplib2
 
+ODOO_URL = "http://192.168.101.111:8079" # CHANGE THIS TO SERVER ODOO URL
+
 parser = ArgumentParser(description='OpenALPR Python Test Program')
 
 parser.add_argument("-c", "--country", dest="country", action="store", default="in",
@@ -47,7 +49,7 @@ def printit():
     threading.Timer(20.0, printit).start()
     headers = {'Content-Type': 'application/json'}
     params = json.dumps(payload)
-    url = "http://localhost:8069/ars_auto_lpr/get_camara_information"
+    url = ODOO_URL + "/ars_auto_lpr/get_camara_information"
     try:
         response = requests.request("POST", url, data=params, headers=headers, timeout=TIMEOUT)
         cameras_details = json.loads(response.text)
@@ -100,7 +102,7 @@ def printit():
                                         _logger.info('in if')
                                         bay_inside = True
                                         num_plate = alpr_obj['plate']
-                                        url = "http://localhost:8069/ars_auto_lpr/process_numplate_info"
+                                        url = ODOO_URL + "/ars_auto_lpr/process_numplate_info"
                                         headers = {'Content-Type': 'application/json'}
                                         payload.update({
                                             "params": {
@@ -129,7 +131,7 @@ def printit():
                 else:
                     for bay_obj in cam_obj['bays']:
                         if bay_obj['is_bay_occupy']:
-                            url = "http://localhost:8069/ars_auto_lpr/alpr_bay_status"
+                            url = ODOO_URL + "/ars_auto_lpr/alpr_bay_status"
                             payload.update({
                                 'bay_id': bay_obj['bay_id'],
                                 'cam_id': cam_obj['camera_id'],

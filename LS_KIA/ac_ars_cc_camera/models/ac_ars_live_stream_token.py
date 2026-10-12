@@ -58,9 +58,18 @@ class AcArsLiveStreamToken(models.Model):
             c = fields.Datetime.now()
             today = (c.replace(tzinfo=pytz.utc).astimezone(user_tz)).strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             if self.plan_event_id:
-                self.plan_event_id.write({'stop_datetime': self.plan_event_id.stop})
+                try:
+                    if hasattr(self.plan_event_id, 'stop'):
+                        self.plan_event_id.write({'stop_datetime': self.plan_event_id.stop})
+                    elif hasattr(self.plan_event_id, 'date_end'):
+                        self.plan_event_id.write({'date_end': today})
+                except Exception as ex:
+                    _logger.warning("Ignoring write error on plan_event_id: %s", ex)
             if self.event_id:
-                self.event_id.write({'stop_datetime': today})
+                try:
+                    self.event_id.write({'stop_datetime': today})
+                except Exception as ex:
+                    _logger.warning("Ignoring write error on event_id: %s", ex)
             res = self.env['calendar.event'].close_ccip(self.token)
             
             try:
@@ -384,7 +393,7 @@ class AcArsPlannerCalendarEvent(models.Model):
             querystring['password' + str(val)] = ip.password
             querystring['ip' + str(val)] = ip.name
         try:
-            url = "http://localhost:4500/index.php/geturl"
+            url = "http://192.168.101.111:4500/index.php/geturl"
             response = requests.request("POST", url, params=querystring)
             _logger.info('Response from PHP server %s', response.text)
             if response.text:
@@ -399,12 +408,13 @@ class AcArsPlannerCalendarEvent(models.Model):
             _logger.error('Error while generate token!!!!!!!!!! %s', e)
             return res
 
+    @api.model
     def close_ccip(self, event_token):
         res = {}
         token = event_token
         try:
-            url = "http://localhost:4500/index.php/stop?token=" + str(token)
-            response = requests.request("GET", url, params={'token': token})
+            url = "http://192.168.101.111:4500/index.php/stop?token=" + str(token)
+            response = requests.request("GET", url, params={'token': token}, timeout=2)
             _logger.error('RESPONSE.........: %s', response.text)
             if response.text:
                 response = json.loads(response.text)
@@ -413,3 +423,6 @@ class AcArsPlannerCalendarEvent(models.Model):
         except Exception as e:
             _logger.error('Error while generate token!!!!!!!!!! %s', e)
             return res
+
+
+

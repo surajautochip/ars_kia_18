@@ -89,6 +89,9 @@ class AcArsAllocationData(models.Model):
         _logger.info("Starting live stream proxy via NodeJS...")
         token_obj.ac_ars_live_streaming_camera_start()
 
+        # COMMIT EARLY TO PREVENT RACE CONDITIONS
+        self.env.cr.commit()
+
         # 1. Send Email (Native Odoo 18 Mail)
         mail_rec = False
         _logger.info("Checking partner email: Partner ID=%s, Email=%s", self.partner_id.id if self.partner_id else None, self.partner_id.email if self.partner_id else None)

@@ -26,7 +26,7 @@ export class BayPlanner extends Component {
             currentDate: new Date(),
             viewMode: "day", // 'day', '3days', 'week', 'month'
             planners: [],
-            activePlannerId: null,
+            activePlannerId: localStorage.getItem('bay_planner_active_id') ? parseInt(localStorage.getItem('bay_planner_active_id')) : null,
             bays: [],
             queueList: [],
             allocatedSlots: [],
@@ -136,6 +136,9 @@ export class BayPlanner extends Component {
             
             this.state.planners = data.planners || [];
             this.state.activePlannerId = data.active_planner_id || null;
+            if (this.state.activePlannerId) {
+                localStorage.setItem('bay_planner_active_id', this.state.activePlannerId);
+            }
             this.state.bays = data.bays || [];
             this.state.queueList = [];
             this.state.allocatedSlots = [];
@@ -221,6 +224,7 @@ export class BayPlanner extends Component {
 
     async applyPlannerFilter(plannerId) {
         this.state.activePlannerId = parseInt(plannerId);
+        localStorage.setItem('bay_planner_active_id', this.state.activePlannerId);
         this.state.isDropdownOpen = false;
         await this.loadData();
     }
