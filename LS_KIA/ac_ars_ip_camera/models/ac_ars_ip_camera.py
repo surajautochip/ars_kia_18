@@ -14,8 +14,8 @@ _logger = logging.getLogger(__name__)
 SECRET_KEY = (config.get('secret_key') or 'default_secret_key_32_bytes_long!').encode() if isinstance(config.get('secret_key') or 'default_secret_key_32_bytes_long!', str) else (config.get('secret_key') or b'default_secret_key_32_bytes_long!')
 
 # Timeouts (seconds)
-PORT_SCAN_TIMEOUT = 5.0
-RTSP_PROBE_TIMEOUT = 5.0
+PORT_SCAN_TIMEOUT = 2.0
+RTSP_PROBE_TIMEOUT = 3.0
 
 
 def pscan(target, port, timeout=PORT_SCAN_TIMEOUT):
@@ -208,9 +208,7 @@ class AcArsIpCamera(models.Model):
             self.status = 'offline'
             ss_obj = self.env['ac.ars.ip.camera.exp'].sudo().search(
                 [('ip_cam_id', '=', self.id), ('port_status', '=', 'offline')], order='id desc', limit=1)
-            if ss_obj:
-                ss_obj.camera_expiry_update()
-            else:
+            if not ss_obj:
                 now = datetime.now()
                 vals = {
                     'ip_cam_id': self.id,
@@ -222,6 +220,14 @@ class AcArsIpCamera(models.Model):
                 self.env['ac.ars.ip.camera.exp'].create(vals)
         else:
             self.status = 'online'
+            # If there was an open offline record, close it
+            open_offline = self.env['ac.ars.ip.camera.exp'].sudo().search(
+                [('ip_cam_id', '=', self.id), ('port_status', '=', 'offline')], order='id desc', limit=1)
+            if open_offline:
+                open_offline.write({
+                    'port_status': 'online',
+                    'last_online': fields.Datetime.now(),
+                })
 
     @api.depends('rtsp_url', 'main_stream', 'sub_stream', 'name', 'http_port', 'rstp_port')
     def _compute_status(self):
@@ -315,7 +321,7 @@ class AcArsIpCameraExp(models.Model):
 
     name = fields.Char(string="Name")
     offline_datetime = fields.Datetime(string="Offline Datetime")
-    duration = fields.Char(string="Duration")
+    duration = fields.Char(string="Duration", compute="_compute_duration")
     last_online = fields.Datetime(string="Last Online")
     day_diff = fields.Integer(string="Day Diff")
     send_mail = fields.Boolean(string="Send Mail")
@@ -324,10 +330,17 @@ class AcArsIpCameraExp(models.Model):
     email_send_date = fields.Date()
     ip_cam_id = fields.Many2one('ac.ars.ip.camera')
 
+    @api.depends('offline_datetime', 'last_online', 'port_status')
+    def _compute_duration(self):
+        current_dt = fields.Datetime.now()
+        for record in self:
+            if record.offline_datetime:
+                end_dt = record.last_online if record.port_status == 'online' and record.last_online else current_dt
+                record.duration = str(end_dt - record.offline_datetime).split('.')[0]
+            else:
+                record.duration = ''
+
     def camera_expiry_update(self):
         _logger.info("Executing camera_expiry_update...")
-        current_dt = fields.Datetime.now()
-        if self.offline_datetime:
-            date_count = current_dt - self.offline_datetime
-            self.write({'duration': str(date_count)})
-            return True
+        # Duration is computed dynamically by _compute_duration, eliminating concurrent DB lock contention.
+        return True

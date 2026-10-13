@@ -9,8 +9,12 @@ class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
     token_access = fields.Selection(
+        selection=[
+            ('all_users', 'All users'),
+            ('internal_users', 'Internal users only'),
+            ('external_users', 'External users only'),
+        ],
         string='Token access',
-        related='website_id.token_access',
         readonly=False,
         help='Indicates which type of users can login with token',
     )

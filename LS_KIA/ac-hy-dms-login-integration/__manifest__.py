@@ -8,9 +8,14 @@
     'category': 'Uncategorized',
     'version': '0.1',
     # any module necessary for this one to work correctly
-    'depends': ['base','portal','web','website',
-                'calendar','contacts','hr','survey','mail','im_livechat'
-                ,'ac_ars_cc_camera','ac_ars_live_stream_dashboard'],
+    'depends': [
+        'base',
+        'web',
+        'portal',
+        'ac_ars_cc_camera',
+        'ac_ars_ip_camera',
+        'ac_ars_live_stream_dashboard',
+    ],
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',

@@ -3,5 +3,6 @@
 from . import res_users
 from . import portal_wizard_user
 from . import res_config_settings
-from . import website
+# from . import website
 from . import models
+from . import ir_ui_menu
