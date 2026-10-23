@@ -188,16 +188,37 @@ class AcArsAllocationData(models.Model):
 
         # Determine active planner
         active_planner = None
-        if planner_id:
+        if planner_id and planner_id in planners.ids:
             active_planner = self.env['planner.calender'].browse(planner_id)
-        elif planners:
-            active_planner = planners[0]
+
+        # If planner_id was invalid/deleted or has no bays, prioritize a planner that has bays
+        if not active_planner or not active_planner.exists() or not active_planner.member_ids:
+            planners_with_bays = planners.filtered(lambda p: bool(p.member_ids))
+            if planners_with_bays:
+                active_planner = planners_with_bays[0]
+            elif planners:
+                active_planner = planners[0]
 
         bays = []
 
-        if active_planner:
+        if active_planner and active_planner.exists():
             # Fetch Bays
             for bay in active_planner.member_ids:
+                bays.append({
+                    'id': bay.id,
+                    'name': bay.name,
+                    'spec': "Standard Service",
+                    'tech': bay.user_id.name if bay.user_id else "Unassigned"
+                })
+
+        # Safety Fallback: If no bays found in planner, check all active material bays in company
+        if not bays:
+            company_bays = self.env['resource.resource'].search([
+                ('company_id', 'in', self.env.companies.ids),
+                '|', ('resource_category.alpr_is_bay', '=', True),
+                ('resource_type', '=', 'material')
+            ])
+            for bay in company_bays:
                 bays.append({
                     'id': bay.id,
                     'name': bay.name,
@@ -232,7 +253,7 @@ class AcArsAllocationData(models.Model):
 
         return {
             'planners': planner_list,
-            'active_planner_id': active_planner.id if active_planner else False,
+            'active_planner_id': active_planner.id if (active_planner and active_planner.exists()) else False,
             'bays': bays,
             'allocations': allocations
         }

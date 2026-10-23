@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Custom Login Background</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary-color: #7f54b3;
+            --bg-white: #fff;
+            --text-color: #121212;
+            --text-color-light: #64728f;
+        }
+
+        body {
+            font-family: "Montserrat", sans-serif;
+        }
+
+        .nav-tabs .nav-item.show .nav-link,
+        .nav-tabs .nav-link.active {
+            color: #121212;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            border-radius: 30px;
+            background-color: #F5F5F5;
+            border: none;
+            padding: 12px 24px;
+        }
+
+        .nav-tabs .nav-link {
+            color: #64728f;
+            font-size: 15px;
+        }
+
+        .nav-tabs .nav-link:focus,
+        .nav-tabs .nav-link:hover {
+            border-color: transparent;
+        }
+
+        .feature-card,
+        .screenshot-card {
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover,
+        .screenshot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .callout-box {
+            background: #fff8ff;
+            border-left: 4px solid #7f54b3;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .tip-box {
+            background: #f0fff4;
+            border-left: 4px solid #28a745;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .warn-box {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+
+        .screenshot-placeholder {
+            background: #f4f4f4;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #aaa;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container my-5">
+
+        <!-- Top badges -->
+        <div class="supports my-4 py-3" style="border-bottom:1px solid #e7e7e7;">
+            <div class="row justify-content-between">
+                <div class="col-6"></div>
+                <div class="col-6">
+                    <div class="row" style="margin-top:10px">
+                        <div class="my-3 d-flex align-items-center justify-content-end">
+                            <span class="me-3"><b>Supports:</b></span>
+                            <div class="text-center"
+                                style="background-color:#017E84; color:#fff; font-size:0.8rem; font-weight:500; padding:4px; margin:0 3px; border-radius:50px; min-width:120px">
+                                Community</div>
+                            <div class="text-center"
+                                style="background-color:#875A7B; color:#fff; font-size:0.8rem; font-weight:500; padding:4px; margin:0 3px; border-radius:50px; min-width:120px">
+                                Enterprise</div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:10px">
+                        <div class="d-flex align-items-center justify-content-end">
+                            <span class="me-3"><b>Availability:</b></span>
+                            <div class="text-center col"
+                                style="font-size:0.8rem; color:#5B899E; border:1px solid #5B899E; font-weight:500; padding:4px; margin:0 3px; border-radius:20px; min-width:120px">
+                                <i class="fa fa-check" style="color:green"></i> On Premise
+                            </div>
+                            <div class="text-center col"
+                                style="font-size:0.8rem; border:1px solid #714b67; color:#714b67; font-weight:500; padding:4px; margin:0 3px; border-radius:20px; min-width:120px">
+                                <i class="fa fa-check" style="color:green"></i> Odoo.sh
+                            </div>
+                            <div class="text-center col"
+                                style="border:1px solid #017E84; font-size:0.8rem; color:#017E84; font-weight:500; padding:4px; margin:0 3px; border-radius:20px; min-width:120px">
+                                <i class="fa fa-times" style="color:red"></i> Odoo Online
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero section -->
+        <div class="position-relative" style="border-radius:16px; background:#f8f8f8; padding:20px 0;">
+            <div class="row" style="padding:2rem 0 0;">
+                <div class="col-lg-8 mx-auto gap-4 d-flex flex-column align-items-center">
+                    <p class="my-1 text-center text-uppercase"
+                        style="letter-spacing:4px; color:#7f54b3; font-weight:600; font-size:14px;">Tools &bull;
+                        Authentication</p>
+                    <h1 class="text-center text-uppercase my-0" style="color:#121212; font-size:40px; font-weight:700;">
+                        Custom Login Background</h1>
+                    <h2 class="text-center my-0" style="color:#64728f; font-size:18px; font-weight:500;">
+                        Make your Odoo login screen unique. This module allows administrators to configure a stunning background image for the login and signup pages on a per-company basis, removing default footers and keeping your branding front and center.
+                    </h2>
+                </div>
+                <div class="col-lg-12 d-flex justify-content-center align-items-center" style="margin:2rem 0;">
+                    <img src="./icon.png" alt="Module Icon"
+                        style="max-width:110px; width:18%; height:auto; border-radius:16px;" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="mb-4 bg-white"
+            style="border:1px solid #EBEEF2; border-radius:6px; box-shadow:0 8px 20px -4px rgba(0,0,0,0.10);">
+            <ul class="nav nav-tabs justify-content-center bg-white py-2" id="moduleTabs" role="tablist"
+                style="border-radius:6px 6px 0 0;">
+                <li class="nav-item"><a class="nav-link active" id="screens-tab" data-bs-toggle="tab" href="#screens"
+                        role="tab">Screenshots</a></li>
+                <li class="nav-item"><a class="nav-link" id="features-tab" data-bs-toggle="tab" href="#features"
+                        role="tab">Features</a></li>
+                <!-- <li class="nav-item"><a class="nav-link" id="faq-tab" data-bs-toggle="tab" href="#faq"
+                        role="tab">FAQs</a></li>
+                <li class="nav-item"><a class="nav-link" id="releases-tab" data-bs-toggle="tab" href="#releases"
+                        role="tab">Releases</a></li> -->
+            </ul>
+
+            <div class="tab-content p-md-5 p-3 py-3" id="moduleTabsContent">
+
+                <!-- Compatibility Banner -->
+                <div class="mb-4 p-4"
+                    style="background:linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius:12px; border:1px solid #dee2e6;">
+                    <div class="col-md-12">
+                        <h5 class="mb-3 text-center" style="color:#495057; font-weight:600;">
+                            <i class="fa fa-cloud text-primary me-2"></i>Compatible With
+                        </h5>
+                        <div class="d-flex flex-wrap gap-2 justify-content-center">
+                            <span class="badge bg-success px-3 py-2"><i
+                                    class="fa fa-check-circle me-1"></i>Community</span>
+                            <span class="badge bg-success px-3 py-2"><i
+                                    class="fa fa-check-circle me-1"></i>Enterprise</span>
+                            <span class="badge bg-success px-3 py-2"><i
+                                    class="fa fa-check-circle me-1"></i>Odoo.sh</span>
+                            <span class="badge bg-danger px-3 py-2"><i class="fa fa-times-circle me-1"></i>Not supported
+                                on Odoo Online</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links
+                <div class="mb-4 p-4"
+                    style="background:linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-radius:12px; border:1px solid #90caf9;">
+                    <div class="col-md-12 text-center">
+                        <h5 class="mb-3" style="color:#1565c0; font-weight:600;">
+                            <i class="fa fa-link text-info me-2"></i>Quick Links
+                        </h5>
+                        <div class="d-flex flex-column flex-md-row gap-3 justify-content-center align-items-center">
+                            <a href="https://odoo.co.ke/helpdesk/customer-support-1" target="_blank"
+                                class="btn btn-outline-info btn-lg px-4 py-2">
+                                <i class="fa fa-headset me-2"></i>Support Portal
+                            </a>
+                            <a href="mailto:support@odoo.co.ke" class="btn btn-primary btn-lg px-4 py-2">
+                                <i class="fa fa-envelope me-2"></i>Email Support
+                            </a>
+                        </div>
+                        <p class="mt-3 mb-0" style="color:#1976d2; font-size:14px;">
+                            <i class="fa fa-info-circle me-1"></i>Contact our team for installation help, custom
+                            configurations, or technical queries.
+                        </p>
+                    </div>
+                </div> -->
+
+                <!-- ==================== SCREENSHOTS TAB ==================== -->
+                <div class="tab-pane fade show active" id="screens" role="tabpanel" aria-labelledby="screens-tab">
+
+                    <div class="position-relative mb-4"
+                        style="border-radius:10px; background-color:#f4f4f4; padding:30px;">
+                        <h2 style="font-weight:700; text-align:center; font-size:34px;">📸 Module Screenshots</h2>
+                        <p style="text-align:center; color:var(--text-color-light);">Visual walkthrough of the Custom
+                            Login Background module</p>
+                    </div>
+
+                    <!-- Screenshot 1 -->
+                    <div class="position-relative mb-4" style="border-radius:10px; background-color:#f4f4f4;">
+                        <div class="p-md-5 p-3">
+                            <h3 style="font-weight:600; margin-bottom:10px;">
+                                <span class="badge me-2" style="background:#7f54b3;">1</span>
+                                Configure the Background Image
+                            </h3>
+                            <div class="callout-box">
+                                <p class="mb-1">Upload a unique high-resolution picture to serve as the background 
+                                    for the authentication pages. We recommend using a 1920x1080px (16:9) image to avoid any stretching or visual artifacts.
+                                </p>
+                                <p class="mb-0">Go to
+                                    <code>Settings → Companies → [Select Company]</code> and upload your image in the
+                                    <em>Login Background Image</em> field.
+                                </p>
+                            </div>
+                            <div class="text-center mt-3">
+                                <img src="setting.png" alt="Uploading the setting"
+                                    class="img-fluid"
+                                    style="border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.12); max-width:100%;" />
+                                <p class="mt-2" style="font-size:13px; color:#64728f;">
+                                    Company settings page showing the new background upload field.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot 2 -->
+                    <div class="position-relative mb-4" style="border-radius:10px; background-color:#f4f4f4;">
+                        <div class="p-md-5 p-3">
+                            <h3 style="font-weight:600; margin-bottom:10px;">
+                                <span class="badge me-2" style="background:#7f54b3;">2</span>
+                                The Beautiful Login Page 
+                            </h3>
+                            <div class="callout-box">
+                                <p class="mb-1">Once uploaded, the background image seamlessly covers the login and signup pages. 
+                                    The module also removes default Odoo branding footers for a fully clean aesthetic.
+                                </p>
+                            </div>
+                            <div class="text-center mt-3">
+                                <img src="login page.png" alt="Login page showing beautiful background"
+                                    class="img-fluid"
+                                    style="border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.12); max-width:100%;" />
+                                <p class="mt-2" style="font-size:13px; color:#64728f;">
+                                    The beautiful custom login page in action.
+                                </p>
+                            </div>
+                             <div class="text-center mt-3">
+                                <img src="page2.png" alt="Login page showing beautiful background"
+                                    class="img-fluid"
+                                    style="border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.12); max-width:100%;" />
+                                
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Screenshot 2 -->
+                    <!-- <div class="position-relative mb-4" style="border-radius:10px; background-color:#f4f4f4;">
+                        <div class="p-md-5 p-3">
+                            <h3 style="font-weight:600; margin-bottom:10px;">
+                                <span class="badge me-2" style="background:#7f54b3;">2</span>
+                                Company-Filtered Dropdown on Products
+                            </h3>
+                            <div class="callout-box">
+                                <p class="mb-1">If some products are not based on categories, the
+                                    <em> Company </em> field is available to restrict visibility of the product based on the company selected , if left empty the product will be visible in all companies. 
+                                <p class="mb-0"> Go to
+                                    <code>Inventory → Products → Products → New</code> and click the <em>Category</em>
+                                    field.
+                                </p>
+                            </div>
+
+                            <div class="text-center mt-3">
+                                <img src="./assets/screenshots/company_restrict.png"
+                                    alt="Company-filtered category dropdown on product form" class="img-fluid"
+                                    style="border-radius:10px; box-shadow:0 4px 15px rgba(0,0,0,0.12); max-width:100%;" />
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- Screenshot 3 - Removed -->
+                </div>
+                <!-- END SCREENSHOTS TAB -->
+
+
+                <!-- ==================== FEATURES TAB ==================== -->
+                <div class="tab-pane fade" id="features" role="tabpanel" aria-labelledby="features-tab">
+                    <div class="row py-2">
+                        <div class="col-md-6 p-3">
+                            <div class="feature-card"
+                                style="padding:24px; border-radius:12px; background-color:#faf8ff; height:100%;">
+                                <h5 class="mb-3"><i class="fa fa-tag text-primary me-2"></i>Key Features</h5>
+                                <ul class="m-0" style="color:#718096; list-style:none; padding:0;">
+                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i>Set a custom background image for the login page and signup page</li>
+                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i>Easily upload the picture within the Company Settings via the browser</li>
+                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i>Supports different background pictures for each company</li>
+                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i>Automatically removes the default Odoo "Powered by Odoo" footer on login pages</li>
+                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i>No complex file overrides — pure backend configuration</li>
+                                    <li class="mb-2"><i class="fa fa-check text-success me-2"></i>Improves first impressions of your system</li>
+                                    <!-- <li class="mb-2"><i class="fa fa-check text-success me-2"></i>Lightweight — no performance impact on the backend</li>
+                                    <li><i class="fa fa-check text-success me-2"></i>Compatible with Community and Enterprise editions</li> -->
+                                </ul>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- END FEATURES TAB -->
+
+
+                <!-- ==================== FAQ TAB ==================== -->
+                <div class="tab-pane fade" id="faq" role="tabpanel" aria-labelledby="faq-tab">
+                    <div class="accordion" id="faqAcc">
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="q1">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a1">
+                                    <strong>Where do I upload the favicon for a company?</strong>
+                                </button>
+                            </h2>
+                            <div id="a1" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">
+                                    <span class="text-success"><i class="fa fa-check-circle me-2"></i></span>
+                                    Go to <code>Settings → Companies</code>, open the desired company record, and look
+                                    for the <em>Favicon</em> field. Upload your image there and save — Odoo will apply
+                                    it immediately without any restart.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="q2">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a2">
+                                    <strong>What image formats are supported for the favicon?</strong>
+                                </button>
+                            </h2>
+                            <div id="a2" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">
+                                    <span class="text-success"><i class="fa fa-check-circle me-2"></i></span>
+                                    PNG and ICO are the recommended formats. PNG files work well in all modern browsers.
+                                    For best results use a square image — ideally <strong>32×32 px</strong> or
+                                    <strong>64×64 px</strong>.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="q3">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a3">
+                                    <strong>Does the favicon change automatically when I switch companies?</strong>
+                                </button>
+                            </h2>
+                            <div id="a3" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">
+                                    <span class="text-success"><i class="fa fa-check-circle me-2"></i></span>
+                                    Yes. The module hooks into Odoo's company-switch flow. As soon as the page reloads
+                                    after a company change, the browser tab icon updates to the favicon configured for
+                                    the newly active company.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="q4">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a4">
+                                    <strong>What happens if a company has no favicon set?</strong>
+                                </button>
+                            </h2>
+                            <div id="a4" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">
+                                    <span class="text-success"><i class="fa fa-check-circle me-2"></i></span>
+                                    If no favicon is uploaded for a company, Odoo will fall back to its default favicon.
+                                    There is no error — the module simply skips the override when no image is present.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="q5">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a5">
+                                    <strong>Is Odoo Online (SaaS) supported?</strong>
+                                </button>
+                            </h2>
+                            <div id="a5" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">
+                                    <span class="text-danger"><i class="fa fa-times-circle me-2"></i></span>
+                                    No. Odoo Online does not allow custom modules. This module requires an
+                                    <strong>On-Premise</strong> or <strong>Odoo.sh</strong> installation.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="q6">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#a6">
+                                    <strong>Will the favicon show in all browsers?</strong>
+                                </button>
+                            </h2>
+                            <div id="a6" class="accordion-collapse collapse" data-bs-parent="#faqAcc">
+                                <div class="accordion-body">
+                                    <span class="text-success"><i class="fa fa-check-circle me-2"></i></span>
+                                    Yes. The module injects a standard <code>&lt;link rel="shortcut icon"&gt;</code>
+                                    tag that is recognised by all major browsers including Chrome, Firefox, Edge, and
+                                    Safari.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- END FAQ TAB -->
+
+
+                <!-- ==================== RELEASES TAB ==================== -->
+                <div class="tab-pane fade" id="releases" role="tabpanel" aria-labelledby="releases-tab">
+                    <div class="row pt-4 m-0">
+                        <div class="col-md-3">
+                            <h4 style="font-size:16px; font-weight:600; color:#514F4F; margin:0;">Latest Release
+                                18.0.1.0</h4>
+                            <span
+                                style="font-size:14px; color:#7A7979; display:block; margin-bottom:20px;">2026-04-13</span>
+                        </div>
+                        <div class="col-md-8">
+                            <div style="padding:0 0 10px">
+                                <div
+                                    style="display:inline-block; padding:0 8px; color:#514F4F; background-color:#D4F8D4; border-radius:20px">
+                                    Initial Release</div>
+                            </div>
+                            <ul class="mb-0" style="color:#7A7979;">
+                                <li>Odoo 18 migration and optimization.</li>
+                                <li>Improved help notifications for background aspect-ratio recommendations</li>
+                                <li>Bugfix for logic affecting background override on unrelated routes</li>
+                                <li>Correctly hides bottom footer on login dynamically under the latest Odoo 18 web templates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- END RELEASES TAB -->
+
+            </div>
+        </div><!-- end tab card -->
+
+
+        <!-- Changelog
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="text-center mb-4" style="font-weight:700;">📅 Changelog</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover"
+                            style="background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                            <thead style="background:#7f54b3; color:#fff;">
+                                <tr>
+                                    <th style="border:none; padding:15px;">Date</th>
+                                    <th style="border:none; padding:15px;">Version</th>
+                                    <th style="border:none; padding:15px;">Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:15px; vertical-align:middle;">2026-03-03</td>
+                                    <td style="padding:15px; vertical-align:middle;"><span
+                                            class="badge bg-primary">17.0.1.0.0</span></td>
+                                    <td style="padding:15px; vertical-align:middle;">Initial release — company
+                                        restriction for product categories</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Related Modules
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <h2 class="text-center mb-4" style="font-weight:700;">🔁 Related Modules by Metro ICT</h2>
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover"
+                            style="background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.1);">
+                            <thead style="background:#875A7B; color:#fff;">
+                                <tr>
+                                    <th style="border:none; padding:15px;">App</th>
+                                    <th style="border:none; padding:15px;">Use Case</th>
+                                    <th style="border:none; padding:15px;">Versions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding:15px; vertical-align:middle;"><strong>POS Syncer</strong></td>
+                                    <td style="padding:15px; vertical-align:middle;">POS ↔ Accounting Sync</td>
+                                    <td style="padding:15px; vertical-align:middle;"><span
+                                            class="badge bg-success">15–19</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px; vertical-align:middle;"><strong>FleetCare</strong></td>
+                                    <td style="padding:15px; vertical-align:middle;">Fleet Management</td>
+                                    <td style="padding:15px; vertical-align:middle;"><span
+                                            class="badge bg-success">13–19</span></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px; vertical-align:middle;"><strong>Auto Allocate
+                                            Credits</strong></td>
+                                    <td style="padding:15px; vertical-align:middle;">Auto-reconcile payments against
+                                        open invoices</td>
+                                    <td style="padding:15px; vertical-align:middle;"><span
+                                            class="badge bg-success">17–19</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        <!-- Licensing
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="text-center mb-4" style="font-weight:700;">📜 Licensing</h2>
+                    <div class="text-center p-4"
+                        style="background:#f8f9fa; border-radius:12px; border:2px solid #e9ecef;">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <i class="fa fa-gavel fa-3x text-primary mb-3"></i>
+                                <h5 class="mb-2">License Type</h5>
+                                <span class="badge bg-primary fs-6">LGPL-3</span>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fa fa-ban fa-3x text-warning mb-3"></i>
+                                <h5 class="mb-2">Redistribution</h5>
+                                <span class="badge bg-warning text-dark fs-6">No redistribution</span>
+                            </div>
+                            <div class="col-md-4">
+                                <i class="fa fa-file-contract fa-3x text-info mb-3"></i>
+                                <h5 class="mb-2">Full Policy</h5>
+                                <a href="https://odoo.co.ke/license-policy" target="_blank"
+                                    class="btn btn-outline-info btn-sm">
+                                    <i class="fa fa-external-link-alt me-2"></i>View Policy
+                                </a>
+                            </div>
+                        </div>
+                        <div class="mt-4 p-3"
+                            style="background:#e3f2fd; border-radius:8px; border-left:4px solid #2196f3;">
+                            <i class="fa fa-info-circle text-info me-2"></i>
+                            <strong>Important:</strong> This module is licensed under LGPL-3 with no redistribution
+                            rights.
+                            Please review our <a href="https://odoo.co.ke/license-policy" target="_blank"
+                                class="text-decoration-none">full license policy</a> for complete terms and conditions.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+        Support
+        <div class="text-center my-4">
+            <h3 class="mb-4" style="font-weight:600;">Support &amp; Contact</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-center p-3"
+                                style="background:#f8f9fa; border-radius:8px;">
+                                <i class="fa fa-envelope fa-2x text-primary me-3"></i>
+                                <div class="text-start">
+                                    <strong>Email</strong><br>
+                                    <a href="mailto:support@odoo.co.ke"
+                                        class="text-decoration-none">support@odoo.co.ke</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-center p-3"
+                                style="background:#f8f9fa; border-radius:8px;">
+                                <i class="fa fa-globe fa-2x text-success me-3"></i>
+                                <div class="text-start">
+                                    <strong>Website</strong><br>
+                                    <a href="https://odoo.co.ke/helpdesk/customer-support-1" target="_blank"
+                                        class="text-decoration-none">https://odoo.co.ke/helpdesk</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-center p-3"
+                                style="background:#f8f9fa; border-radius:8px;">
+                                <i class="fa fa-phone fa-2x text-info me-3"></i>
+                                <div class="text-start">
+                                    <strong>Phone</strong><br>
+                                    <a href="tel:+254739444447" class="text-decoration-none">+254739444447</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center justify-content-center p-3"
+                                style="background:#f8f9fa; border-radius:8px;">
+                                <i class="fa fa-clock fa-2x text-warning me-3"></i>
+                                <div class="text-start">
+                                    <strong>Response Time</strong><br>
+                                    <span class="text-success">1 business day SLA</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="mt-4 p-3" style="background:#e8f5e8; border-radius:8px; border-left:4px solid #28a745;">
+                        <i class="fa fa-gift text-success me-2"></i>
+                        <strong>🎁 90-day complimentary support</strong> included with your purchase
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+    </div><!-- end container -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
