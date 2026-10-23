@@ -4,7 +4,7 @@
 
         <record id="hy_ls_base_menu_hide" model="res.groups">
             <field name="name">Show base Menus</field>
-            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="users" eval="[(5, 0, 0)]"/>
             <field name="comment">Show base menus for LS Users</field>
         </record>
 

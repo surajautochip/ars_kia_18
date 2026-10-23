@@ -12,17 +12,13 @@ _logger = logging.getLogger(__name__)
 import werkzeug.utils
 from odoo import http,api,models
 from odoo.http import request
-from odoo.addons import auth_signup
 from odoo.exceptions import UserError
-from odoo.addons.website.controllers.main import Website
 from odoo.addons.web.controllers.utils import ensure_db
-# import requests
 import logging
 
 
-
 class LSReviewUpdate(http.Controller):
-    @http.route('/live/customer/review', type='json', auth='public', cors="*", website=True, csrf=False)
+    @http.route('/live/customer/review', type='json', auth='public', cors="*", csrf=False)
     def live_cust_review(self, **post):
         _logger.info("Executing live_cust_review...")
         try:
@@ -143,7 +139,7 @@ class dms_login_integration(http.Controller):
     def _json_response(self, data, status=200):
         return Response(json.dumps(data), headers={'Content-Type': 'application/json'}, status=status)
 
-    @http.route(['/dms/landing/redirect'], type='http', auth='public', website=True, s2s=False)
+    @http.route(['/dms/landing/redirect'], type='http', auth='public', s2s=False)
     def dms_landing_redirect(self, **kw):
         _logger.info("Executing dms_landing_redirect...")
         user_id = kw.get('uid')
