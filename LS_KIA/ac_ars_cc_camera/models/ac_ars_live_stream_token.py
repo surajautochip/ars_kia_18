@@ -281,12 +281,20 @@ class AcArsLiveStreamToken(models.Model):
 
     def ac_ars_live_streaming_pause(self, reason=None, remark=None):
         _logger.info("Executing ac_ars_live_streaming_pause...")
-        if self.state == 'valid' and self.status == 'live':
-            self.status = 'hold'
-            self.reason_selection = reason
-            self.other_reason = remark
-            self.ac_ars_live_streaming_camera_stop()
-            self.calendar_event_pause()
+        if self.state == 'valid':
+            self.write({
+                'status': 'hold',
+                'reason_selection': reason,
+                'other_reason': remark
+            })
+            try:
+                self.ac_ars_live_streaming_camera_stop()
+            except Exception as e:
+                _logger.error("Error stopping camera: %s", e)
+            try:
+                self.calendar_event_pause()
+            except Exception as e:
+                _logger.error("Error in calendar_event_pause: %s", e)
         return True
 
     def calendar_event_pause(self):

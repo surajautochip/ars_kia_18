@@ -23,9 +23,9 @@ class cust_view_video(http.Controller):
 
     @http.route('/api/update_stream_status', type='json', auth='public', cors="*", website=True, csrf=False)
     def update_stream_status(self, **post):
-        vals = request.get_json_data()
-        token = vals.get('token')
-        status = vals.get('status')
+        vals = request.get_json_data() or {}
+        token = vals.get('token') or post.get('token')
+        status = vals.get('status') or post.get('status')
         if not token or not status:
             return {"status": 400, "message": "Missing token or status"}
         
@@ -35,18 +35,31 @@ class cust_view_video(http.Controller):
         
         allocation = live_stream.dms_ro_number
         
-        if status == 'hold' and live_stream.status == 'live':
-            live_stream.ac_ars_live_streaming_pause()
+        if status == 'hold':
+            try:
+                live_stream.ac_ars_live_streaming_pause()
+            except Exception as e:
+                _logger.error("Exception in ac_ars_live_streaming_pause: %s", e)
+                live_stream.write({'status': 'hold'})
             if allocation and allocation.state != 'hold':
-                # Bypass the overridden write that triggers pause again
-                allocation.with_context(tracking_disable=True).write({'state': 'hold'})
-                request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                try:
+                    allocation.with_context(tracking_disable=True, skip_token_pause=True).write({'state': 'hold'})
+                    request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                except Exception as e:
+                    _logger.error("Exception updating allocation state to hold: %s", e)
                 
-        elif status == 'live' and live_stream.status == 'hold':
-            live_stream.ac_ars_live_streaming_resume()
+        elif status == 'live':
+            try:
+                live_stream.ac_ars_live_streaming_resume()
+            except Exception as e:
+                _logger.error("Exception in ac_ars_live_streaming_resume: %s", e)
+                live_stream.write({'status': 'live'})
             if allocation and allocation.state != 'live':
-                allocation.with_context(tracking_disable=True).write({'state': 'live'})
-                request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                try:
+                    allocation.with_context(tracking_disable=True, skip_token_pause=True).write({'state': 'live'})
+                    request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                except Exception as e:
+                    _logger.error("Exception updating allocation state to live: %s", e)
                 
         return {"status": 200, "message": "Status updated successfully"}
 
@@ -69,18 +82,18 @@ class cust_view_video(http.Controller):
                     if vals.get('start_time'):
                         # response_code, message = 'Please send the proper Start Date Time', 300
                         api_token = vals.get('token')
-                        token_obj = request.env['ac.ars.live.stream.token'].search([('token', '=', api_token)], limit=1)
+                        token_obj = request.env['ac.ars.live.stream.token'].sudo().search([('token', '=', api_token)], limit=1)
                         alloc_obj = token_obj.dms_ro_number if token_obj else None
                         
-                        ac_ars_live_streaming = request.env['ac.ars.live.streaming']
-                        ac_ars_live_streaming_lines = request.env['ac.ars.live.streaming.line']
+                        ac_ars_live_streaming = request.env['ac.ars.live.streaming'].sudo()
+                        ac_ars_live_streaming_lines = request.env['ac.ars.live.streaming.line'].sudo()
                         current_time = fields.Datetime.from_string(fields.Datetime.now())
                         
                         # Fallbacks in case token record is missing/invalid
                         vehicle_no = alloc_obj.dms_ro_no if alloc_obj else api_token
                         cust_name = alloc_obj.partner_id.name if alloc_obj and alloc_obj.partner_id else 'Unknown'
                         dms_ro_number = alloc_obj.id if alloc_obj else False
-                        company_id = alloc_obj.company_id.id if alloc_obj and alloc_obj.company_id else False
+                        company_id = alloc_obj.company_id.id if alloc_obj and alloc_obj.company_id else (token_obj.company_id.id if token_obj and token_obj.company_id else False)
                         stream_start = alloc_obj.date_start if alloc_obj and alloc_obj.date_start else current_time
                         
                         # Apply timezone offset if stream_start is a string vs datetime object
@@ -96,7 +109,7 @@ class cust_view_video(http.Controller):
                                      'dms_ro_number': dms_ro_number,
                                      'company_id': company_id,
                                      'state': 'progress'}
-                        ac_ars_live_streaming_id = request.env['ac.ars.live.streaming'].search([('name', '=', api_token)])
+                        ac_ars_live_streaming_id = ac_ars_live_streaming.search([('name', '=', api_token)], limit=1)
                         if not ac_ars_live_streaming_id:
                             stream = ac_ars_live_streaming.create(live_vals)
                             _logger.info("Start Time: %s", vals.get('start_time'))
@@ -106,6 +119,8 @@ class cust_view_video(http.Controller):
                                          hours=5, minutes=30)}
                             session_id = ac_ars_live_streaming_lines.create(lines)
                         else:
+                            if not ac_ars_live_streaming_id.is_viewing:
+                                ac_ars_live_streaming_id.write({'is_viewing': True})
                             if 'session_id' in vals and vals.get('session_id'):
                                 live_id = ac_ars_live_streaming_lines.search(
                                     [('session', '=', vals.get('session_id'))])
