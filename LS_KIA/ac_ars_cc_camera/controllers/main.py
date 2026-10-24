@@ -35,18 +35,31 @@ class cust_view_video(http.Controller):
         
         allocation = live_stream.dms_ro_number
         
-        if status == 'hold' and live_stream.status == 'live':
-            live_stream.ac_ars_live_streaming_pause()
+        if status == 'hold':
+            try:
+                live_stream.ac_ars_live_streaming_pause()
+            except Exception as e:
+                _logger.error("Exception in ac_ars_live_streaming_pause: %s", e)
+                live_stream.write({'status': 'hold'})
             if allocation and allocation.state != 'hold':
-                # Bypass the overridden write that triggers pause again
-                allocation.with_context(tracking_disable=True).write({'state': 'hold'})
-                request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                try:
+                    allocation.with_context(tracking_disable=True, skip_token_pause=True).write({'state': 'hold'})
+                    request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                except Exception as e:
+                    _logger.error("Exception updating allocation state to hold: %s", e)
                 
-        elif status == 'live' and live_stream.status == 'hold':
-            live_stream.ac_ars_live_streaming_resume()
+        elif status == 'live':
+            try:
+                live_stream.ac_ars_live_streaming_resume()
+            except Exception as e:
+                _logger.error("Exception in ac_ars_live_streaming_resume: %s", e)
+                live_stream.write({'status': 'live'})
             if allocation and allocation.state != 'live':
-                allocation.with_context(tracking_disable=True).write({'state': 'live'})
-                request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                try:
+                    allocation.with_context(tracking_disable=True, skip_token_pause=True).write({'state': 'live'})
+                    request.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': allocation.id})
+                except Exception as e:
+                    _logger.error("Exception updating allocation state to live: %s", e)
                 
         return {"status": 200, "message": "Status updated successfully"}
 

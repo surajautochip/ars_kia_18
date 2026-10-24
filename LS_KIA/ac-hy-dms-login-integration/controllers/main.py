@@ -339,6 +339,26 @@ class dms_login_integration(http.Controller):
         vals = post or {}
         result = {}
         try:
+            if 'token' in vals and vals.get('token'):
+                _logger.info("dms_live_stream_pause searching for token: %s", vals.get('token'))
+                live_id = request.env['ac.ars.live.stream.token'].sudo().search([('token', '=', vals.get('token'))],
+                                                                         limit=1, order='id desc')
+                if live_id and live_id.state == 'valid':
+                    action = vals.get('action') or (vals.get('status') if vals.get('status') in ('hold', 'live') else False)
+                    if action in ('pause', 'hold'):
+                        remark = vals.get('reason', '')
+                        if live_id.ac_ars_live_streaming_pause('other', remark):
+                            result.update({'status': 200, "result": True, "message": 'Live Stream Paused'})
+                        else:
+                            result.update({'status': 200, "result": False, "message": 'Unable to pause the streaming'})
+                    elif action in ('resume', 'live'):
+                        if live_id.ac_ars_live_streaming_resume():
+                            result.update({'status': 200, "result": True, "message": 'Live Stream Resumed'})
+                        else:
+                            result.update({'status': 200, "result": False, "message": 'Unable to resume the streaming'})
+                else:
+                    result.update({'status': 404, "result": False, "message": 'No valid live streaming Found'})
+                return result
             users = request.env['res.users'].sudo().search([('dms_uid', '=', vals.get('user_id'))], limit=1)
             if users:
                 allocation_id = request.env['allocation.data'].sudo().search([('dms_ro_no', '=', vals.get('roRono'))],

@@ -28,7 +28,7 @@ class AcArsAllocationData(models.Model):
     
     def write(self, vals):
         res = super(AcArsAllocationData, self).write(vals)
-        if 'state' in vals:
+        if 'state' in vals and not self.env.context.get('skip_token_pause'):
             tokens = self.env['ac.ars.live.stream.token'].sudo().search([
                 ('dms_ro_number', 'in', self.ids), 
                 ('state', '=', 'valid')
