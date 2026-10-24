@@ -45,11 +45,12 @@ class AcArsAllocationData(models.Model):
         self.ensure_one()
         _logger.info("action_resume_broadcast CALLED for ID: %s, RO: %s", self.id, self.dms_ro_no)
         
-        token_obj = self.env['ac.ars.live.stream.token'].search([('dms_ro_number', '=', self.id)], limit=1)
+        token_obj = self.env['ac.ars.live.stream.token'].sudo().search([('dms_ro_number', '=', self.id)], limit=1)
         if token_obj and token_obj.status == 'hold':
             token_obj.ac_ars_live_streaming_resume()
             
         self.write({'state': 'live'})
+        self.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': self.id})
         _logger.info("State updated back to 'live' from hold")
 
 

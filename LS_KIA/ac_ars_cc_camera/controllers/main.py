@@ -23,9 +23,9 @@ class cust_view_video(http.Controller):
 
     @http.route('/api/update_stream_status', type='json', auth='public', cors="*", website=True, csrf=False)
     def update_stream_status(self, **post):
-        vals = request.get_json_data()
-        token = vals.get('token')
-        status = vals.get('status')
+        vals = request.get_json_data() or {}
+        token = vals.get('token') or post.get('token')
+        status = vals.get('status') or post.get('status')
         if not token or not status:
             return {"status": 400, "message": "Missing token or status"}
         
