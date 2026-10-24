@@ -39,6 +39,9 @@ class AcArsAllocationData(models.Model):
             elif vals['state'] not in ('live', 'hold', 'queue'):
                 for token in tokens:
                     token.finish_live_stream()
+        if 'state' in vals:
+            for rec in self:
+                self.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': rec.id})
         return res
 
     def action_resume_broadcast(self):

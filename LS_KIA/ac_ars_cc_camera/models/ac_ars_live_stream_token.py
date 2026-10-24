@@ -275,6 +275,12 @@ class AcArsLiveStreamToken(models.Model):
     def ac_ars_live_streaming_resume(self):
         _logger.info("Executing ac_ars_live_streaming_resume...")
         self.status = 'live'
+        if self.dms_ro_number and self.dms_ro_number.state != 'live':
+            try:
+                self.dms_ro_number.with_context(skip_token_pause=True).write({'state': 'live'})
+                self.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': self.dms_ro_number.id})
+            except Exception as e:
+                _logger.error("Error updating dms_ro_number state to live: %s", e)
         self.ac_ars_live_streaming_camera_start()
         self.calendar_event_resume()
         return True
@@ -287,6 +293,12 @@ class AcArsLiveStreamToken(models.Model):
                 'reason_selection': reason,
                 'other_reason': remark
             })
+            if self.dms_ro_number and self.dms_ro_number.state != 'hold':
+                try:
+                    self.dms_ro_number.with_context(skip_token_pause=True).write({'state': 'hold'})
+                    self.env['bus.bus']._sendone('ac_ars_live_stream_channel', 'stream_updated', {'id': self.dms_ro_number.id})
+                except Exception as e:
+                    _logger.error("Error updating dms_ro_number state to hold: %s", e)
             try:
                 self.ac_ars_live_streaming_camera_stop()
             except Exception as e:
