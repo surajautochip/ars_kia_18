@@ -152,6 +152,7 @@ class AcArsLiveStreamDashboard(models.Model):
             online_cameras = len(cameras.filtered(lambda c: c.status == 'online'))
             offline_cameras = total_cameras - online_cameras
             camera_list = [{
+                'id': c.id,
                 'name': c.cam_name or c.name or 'Camera',
                 'status': c.status or 'offline',
                 'ip': c.name or '',

@@ -10,14 +10,16 @@
             /* Custom Scrollbar Styling */
             .bay-planner-container ::-webkit-scrollbar {
                 width: 8px;
-                height: 8px;
+                height: 10px;
             }
             .bay-planner-container ::-webkit-scrollbar-track {
-                background: transparent;
+                background: #f1f5f9;
+                border-radius: 4px;
             }
             .bay-planner-container ::-webkit-scrollbar-thumb {
-                background: #cbd5e1; /* slate-300 */
-                border-radius: 9999px;
+                background: #94a3b8; /* slate-400 */
+                border-radius: 4px;
+                border: 1px solid #e2e8f0;
             }
             .bay-planner-container ::-webkit-scrollbar-thumb:hover,
             .bay-planner-container ::-webkit-scrollbar-thumb:active {
@@ -177,13 +179,6 @@
                             </div>
                         </t>
                     </div>
-
-                    <!-- Queue Footer Info -->
-                    <div class="p-3 border-t border-slate-200 bg-white text-[11px] text-slate-500 flex items-center justify-between font-medium">
-                        <span><i class="fa fa-info-circle text-sky-600" style="margin-right:3px;"></i>
-                            Auto-Sync: Active</span>
-                        <span class="font-mono text-emerald-600 font-bold">DMS ONLINE</span>
-                    </div>
                 </aside>
 
                 <!-- Timeline / Month Area -->
@@ -198,7 +193,19 @@
                                     <i class="fa fa-warehouse text-indigo-400 text-sm"></i>
                                     BAY / FACILITY
                                 </div>
-                                <i class="fa fa-camera text-slate-400" style="font-size: 11px;"></i>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" class="border border-slate-300 rounded px-1.5 py-0.5 text-[9px] text-slate-600 hover:text-kia-red hover:border-kia-red bg-white cursor-pointer transition-colors shadow-2xs font-bold"
+                                            title="Scroll timeline to 8:00 AM"
+                                            t-on-click="() => this.scrollToHour(8)">
+                                        8 AM
+                                    </button>
+                                    <button type="button" class="border border-slate-300 rounded px-1.5 py-0.5 text-[9px] text-slate-600 hover:text-kia-red hover:border-kia-red bg-white cursor-pointer transition-colors shadow-2xs font-bold"
+                                            title="Scroll timeline to current time"
+                                            t-on-click="() => this.autoScrollToNow()">
+                                        Now
+                                    </button>
+                                    <i class="fa fa-camera text-slate-400 ml-1" style="font-size: 11px;"></i>
+                                </div>
                             </div>
 
                             <!-- Time Columns Header -->
@@ -221,7 +228,7 @@
                                 </t>
                             </div>
                         </div>
-                        <div class="flex-1 overflow-auto" t-ref="gridScroll" t-on-scroll="syncScroll">
+                        <div class="flex-1 overflow-auto" t-ref="gridScroll" t-on-scroll="syncScroll" style="overflow-x: scroll; overflow-y: auto; scrollbar-width: thin; scrollbar-color: #94a3b8 #f1f5f9;">
                             <div class="flex flex-col min-w-max pb-16">
                                 <div class="relative flex flex-col">
                                     <!-- Global Grid Time Indicator -->
@@ -273,12 +280,11 @@
                                             </t>
 
                                             <!-- Render Allocated Booking Cards -->
-                                            <t t-foreach="getAllocatedSlotsForBay(bay.id)" t-as="slot" t-key="slot.id">
-                                                <div t-att-class="'absolute rounded-xl flex flex-col justify-between z-10 transition-all cursor-grab active:cursor-grabbing hover:z-30 overflow-hidden ' + (slot.status === 'live' || slot.status === 'hold' ? 'bg-red-50 border-2 border-kia-red shadow-lg backdrop-blur-sm' : (slot.status === 'done' ? 'bg-emerald-50 border-2 border-emerald-500 shadow-sm' : 'bg-white border border-slate-200 shadow hover:shadow-lg hover:border-slate-300'))"
+                                            <t t-foreach="getAllocatedSlotsForBay(bay.id)" t-as="slot" t-key="slot.id">                                                <div t-att-class="'absolute rounded-xl flex flex-col justify-between z-10 transition-all ' + (slot.status === 'done' ? 'cursor-default ' : 'cursor-grab active:cursor-grabbing ') + 'hover:z-30 overflow-hidden ' + (slot.status === 'live' || slot.status === 'hold' ? 'bg-red-50 border-2 border-kia-red shadow-lg backdrop-blur-sm' : (slot.status === 'done' ? 'bg-emerald-50 border-2 border-emerald-500 shadow-sm opacity-95' : 'bg-white border border-slate-200 shadow hover:shadow-lg hover:border-slate-300'))"
                                                      t-att-style="'top: 12px; bottom: 12px; left: ' + (slot.startColumnIndex * 120 + 4) + 'px; width: ' + (slot.durationColumns * 120 - 8) + 'px; padding: 8px 10px;'"
-                                                     draggable="true"
-                                                     t-on-dragstart="(ev) => this.onDragStartGrid(ev, slot.id, bay.id)"
-                                                     t-on-click.stop="() => slot.status !== 'live' and this.openAllocationModal(bay.id, slot.startColumnIndex, slot)">
+                                                     t-att-draggable="slot.status !== 'done'"
+                                                     t-on-dragstart="(ev) => slot.status !== 'done' &amp;&amp; this.onDragStartGrid(ev, slot.id, bay.id)"
+                                                     t-on-click.stop="() => this.onSlotClick(slot, bay.id)">
                                                     
                                                     <t t-if="slot.status === 'live'">
                                                         <div class="scanline-effect absolute inset-0 pointer-events-none opacity-20"></div>
@@ -295,10 +301,12 @@
                                                                     <span class="bg-kia-red text-white rounded px-1 py-0.5 font-black tracking-widest uppercase pulse-live shadow-sm"
                                                                           style="font-size: 7px;">LIVE</span>
                                                                 </t>
-                                                                <button class="text-slate-400 hover:text-kia-red bg-transparent border-0 p-0 ml-1 cursor-pointer transition-colors shrink-0"
-                                                                        t-on-click.stop="() => this.removeAllocation(slot.id)">
-                                                                    <i class="fa fa-times text-[12px]"></i>
-                                                                </button>
+                                                                <t t-if="slot.status !== 'done'">
+                                                                    <button class="text-slate-400 hover:text-kia-red bg-transparent border-0 p-0 ml-1 cursor-pointer transition-colors shrink-0"
+                                                                            t-on-click.stop="() => this.removeAllocation(slot.id)">
+                                                                        <i class="fa fa-times text-[12px]"></i>
+                                                                    </button>
+                                                                </t>
                                                             </div>
                                                         </div>
                                                         <div t-att-class="'truncate ' + (slot.status === 'live' ? 'text-slate-700' : 'text-slate-500')"
@@ -324,8 +332,8 @@
                                                                 </t>
                                                                 <button class="bg-kia-black hover:bg-slate-800 text-white rounded px-2.5 py-1 font-bold border border-transparent cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
                                                                         t-on-click.stop="() => this.toggleStreamStatus(slot.id, 'done')">
-                                                                    <i class="fa fa-stop text-[8px] text-kia-red shrink-0"></i>
-                                                                    <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Stop</span></t>
+                                                                        <i class="fa fa-stop text-[8px] text-kia-red shrink-0"></i>
+                                                                        <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Stop</span></t>
                                                                 </button>
                                                             </div>
                                                             <button class="bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded px-2.5 py-1 font-bold cursor-pointer text-[9px] flex items-center justify-center gap-1.5 transition-colors shadow-sm shrink-0"
@@ -335,8 +343,9 @@
                                                             </button>
                                                         </t>
                                                         <t t-elif="slot.status === 'done'">
-                                                            <div class="text-emerald-700 font-bold text-[9px] flex items-center gap-1 justify-center w-full bg-emerald-100/50 rounded py-1">
-                                                                <i class="fa fa-check-circle"></i>
+                                                            <div class="text-emerald-700 font-bold text-[9px] flex items-center gap-1 justify-center w-full bg-emerald-100/60 rounded py-1 shadow-xs cursor-default select-none pointer-events-none"
+                                                                 title="Completed Livestream (Read-Only)">
+                                                                <i class="fa fa-check-circle text-emerald-600"></i>
                                                                 <t t-if="!slot.durationHours or slot.durationHours &gt; 0.5"><span>Completed</span></t>
                                                             </div>
                                                         </t>
@@ -398,7 +407,7 @@
                                                    t-as="slot" t-key="slot.id">
                                                     <div t-att-class="'absolute left-0.5 right-0.5 rounded px-1.5 py-1 z-30 border text-[10px] cursor-pointer overflow-hidden shadow-sm ' + (slot.status === 'live' ? 'bg-red-50 border-kia-red text-red-900' : (slot.status === 'done' ? 'bg-emerald-50 border-emerald-500 text-emerald-900' : 'bg-indigo-50 border-indigo-200 text-indigo-900'))"
                                                          t-attf-style="top: {{slot.styleTop}}; height: {{slot.styleHeight}};"
-                                                         t-on-click.stop="() => slot.status !== 'live' and this.openAllocationModal(this.state.bays[0] ? this.state.bays[0].id : 0, wday_index * 11 + (ts.hour - 8), slot)">
+                                                         t-on-click.stop="() => this.onSlotClick(slot, this.state.bays[0] ? this.state.bays[0].id : 0)">
                                                         <div class="font-extrabold truncate flex items-center gap-1">
                                                             <t t-if="slot.status === 'live'"><span class="w-1.5 h-1.5 bg-kia-red rounded-full inline-block animate-pulse shrink-0"></span></t>
                                                             <t t-esc="slot.reg"/>
@@ -447,7 +456,7 @@
                                         <div class="flex-1 overflow-y-auto space-y-1.5 pr-0.5 custom-scrollbar">
                                             <t t-foreach="cell.allocations" t-as="slot" t-key="slot.id">
                                                 <div t-att-class="'px-2 py-1.5 rounded-lg border shadow-sm cursor-pointer hover:shadow transition-all ' + (slot.status === 'live' ? 'bg-red-50 border-red-200 text-red-900' : (slot.status === 'done' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-white border-slate-200 text-slate-800'))"
-                                                     t-on-click.stop="() => slot.status !== 'live' and this.openAllocationModal(slot.bayId, slot.startColumnIndex, slot)">
+                                                     t-on-click.stop="() => this.onSlotClick(slot, slot.bayId)">
                                                     <div class="font-extrabold text-[10px] flex items-center justify-between mb-0.5">
                                                         <span class="flex items-center gap-1 tracking-wide">
                                                             <t t-if="slot.isEV"><i class="fa fa-bolt text-sky-500"></i></t>

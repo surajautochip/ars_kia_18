@@ -2,7 +2,8 @@
 
 .o_bay_planner {
     /* Tailwind color palette mapping or re-implementation */
-    height: 100vh;
+    height: 100%;
+    max-height: calc(100vh - 48px);
     overflow: hidden;
     display: flex;
     flex-direction: column;
