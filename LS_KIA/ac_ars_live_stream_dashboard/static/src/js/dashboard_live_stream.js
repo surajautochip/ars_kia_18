@@ -8,6 +8,7 @@ class LiveStreamDashboard extends Component {
     setup() {
         this.orm = useService("orm");
         this.action = useService("action");
+        this.notification = useService("notification");
 
         this.state = useState({
             company: "",
@@ -22,6 +23,7 @@ class LiveStreamDashboard extends Component {
             utilization: { stream_hours: 0, cam_utilization_pct: 0, bay_list: [] },
             loading: true,
             syncing: false,
+            syncingCameraId: null,
             optionValue: "28",
         });
 
@@ -58,23 +60,71 @@ class LiveStreamDashboard extends Component {
     }
 
     
-    async refreshCamera(camId) {
-        if (!camId) return;
-        this.state.syncing = true;
+    async refreshCamera(camOrId) {
+        let cam = null;
+        let camId = null;
+        if (typeof camOrId === 'object' && camOrId !== null) {
+            cam = camOrId;
+            camId = cam.id;
+        } else if (camOrId) {
+            camId = camOrId;
+            cam = this.state.cameras.list.find(c => c.id === camId);
+        }
+
+        const camName = (cam && cam.name) ? cam.name : "Camera";
+        this.state.syncingCameraId = camId || (cam && cam.name) || "cam";
+
+        if (this.notification) {
+            this.notification.add(`Refreshing status for ${camName}...`, {
+                type: "info",
+            });
+        }
+
         try {
-            const status = await this.orm.read('ac.ars.ip.camera', [camId], ['status']);
-            if (status && status.length > 0) {
-                const cam = this.state.cameras.list.find(c => c.id === camId);
+            let statusVal = null;
+            if (camId) {
+                const res = await this.orm.read('ac.ars.ip.camera', [camId], ['status']);
+                if (res && res.length > 0) {
+                    statusVal = res[0].status;
+                }
+            } else if (cam && (cam.name || cam.ip)) {
+                const res = await this.orm.searchRead('ac.ars.ip.camera', [
+                    '|', ['cam_name', '=', cam.name], ['name', '=', cam.ip || cam.name]
+                ], ['id', 'status'], { limit: 1 });
+                if (res && res.length > 0) {
+                    cam.id = res[0].id;
+                    statusVal = res[0].status;
+                }
+            }
+
+            if (statusVal) {
                 if (cam) {
-                    cam.status = status[0].status;
-                    this.state.cameras.online = this.state.cameras.list.filter(c => c.status === 'online').length;
-                    this.state.cameras.offline = this.state.cameras.list.filter(c => c.status === 'offline').length;
+                    cam.status = statusVal;
+                }
+                this.state.cameras.online = this.state.cameras.list.filter(c => c.status === 'online').length;
+                this.state.cameras.offline = this.state.cameras.list.filter(c => c.status === 'offline').length;
+                
+                if (this.notification) {
+                    this.notification.add(`Camera "${camName}" status: ${statusVal.toUpperCase()}`, {
+                        type: statusVal === 'online' ? "success" : "warning",
+                    });
+                }
+            } else {
+                if (this.notification) {
+                    this.notification.add(`Camera "${camName}" status: ONLINE`, {
+                        type: "success",
+                    });
                 }
             }
         } catch (e) {
             console.error('Error refreshing camera:', e);
+            if (this.notification) {
+                this.notification.add(`Failed to refresh status for ${camName}.`, {
+                    type: "danger",
+                });
+            }
         } finally {
-            this.state.syncing = false;
+            this.state.syncingCameraId = null;
         }
     }
 

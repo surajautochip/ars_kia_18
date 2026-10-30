@@ -703,13 +703,27 @@ export class BayPlanner extends Component {
         }, 3000);
     }
 
+    onSlotClick(slot, bayId) {
+        if (slot.status !== 'live' && slot.status !== 'done') {
+            this.openAllocationModal(bayId, slot.startColumnIndex, slot);
+        }
+    }
+
+    scrollToHour(hour = 8) {
+        if (!this.gridScroll || !this.gridScroll.el) return;
+        const container = this.gridScroll.el;
+        const hourOffset = Math.max(0, hour - 8);
+        const scrollPos = hourOffset * 2 * 120;
+        container.scrollTo({ left: scrollPos, behavior: 'smooth' });
+    }
+
     openAllocationModal(bayId, colIndex, existingSlot = null) {
-        if (existingSlot) {
+        if (existingSlot && existingSlot.status !== 'done') {
             this.state.modalData = {
                 bayId: bayId,
                 startColumnIndex: colIndex !== undefined ? colIndex : existingSlot.startColumnIndex,
                 queueItemId: existingSlot.id,
-                durationHours: existingSlot.durationHours,
+                durationHours: existingSlot.durationHours || 1,
                 specialist: ""
             };
         } else {
