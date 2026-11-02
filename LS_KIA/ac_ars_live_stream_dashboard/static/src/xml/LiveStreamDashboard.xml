@@ -764,7 +764,7 @@
                             <div class="ls-util-lbl">Total Stream Hours</div>
                             <div class="ls-util-val"><t t-esc="state.utilization.stream_hours"/><span class="ls-util-unit">hrs</span></div>
                         </div>
-                        <div class="ls-util-box">
+                        <div class="ls-util-box" t-att-title="'Actual Stream Hours: ' + (state.utilization.stream_hours || 0) + ' hrs | Available: ' + (state.utilization.available_hours || 0) + ' hrs (8 hrs/day x ' + (state.utilization.working_days || 0) + ' days x cameras)'">
                             <div class="ls-util-lbl">Camera Utilization</div>
                             <div class="ls-util-val ls-util-green"><t t-esc="state.utilization.cam_utilization_pct"/>%</div>
                         </div>
