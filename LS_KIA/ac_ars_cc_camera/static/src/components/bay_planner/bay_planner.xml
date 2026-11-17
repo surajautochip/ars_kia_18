@@ -193,19 +193,7 @@
                                     <i class="fa fa-warehouse text-indigo-400 text-sm"></i>
                                     BAY / FACILITY
                                 </div>
-                                <div class="flex items-center gap-1">
-                                    <button type="button" class="border border-slate-300 rounded px-1.5 py-0.5 text-[9px] text-slate-600 hover:text-kia-red hover:border-kia-red bg-white cursor-pointer transition-colors shadow-2xs font-bold"
-                                            title="Scroll timeline to 8:00 AM"
-                                            t-on-click="() => this.scrollToHour(8)">
-                                        8 AM
-                                    </button>
-                                    <button type="button" class="border border-slate-300 rounded px-1.5 py-0.5 text-[9px] text-slate-600 hover:text-kia-red hover:border-kia-red bg-white cursor-pointer transition-colors shadow-2xs font-bold"
-                                            title="Scroll timeline to current time"
-                                            t-on-click="() => this.autoScrollToNow()">
-                                        Now
-                                    </button>
-                                    <i class="fa fa-camera text-slate-400 ml-1" style="font-size: 11px;"></i>
-                                </div>
+                                <i class="fa fa-camera text-slate-400" style="font-size: 11px;"></i>
                             </div>
 
                             <!-- Time Columns Header -->
