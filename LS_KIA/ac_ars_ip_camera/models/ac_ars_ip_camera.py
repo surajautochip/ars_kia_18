@@ -131,17 +131,19 @@ class AcArsIpCamera(models.Model):
     def _decrypt_password(self, enc_password):
         if not enc_password:
             return enc_password
-        try:
-            data = base64.b64decode(enc_password)
-            nonce = data[:16]
-            tag = data[16:32]
-            ciphertext = data[32:]
+        for key in [SECRET_KEY, b'0123456789abcdef0123456789abcdef', b'default_secret_key_32_bytes_long!']:
+            try:
+                data = base64.b64decode(enc_password)
+                nonce = data[:16]
+                tag = data[16:32]
+                ciphertext = data[32:]
 
-            cipher = AES.new(SECRET_KEY, AES.MODE_EAX, nonce=nonce)
-            password = cipher.decrypt_and_verify(ciphertext, tag)
-            return password.decode()
-        except Exception:
-            return enc_password
+                cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+                password = cipher.decrypt_and_verify(ciphertext, tag)
+                return password.decode()
+            except Exception:
+                continue
+        return enc_password
 
     # ------------------------------------------------------------------
     # ORM overrides
@@ -164,18 +166,13 @@ class AcArsIpCamera(models.Model):
         return super(AcArsIpCamera, self).write(vals)
 
     def read(self, fields=None, load='_classic_read'):
-        """ Override read to mask credentials for non-admins """
+        """ Override read to decrypt credentials for display """
         res = super(AcArsIpCamera, self).read(fields=fields, load=load)
-
-        is_admin = self.env.user.has_group('ac_ars_cc_camera.live_stream_group_manager') or self.env.user.has_group('base.group_system')
 
         for record in res:
             for f in ['user_name', 'password', 'name', 'local_ip']:
                 if f in record and record[f]:
-                    if not is_admin:
-                        record[f] = '*********'
-                    else:
-                        record[f] = self._decrypt_password(record[f])
+                    record[f] = self._decrypt_password(record[f])
 
         return res
 

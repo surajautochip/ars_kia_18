@@ -41,9 +41,9 @@
                         </div>
                         <group name="camera_details">
                             <group>
-                                <field name="user_name"/>
-                                <field name="password" password="True"/>
-                                <field name="name" string="IP Address" required="True"/>
+                                <field name="user_name" widget="custom_password"/>
+                                <field name="password" widget="custom_password"/>
+                                <field name="name" string="IP Address" required="True" widget="custom_password"/>
                                 <field name="exception" string="Logs" invisible="not exception"/>
                             </group>
                             <group>
