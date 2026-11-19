@@ -76,6 +76,7 @@
 
                     <!-- Global Live Counter (Moved from Header) -->
                     <div class="flex items-center gap-2 border border-red-200 px-4 py-1.5 rounded-full text-red-600 font-bold bg-red-50 text-xs shadow-sm ml-45 cursor-pointer hover:bg-red-100 transition-colors"
+                         title="Open Current Live Streaming Details"
                          t-on-click="openLiveStreamsList">
                         <span class="rounded-full bg-red-500 pulse-live w-2.5 h-2.5"></span>
                         <span class="tracking-wide"><t t-esc="this.liveStreamsCount" />
@@ -286,8 +287,10 @@
                                                             </span>
                                                             <div class="flex items-center gap-1 shrink-0 pl-1">
                                                                 <t t-if="slot.status === 'live'">
-                                                                    <span class="bg-kia-red text-white rounded px-1 py-0.5 font-black tracking-widest uppercase pulse-live shadow-sm"
-                                                                          style="font-size: 7px;">LIVE</span>
+                                                                    <span class="bg-kia-red text-white rounded px-1 py-0.5 font-black tracking-widest uppercase pulse-live shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
+                                                                          style="font-size: 7px;"
+                                                                          title="Open Current Live Streaming Details"
+                                                                          t-on-click.stop="() => this.openSlotLiveStreamForm(slot)">LIVE</span>
                                                                 </t>
                                                                 <t t-if="slot.status !== 'done'">
                                                                     <button class="text-slate-400 hover:text-kia-red bg-transparent border-0 p-0 ml-1 cursor-pointer transition-colors shrink-0"

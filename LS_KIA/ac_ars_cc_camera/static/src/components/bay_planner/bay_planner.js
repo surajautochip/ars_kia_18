@@ -187,6 +187,7 @@ export class BayPlanner extends Component {
                     reg: rec.reg,
                     model: rec.model,
                     status: rec.status,
+                    tokenId: rec.token_id || false,
                     startColumnIndex: startColumnIndex,
                     durationColumns: durationColumns,
                     durationHours: durationHours,
@@ -233,21 +234,101 @@ export class BayPlanner extends Component {
         this.state.isDropdownOpen = !this.state.isDropdownOpen;
     }
 
-    // --- Action Router for Live Streams List ---
-   openLiveStreamsList() {
+    // --- Action Router for Live Streams List & Form ---
+    async openLiveStreamsList() {
         const activeBayIds = this.state.bays.map(b => b.id);
-        const liveAllocationIds = this.state.allocatedSlots
-            .filter(s => s.status === 'live' && activeBayIds.includes(s.bayId))
+        const liveSlots = this.state.allocatedSlots
+            .filter(s => s.status === 'live' && activeBayIds.includes(s.bayId));
+        const liveAllocationIds = liveSlots
             .map(s => parseInt(s.id))
             .filter(id => !isNaN(id));
-        this.action.doAction({
-            name: "Current LS Data",
-            type: "ir.actions.act_window",
-            res_model: "ac.ars.live.stream.token",
-            views: [[false, "list"], [false, "form"]],
-            domain: [["dms_ro_number", "in", liveAllocationIds]],
-            target: "current"
-        });
+
+        let tokenIds = [];
+        if (liveAllocationIds.length > 0) {
+            try {
+                const tokens = await this.orm.searchRead(
+                    "ac.ars.live.stream.token",
+                    [["dms_ro_number", "in", liveAllocationIds]],
+                    ["id"],
+                    { order: "id desc" }
+                );
+                tokenIds = tokens.map(t => t.id);
+            } catch (e) {
+                console.error("Error fetching live stream tokens:", e);
+            }
+        }
+
+        if (tokenIds.length === 0) {
+            try {
+                const companyId = this.env?.services?.company?.currentCompany?.id;
+                const domain = companyId ? [["company_id", "=", companyId], ["state", "=", "valid"]] : [["state", "=", "valid"]];
+                const activeTokens = await this.orm.searchRead(
+                    "ac.ars.live.stream.token",
+                    domain,
+                    ["id"],
+                    { limit: 1, order: "id desc" }
+                );
+                tokenIds = activeTokens.map(t => t.id);
+            } catch (e) {
+                console.error("Error fetching active tokens:", e);
+            }
+        }
+
+        if (tokenIds.length > 0) {
+            this.action.doAction({
+                name: "Current LS Data",
+                type: "ir.actions.act_window",
+                res_model: "ac.ars.live.stream.token",
+                res_id: tokenIds[0],
+                views: [[false, "form"], [false, "list"]],
+                domain: [["id", "in", tokenIds]],
+                target: "current"
+            });
+        } else {
+            this.action.doAction({
+                name: "Current LS Data",
+                type: "ir.actions.act_window",
+                res_model: "ac.ars.live.stream.token",
+                views: [[false, "list"], [false, "form"]],
+                target: "current"
+            });
+        }
+    }
+
+    async openSlotLiveStreamForm(slot) {
+        if (!slot) return;
+        let tokenId = slot.tokenId;
+        if (!tokenId) {
+            const allocId = parseInt(slot.id);
+            if (!isNaN(allocId)) {
+                try {
+                    const tokens = await this.orm.searchRead(
+                        "ac.ars.live.stream.token",
+                        [["dms_ro_number", "=", allocId]],
+                        ["id"],
+                        { limit: 1, order: "id desc" }
+                    );
+                    if (tokens.length > 0) {
+                        tokenId = tokens[0].id;
+                        slot.tokenId = tokenId;
+                    }
+                } catch (e) {
+                    console.error("Error fetching token for slot:", e);
+                }
+            }
+        }
+        if (tokenId) {
+            this.action.doAction({
+                name: "Current LS Data",
+                type: "ir.actions.act_window",
+                res_model: "ac.ars.live.stream.token",
+                res_id: tokenId,
+                views: [[false, "form"]],
+                target: "current"
+            });
+        } else {
+            this.openLiveStreamsList();
+        }
     }
 
     get activeBayName() {
@@ -634,7 +715,10 @@ export class BayPlanner extends Component {
             if (!isNaN(recordId)) {
                 try {
                     if (newStatus === 'live') {
-                        await this.orm.call("ac.ars.allocation.data", "action_start_broadcast", [[recordId]]);
+                        const res = await this.orm.call("ac.ars.allocation.data", "action_start_broadcast", [[recordId]]);
+                        if (res && res.token_id) {
+                            slot.tokenId = res.token_id;
+                        }
                     } else if (newStatus === 'resume') {
                         await this.orm.call("ac.ars.allocation.data", "action_resume_broadcast", [[recordId]]);
                     } else {
@@ -704,7 +788,9 @@ export class BayPlanner extends Component {
     }
 
     onSlotClick(slot, bayId) {
-        if (slot.status !== 'live' && slot.status !== 'done') {
+        if (slot.status === 'live') {
+            this.openSlotLiveStreamForm(slot);
+        } else if (slot.status !== 'done') {
             this.openAllocationModal(bayId, slot.startColumnIndex, slot);
         }
     }
@@ -724,7 +810,8 @@ export class BayPlanner extends Component {
                 startColumnIndex: colIndex !== undefined ? colIndex : existingSlot.startColumnIndex,
                 queueItemId: existingSlot.id,
                 durationHours: existingSlot.durationHours || 1,
-                specialist: ""
+                specialist: "",
+                existingSlot: existingSlot
             };
         } else {
             this.state.modalData = {
@@ -732,7 +819,8 @@ export class BayPlanner extends Component {
                 startColumnIndex: colIndex !== undefined ? colIndex : 0, // default
                 queueItemId: "",
                 durationHours: 2,
-                specialist: ""
+                specialist: "",
+                existingSlot: null
             };
         }
         this.state.isModalOpen = true;
@@ -744,7 +832,8 @@ export class BayPlanner extends Component {
             startColumnIndex: 0, // default
             queueItemId: item.id,
             durationHours: parseFloat(item.durationHours) || 2,
-            specialist: ""
+            specialist: "",
+            existingSlot: null
         };
         this.state.isModalOpen = true;
     }
@@ -788,7 +877,7 @@ export class BayPlanner extends Component {
                 this.state.queueList.splice(qItemIndex, 1);
             } else {
                 // If it's not in the queue, check if it's already an allocated slot (Reschedule flow)
-                const aItemIndex = this.state.allocatedSlots.findIndex(a => String(a.id) === String(data.queueItemId));
+                const aItemIndex = this.state.allocatedSlots.findIndex(a => String(a.id) === String(data.queueItemId) && a.status !== 'done');
                 if (aItemIndex !== -1) {
                     const item = this.state.allocatedSlots[aItemIndex];
                     reg = item.reg;
@@ -803,7 +892,8 @@ export class BayPlanner extends Component {
                             await this.orm.write("ac.ars.allocation.data", [item.id], {
                                 resource_id: parseInt(data.bayId),
                                 date_start: dateStart,
-                                date_end: dateEnd
+                                date_end: dateEnd,
+                                state: 'scheduled'
                             });
                         } catch (e) { console.error(e); }
                     }
