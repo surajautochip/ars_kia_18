@@ -4,7 +4,7 @@
 
         <menuitem name="Live Streaming"
                   id="ac_ars_live_streaming_records"
-                  sequence="55"/>
+                  sequence="10"/>
 
         <menuitem name="Records"
                   id="ac_ars_live_streaming_main_records1"

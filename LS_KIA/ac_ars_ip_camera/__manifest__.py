@@ -30,6 +30,8 @@
 
     'assets': {
         'web.assets_backend': [
+            'ac_ars_ip_camera/static/src/components/custom_password/custom_password_field.js',
+            'ac_ars_ip_camera/static/src/components/custom_password/custom_password_field.xml',
             'ac_ars_ip_camera/static/src/js/booking_stage_mask.js',
             'ac_ars_ip_camera/static/src/css/ars_password.css',
             'ac_ars_ip_camera/static/src/xml/booking_stage_mask.xml',

@@ -9,9 +9,10 @@ class IrUiMenu(models.Model):
     @api.returns('self')
     def get_user_roots(self):
         """
-        Overrides the root menu retrieval so that only 'Live Streaming',
-        'Camera', 'Apps', and 'Settings' are returned as root applications in the Apps menu.
+        Overrides the root menu retrieval so that only 'Live Streaming'
+        and 'Camera' are returned as root applications in the Apps menu.
         All other application menus (default Odoo apps, etc.) are excluded.
+        Ensures 'Live Streaming' is always the first application.
         """
         roots = super().get_user_roots()
 
@@ -22,6 +23,9 @@ class IrUiMenu(models.Model):
             raise_if_not_found=False
         )
         if show_base_group and self.env.user in show_base_group.users:
+            ls_menu = self.env.ref('ac_ars_cc_camera.ac_ars_live_streaming_records', raise_if_not_found=False)
+            if ls_menu and ls_menu in roots:
+                return ls_menu | (roots - ls_menu)
             return roots
 
         allowed_xmlids = [
@@ -43,4 +47,8 @@ class IrUiMenu(models.Model):
                 lambda r: r.name in ('Live Streaming', 'Camera', 'Apps', 'Settings')
             )
 
-        return roots.filtered(lambda r: r.id in allowed_menus.ids)
+        user_roots = roots.filtered(lambda r: r.id in allowed_menus.ids)
+        ls_menu = self.env.ref('ac_ars_cc_camera.ac_ars_live_streaming_records', raise_if_not_found=False)
+        if ls_menu and ls_menu in user_roots:
+            return ls_menu | (user_roots - ls_menu)
+        return user_roots

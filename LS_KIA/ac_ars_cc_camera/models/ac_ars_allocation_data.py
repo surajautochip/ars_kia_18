@@ -66,7 +66,7 @@ class AcArsAllocationData(models.Model):
         _logger.info("State updated to 'live'")
 
         # Generate live stream link dynamically via token model
-        token_obj = self.env['ac.ars.live.stream.token'].search([('dms_ro_number', '=', self.id)], limit=1)
+        token_obj = self.env['ac.ars.live.stream.token'].with_context(active_test=False).search([('dms_ro_number', '=', self.id)], limit=1)
         if not token_obj:
             token_values = {
                 'user_id': self.env.user.id,
@@ -82,6 +82,14 @@ class AcArsAllocationData(models.Model):
             }
             token_obj = self.env['ac.ars.live.stream.token'].sudo().create(token_values)
             _logger.info("Created Current LS Data (ac.ars.live.stream.token) ID: %s", token_obj.id)
+        else:
+            token_obj.sudo().write({
+                'state': 'valid',
+                'status': 'live',
+                'active': True,
+                'resource': self.resource_id.id if self.resource_id else False,
+            })
+            _logger.info("Reactivated Current LS Data (ac.ars.live.stream.token) ID: %s", token_obj.id)
         
         # ACTUALLY CALL PHP TO GET URL
         _logger.info("Generating live stream link...")
@@ -107,6 +115,10 @@ class AcArsAllocationData(models.Model):
                         <h2 style="color: #EA0029;">Your Vehicle is Live!</h2>
                         <p>Dear {self.partner_id.name},</p>
                         <p>Your vehicle is currently being serviced and you can watch the live stream by clicking the button below:</p>
+                        <div style="margin: 15px 0; padding: 10px 15px; background-color: #f8f9fa; border-left: 4px solid #EA0029; border-radius: 4px;">
+                            <span style="font-size: 14px; color: #555;">Your 4-Digit Access PIN: </span>
+                            <strong style="font-size: 22px; color: #EA0029; letter-spacing: 3px;">{token_obj.otp or ''}</strong>
+                        </div>
                         <a href="{livestream_link}" style="background-color: #EA0029; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; margin-top: 10px;">Watch Live Stream</a>
                     </div>
                 """,
@@ -136,11 +148,12 @@ class AcArsAllocationData(models.Model):
             try:
                 _logger.info("Creating ac.ars.sms.record...")
                 # Use custom SMS API module
+                sms_url_val = f"{livestream_link} (PIN: {token_obj.otp})" if (token_obj and token_obj.otp) else livestream_link
                 sms = self.env['ac.ars.sms.record'].sudo().create({
                     'name': self.partner_id.name,
                     'phone': phone,
                     'regno': self.dms_ro_no or '',
-                    'url': livestream_link,
+                    'url': sms_url_val,
                     'company_id': self.env.company.id,
                 })
                 if token_obj:
@@ -153,17 +166,19 @@ class AcArsAllocationData(models.Model):
                     _logger.error("Failed to send Broadcast SMS: Check sms.record state: %s | Reason: %s", sms.stage, sms.failed_reason)
                     
                 # 3. Send WhatsApp
-                _logger.info("Checking WhatsApp configuration...")
-                whatsapp_config = self.env['ac.ars.whatsapp.config'].sudo().search([('company_id', '=', self.env.company.id)], limit=1)
-                if not whatsapp_config:
-                    whatsapp_config = self.env['ac.ars.whatsapp.config'].sudo().search([], limit=1) # Fallback to global
-                    
-                if whatsapp_config:
-                    _logger.info("Calling send_whatsapp()...")
-                    whatsapp_config.send_whatsapp(self.partner_id.name, phone, self.dms_ro_no or '', livestream_link)
-                    _logger.info("Successfully executed send_whatsapp to %s", phone)
-                else:
-                    _logger.warning("No WhatsApp configuration found for company.")
+                if 'ac.ars.whatsapp.config' in self.env:
+                    _logger.info("Checking WhatsApp configuration...")
+                    whatsapp_config = self.env['ac.ars.whatsapp.config'].sudo().search([('company_id', '=', self.env.company.id)], limit=1)
+                    if not whatsapp_config:
+                        whatsapp_config = self.env['ac.ars.whatsapp.config'].sudo().search([], limit=1) # Fallback to global
+                        
+                    if whatsapp_config:
+                        _logger.info("Calling send_whatsapp()...")
+                        wa_url_val = f"{livestream_link} (PIN: {token_obj.otp})" if (token_obj and token_obj.otp) else livestream_link
+                        whatsapp_config.send_whatsapp(self.partner_id.name, phone, self.dms_ro_no or '', wa_url_val)
+                        _logger.info("Successfully executed send_whatsapp to %s", phone)
+                    else:
+                        _logger.warning("No WhatsApp configuration found for company.")
                     
             except Exception as e:
                 _logger.error("Exception when sending Custom SMS/WhatsApp: %s", str(e))
@@ -171,7 +186,7 @@ class AcArsAllocationData(models.Model):
             _logger.warning("SMS/WhatsApp not sent: Partner has no mobile or phone number.")
                 
         _logger.info("=========================================")
-        return True
+        return {'token_id': token_obj.id if token_obj else False}
 
     def delete_ac_ars_allocation_data(self):
         _logger.info("Executing delete_ac_ars_allocation_data...")
@@ -243,6 +258,10 @@ class AcArsAllocationData(models.Model):
         
         domain.append(('company_id', 'in', self.env.companies.ids))
         alloc_records = self.search(domain)
+        tokens = self.env['ac.ars.live.stream.token'].search([
+            ('dms_ro_number', 'in', alloc_records.ids)
+        ])
+        token_by_alloc = {t.dms_ro_number.id: t.id for t in tokens if t.dms_ro_number}
         allocations = []
         for alloc in alloc_records:
             allocations.append({
@@ -253,6 +272,7 @@ class AcArsAllocationData(models.Model):
                 'status': alloc.state or 'queue',
                 'date_start': str(alloc.date_start) if alloc.date_start else False,
                 'date_end': str(alloc.date_end) if alloc.date_end else False,
+                'token_id': token_by_alloc.get(alloc.id, False),
             })
 
         return {
