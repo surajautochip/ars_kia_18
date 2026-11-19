@@ -20,7 +20,7 @@ class LiveStreamDashboard extends Component {
             change: { total: "0%", viewed: "0%", not_viewed: "0%", rate: "0%" },
             bar_months: [],
             cameras: { total: 0, online: 0, offline: 0, list: [] },
-            utilization: { stream_hours: 0, cam_utilization_pct: 0, bay_list: [] },
+            utilization: { stream_hours: 0, cam_utilization_pct: 0, available_hours: 0, working_days: 0, bay_list: [] },
             loading: true,
             syncing: false,
             syncingCameraId: null,
@@ -51,7 +51,7 @@ class LiveStreamDashboard extends Component {
                 this.state.change = result.change || { total: "0%", viewed: "0%", not_viewed: "0%", rate: "0%" };
                 this.state.bar_months = result.bar_months || [];
                 this.state.cameras = result.cameras || { total: 0, online: 0, offline: 0, list: [] };
-                this.state.utilization = result.utilization || { stream_hours: 0, cam_utilization_pct: 0, bay_list: [] };
+                this.state.utilization = result.utilization || { stream_hours: 0, cam_utilization_pct: 0, available_hours: 0, working_days: 0, bay_list: [] };
             }
         } finally {
             this.state.loading = false;

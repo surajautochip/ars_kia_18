@@ -172,7 +172,39 @@ class AcArsLiveStreamDashboard(models.Model):
         stream_hours_mtd = cr.fetchone()[0] or 0.0
         stream_hours_mtd = round(stream_hours_mtd, 1)
 
-        # 2. Bay Usage (MTD)
+        # Fallback to ac_ars_live_streaming if camera records sum is 0
+        if stream_hours_mtd == 0.0:
+            cr.execute("""
+                SELECT SUM(EXTRACT(EPOCH FROM (stream_end_time - stream_start_time))) / 3600.0
+                FROM ac_ars_live_streaming
+                WHERE company_id IN %s
+                  AND date >= %s AND date <= %s
+                  AND stream_end_time IS NOT NULL AND stream_start_time IS NOT NULL
+            """, (company_ids_tuple, mtd_start, today + timedelta(days=1)))
+            ls_hours = cr.fetchone()[0] or 0.0
+            if ls_hours > 0.0:
+                stream_hours_mtd = round(ls_hours, 1)
+
+        # 2. Time-Based Camera Utilization %
+        # Formula: (Total Actual Stream Hours / Total Available Camera Hours) * 100
+        # Available Camera Hours = (Working Hours per Day: 8) * (Working Days MTD) * (Number of Cameras)
+        WORK_HOURS_PER_DAY = 8.0
+        working_days_mtd = 0
+        cur_day = mtd_start
+        while cur_day <= today:
+            if cur_day.weekday() != 6:  # Exclude Sundays
+                working_days_mtd += 1
+            cur_day += timedelta(days=1)
+        working_days_mtd = max(1, working_days_mtd)
+
+        available_cam_hours = WORK_HOURS_PER_DAY * working_days_mtd * (total_cameras if total_cameras > 0 else 1)
+        if total_cameras > 0 and available_cam_hours > 0 and stream_hours_mtd > 0:
+            cam_utilization_pct = int(round((stream_hours_mtd / available_cam_hours) * 100))
+            cam_utilization_pct = min(100, max(0, cam_utilization_pct))
+        else:
+            cam_utilization_pct = 0
+
+        # 3. Bay Usage (MTD)
         cr.execute("""
             SELECT r.name, COUNT(a.id)
             FROM ac_ars_allocation_data a
@@ -230,7 +262,9 @@ class AcArsLiveStreamDashboard(models.Model):
             },
             'utilization': {
                 'stream_hours': stream_hours_mtd,
-                'cam_utilization_pct': int(round((online_cameras / total_cameras * 100) if total_cameras > 0 else 0)),
+                'cam_utilization_pct': cam_utilization_pct,
+                'available_hours': round(available_cam_hours, 1),
+                'working_days': working_days_mtd,
                 'bay_list': bay_list,
             },
         }
