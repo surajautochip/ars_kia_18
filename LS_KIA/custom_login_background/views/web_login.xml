@@ -16,6 +16,9 @@
                 }
             </style>
         </xpath>
+        <xpath expr="//div[hasclass('card-body')]//img[1]" position="replace">
+            <img src="/custom_login_background/static/src/img/kia_logo.png" alt="KIA Logo" style="max-height:120px; max-width: 100%; width:auto"/>
+        </xpath>
         <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
             <div class="text-center small mt-4 pt-3 login--footer" t-if="not disable_footer">
             </div>
