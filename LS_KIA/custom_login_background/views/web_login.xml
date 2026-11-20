@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
     <template id="web_login_layout_inherit" inherit_id="web.login_layout" name="Web Login Layout Footer Hide">
+        <xpath expr="//div[hasclass('container')]" position="inside">
+            <style>
+                .card.o_database_list {
+                    background: rgba(255, 255, 255, 0.6) !important;
+                    backdrop-filter: blur(14px) !important;
+                    -webkit-backdrop-filter: blur(14px) !important;
+                    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+                    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22) !important;
+                    border-radius: 16px !important;
+                }
+                .card.o_database_list .card-body {
+                    background: transparent !important;
+                }
+            </style>
+        </xpath>
         <xpath expr="//div[hasclass('text-center', 'small', 'mt-4', 'pt-3', 'border-top')]" position="replace">
             <div class="text-center small mt-4 pt-3 login--footer" t-if="not disable_footer">
             </div>
