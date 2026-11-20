@@ -9,6 +9,7 @@
         <record id="ac_ars_cc_camera.ac_ars_live_streaming_records" model="ir.ui.menu">
             <field name="sequence">10</field>
             <field name="action" ref="action_ac_ars_live_stream_dashboard"/>
+            <field name="web_icon">ac_ars_cc_camera,static/description/icon.png</field>
         </record>
 
         <menuitem name="Dashboard" id="ac_ars_live_stream_dashboard"

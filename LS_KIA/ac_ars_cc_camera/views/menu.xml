@@ -4,7 +4,8 @@
 
         <menuitem name="Live Streaming"
                   id="ac_ars_live_streaming_records"
-                  sequence="10"/>
+                  sequence="10"
+                  web_icon="ac_ars_cc_camera,static/description/icon.png"/>
 
         <menuitem name="Records"
                   id="ac_ars_live_streaming_main_records1"

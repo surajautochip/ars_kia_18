@@ -4,6 +4,7 @@
         <menuitem name="Camera"
                   id="ac_ars_ip_camera_main_menu"
                   sequence="55"
+                  web_icon="ac_ars_ip_camera,static/description/icon.png"
                   groups="ac_ars_ip_camera.ip_camera_group_user"/>
                   
         <menuitem name="Camera"
